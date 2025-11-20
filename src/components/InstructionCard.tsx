@@ -44,8 +44,11 @@ export const InstructionCard = ({
   };
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardHeader className="pb-3">
+    <Card className={`hover:shadow-md transition-shadow relative ${status === "inactive" ? "opacity-60" : ""}`}>
+      {status === "inactive" && (
+        <div className="absolute inset-0 bg-muted/30 rounded-lg pointer-events-none z-0" />
+      )}
+      <CardHeader className="pb-3 relative z-10">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 space-y-2">
             <div className="flex items-center gap-2 flex-wrap">
@@ -81,7 +84,7 @@ export const InstructionCard = ({
           </div>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="relative z-10">
         <div className="space-y-2">
           <button
             onClick={() => setExpanded(!expanded)}
