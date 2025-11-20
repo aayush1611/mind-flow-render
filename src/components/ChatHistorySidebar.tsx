@@ -158,11 +158,17 @@ export default function ChatHistorySidebar() {
               )}
             >
               <div className="relative">
-                <MessageSquare className="w-5 h-5 text-muted-foreground" />
-                {chat.status === "streaming" && (
-                  <div className="absolute -top-1 -right-1 w-3 h-3">
-                    <Loader2 className="w-3 h-3 text-blue-500 animate-spin" />
-                  </div>
+                {chat.status === "completed" && !chat.isRead ? (
+                  <CheckCircle2 className="w-5 h-5 text-green-500" />
+                ) : (
+                  <>
+                    <MessageSquare className="w-5 h-5 text-muted-foreground" />
+                    {chat.status === "streaming" && (
+                      <div className="absolute -top-1 -right-1 w-3 h-3">
+                        <Loader2 className="w-3 h-3 text-blue-500 animate-spin" />
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
 
@@ -178,13 +184,9 @@ export default function ChatHistorySidebar() {
                 <p className="text-xs text-muted-foreground">{chat.timestamp}</p>
               </div>
 
-              {chat.status === "completed" && !chat.isRead ? (
-                <CheckCircle2 className="w-5 h-5 text-green-500" />
-              ) : (
-                <Button variant="ghost" size="icon" className="h-8 w-8">
-                  <MoreVertical className="w-4 h-4" />
-                </Button>
-              )}
+              <Button variant="ghost" size="icon" className="h-8 w-8">
+                <MoreVertical className="w-4 h-4" />
+              </Button>
             </button>
           ))}
         </div>
