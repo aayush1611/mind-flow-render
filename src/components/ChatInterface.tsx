@@ -109,44 +109,73 @@ export default function ChatInterface() {
       selectedApp: selectedApp,
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    const assistantMessageId = (Date.now() + 1).toString();
+    const assistantMessage: Message = {
+      id: assistantMessageId,
+      role: "assistant",
+      content: "",
+      thinking: mockThinkingSteps,
+      isStreaming: true,
+    };
+
+    setMessages((prev) => [...prev, userMessage, assistantMessage]);
     setInput("");
     setSelectedPill(null);
     setSelectedApp(null);
     setIsLoading(true);
     setShowThinking(true);
+    setExpandedThinking(assistantMessageId);
 
-    // First show thinking process for 3 seconds
+    // Update thinking steps progressively
     setTimeout(() => {
-      setShowThinking(false);
+      const updatedSteps = mockThinkingSteps.map((step, idx) => ({
+        ...step,
+        status: (idx <= 2 ? "complete" : idx === 3 ? "processing" : "pending") as ThinkingStep["status"],
+      }));
 
-      const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: "assistant",
-        content: "Perfect! I've completed the comprehensive analysis of your Q3 sales data. Here's your detailed breakdown by region with all the requested deliverables.",
-        thinking: mockThinkingSteps,
-        isStreaming: true,
-        attachments: [
-          {
-            type: "chart",
-            content: "chart-placeholder",
-          },
-          {
-            type: "file",
-            fileName: "Q3_Sales_Summary.pdf",
-            fileSize: "1.2 MB",
-            fileType: "pdf",
-          },
-          {
-            type: "file",
-            fileName: "Q3_Raw_Data.xlsx",
-            fileSize: "856 KB",
-            fileType: "excel",
-          },
-          {
-            type: "code",
-            language: "python",
-            content: `import pandas as pd
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === assistantMessageId
+            ? { ...msg, thinking: updatedSteps }
+            : msg
+        )
+      );
+
+      setTimeout(() => {
+        const completeSteps = mockThinkingSteps.map((step) => ({
+          ...step,
+          status: "complete" as ThinkingStep["status"],
+        }));
+
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === assistantMessageId
+              ? {
+                  ...msg,
+                  thinking: completeSteps,
+                  content: "Perfect! I've completed the comprehensive analysis of your Q3 sales data. Here's your detailed breakdown by region with all the requested deliverables.",
+                  isStreaming: false,
+                  attachments: [
+                    {
+                      type: "chart",
+                      content: "chart-placeholder",
+                    },
+                    {
+                      type: "file",
+                      fileName: "Q3_Sales_Summary.pdf",
+                      fileSize: "1.2 MB",
+                      fileType: "pdf",
+                    },
+                    {
+                      type: "file",
+                      fileName: "Q3_Raw_Data.xlsx",
+                      fileSize: "856 KB",
+                      fileType: "excel",
+                    },
+                    {
+                      type: "code",
+                      language: "python",
+                      content: `import pandas as pd
 
 # Mock data based on agent analysis
 data = {
@@ -157,18 +186,21 @@ data = {
 
 df = pd.DataFrame(data)
 print(df)`,
-          },
-        ],
-        followUps: [
-          "Show me the monthly breakdown",
-          "Compare with Q2 results",
-          "Analyze top performing products"
-        ],
-      };
-      setMessages((prev) => [...prev, aiMessage]);
-      setExpandedThinking(aiMessage.id);
-      setIsLoading(false);
-    }, 3000);
+                    },
+                  ],
+                  followUps: [
+                    "Show me the monthly breakdown",
+                    "Compare with Q2 results",
+                    "Analyze top performing products"
+                  ],
+                }
+              : msg
+          )
+        );
+        setIsLoading(false);
+        setShowThinking(false);
+      }, 2000);
+    }, 1500);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
