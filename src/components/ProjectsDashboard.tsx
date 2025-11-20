@@ -8,12 +8,7 @@ import {
   Search,
   Folder,
   Database,
-  Clock,
-  Eye,
-  MessageSquare,
   ChevronDown,
-  Github,
-  FileText,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import CreateProjectWizard from "./CreateProjectWizard";
@@ -22,8 +17,6 @@ interface Project {
   id: string;
   name: string;
   description: string;
-  sources: number;
-  lastActivity: string;
 }
 
 const mockProjects: Project[] = [
@@ -31,22 +24,16 @@ const mockProjects: Project[] = [
     id: "1",
     name: "AI Code Assistant Project Alpha",
     description: "Developing context-aware code suggestions using internal documentation databases.",
-    sources: 3,
-    lastActivity: "11/16/2025",
   },
   {
     id: "2",
     name: "Customer Data Platform Analysis",
     description: "Analyzing customer interaction logs stored in Azure DevOps for behavioral insights.",
-    sources: 1,
-    lastActivity: "11/15/2025",
   },
   {
     id: "3",
     name: "Internal Documentation Q&A Bot",
     description: "Training the agent on internal PDF manuals and knowledge base articles.",
-    sources: 4,
-    lastActivity: "11/17/2025",
   },
 ];
 
@@ -54,8 +41,6 @@ export default function ProjectsDashboard() {
   const [projects, setProjects] = useState<Project[]>(mockProjects);
   const [searchQuery, setSearchQuery] = useState("");
   const [showWizard, setShowWizard] = useState(false);
-  const [selectedProject, setSelectedProject] = useState<string | null>(null);
-  const [isAddingSource, setIsAddingSource] = useState(false);
   const [viewMode, setViewMode] = useState<"list" | "wizard">("list");
 
   const filteredProjects = projects.filter(
@@ -69,8 +54,6 @@ export default function ProjectsDashboard() {
       id: Date.now().toString(),
       name: projectData.name,
       description: projectData.description,
-      sources: 0,
-      lastActivity: new Date().toLocaleDateString(),
     };
     setProjects([...projects, newProject]);
     setShowWizard(false);
@@ -111,43 +94,6 @@ export default function ProjectsDashboard() {
           </header>
 
       <main className="container mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Projects</CardTitle>
-              <Folder className="w-4 h-4 text-primary" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">{projects.length}</div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Knowledge Sources</CardTitle>
-              <Database className="w-4 h-4 text-accent" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">
-                {projects.reduce((sum, p) => sum + p.sources, 0)}
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Last Activity</CardTitle>
-              <Clock className="w-4 h-4 text-success" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-xl font-bold">{projects[projects.length - 1]?.name}</div>
-              <p className="text-xs text-muted-foreground mt-1">
-                {projects[projects.length - 1]?.lastActivity}
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-
         <Tabs defaultValue="projects" className="space-y-6">
           <TabsList>
             <TabsTrigger value="projects">
@@ -219,74 +165,6 @@ export default function ProjectsDashboard() {
                           {project.description}
                         </CardDescription>
                       </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <div className="flex items-center gap-1">
-                            <Database className="w-4 h-4" />
-                            {project.sources} sources
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <Clock className="w-4 h-4" />
-                            {project.lastActivity}
-                          </div>
-                        </div>
-
-                        <div className="flex gap-2">
-                          <Button className="flex-1">
-                            <MessageSquare className="w-4 h-4 mr-2" />
-                            Chat
-                          </Button>
-                          <Button variant="outline" size="icon">
-                            <Eye className="w-4 h-4" />
-                          </Button>
-                        </div>
-
-                        {selectedProject === project.id && isAddingSource && (
-                          <div className="pt-4 border-t space-y-3">
-                            <p className="text-sm font-medium">Add Knowledge Source</p>
-                            <div className="space-y-2">
-                              <Button
-                                variant="outline"
-                                className="w-full justify-start"
-                                onClick={() => setIsAddingSource(false)}
-                              >
-                                <Github className="w-4 h-4 mr-2" />
-                                Connect GitHub Repository
-                              </Button>
-                              <Button
-                                variant="outline"
-                                className="w-full justify-start"
-                                onClick={() => setIsAddingSource(false)}
-                              >
-                                <Database className="w-4 h-4 mr-2" />
-                                Connect Azure DevOps
-                              </Button>
-                              <Button
-                                variant="outline"
-                                className="w-full justify-start"
-                                onClick={() => setIsAddingSource(false)}
-                              >
-                                <FileText className="w-4 h-4 mr-2" />
-                                Upload Documents
-                              </Button>
-                            </div>
-                          </div>
-                        )}
-
-                        {!isAddingSource && (
-                          <Button
-                            variant="outline"
-                            className="w-full"
-                            onClick={() => {
-                              setSelectedProject(project.id);
-                              setIsAddingSource(true);
-                            }}
-                          >
-                            <Plus className="w-4 h-4 mr-2" />
-                            Add Source
-                          </Button>
-                        )}
-                      </CardContent>
                     </Card>
                   ))}
                 </div>
