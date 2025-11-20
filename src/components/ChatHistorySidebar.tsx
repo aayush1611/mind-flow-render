@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -36,6 +37,7 @@ const mockChats: Chat[] = [
 ];
 
 export default function ChatHistorySidebar() {
+  const navigate = useNavigate();
   const [selectedChatId, setSelectedChatId] = useState("3");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -64,7 +66,7 @@ export default function ChatHistorySidebar() {
                 <Button
                   variant="ghost"
                   className="justify-start text-sm"
-                  onClick={() => console.log("Instruction clicked")}
+                  onClick={() => navigate("/instructions")}
                 >
                   Instruction
                 </Button>
@@ -100,6 +102,7 @@ export default function ChatHistorySidebar() {
             variant="secondary"
             size="sm"
             className="rounded-full"
+            onClick={() => navigate("/projects")}
           >
             Project
           </Button>
