@@ -77,22 +77,29 @@ export default function ChatHistorySidebar() {
               <Settings className="w-5 h-5" />
             </Button>
           </HoverCardTrigger>
-          <HoverCardContent side="right" className="w-48 p-2" sideOffset={8}>
-            <div className="flex flex-col gap-1">
-              <Button
-                variant="ghost"
-                className="justify-start text-sm"
-                onClick={() => console.log("Doffle clicked")}
-              >
-                Doffle
-              </Button>
-              <Button
-                variant="ghost"
-                className="justify-start text-sm"
-                onClick={() => console.log("Memories clicked")}
-              >
-                Memories
-              </Button>
+          <HoverCardContent side="right" className="w-64 h-screen p-0" sideOffset={8} align="start">
+            <div className="h-full flex flex-col">
+              <div className="p-3 border-b">
+                <h3 className="font-semibold text-sm">Settings</h3>
+              </div>
+              <div className="flex-1 overflow-y-auto p-2">
+                <div className="flex flex-col gap-1">
+                  <Button
+                    variant="ghost"
+                    className="justify-start text-sm"
+                    onClick={() => console.log("Doffle clicked")}
+                  >
+                    Doffle
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    className="justify-start text-sm"
+                    onClick={() => console.log("Memories clicked")}
+                  >
+                    Memories
+                  </Button>
+                </div>
+              </div>
             </div>
           </HoverCardContent>
         </HoverCard>
@@ -104,16 +111,20 @@ export default function ChatHistorySidebar() {
               <FileText className="w-5 h-5" />
             </Button>
           </HoverCardTrigger>
-          <HoverCardContent side="right" className="w-64 p-3" sideOffset={8}>
-            <div className="space-y-2">
-              <h3 className="font-semibold text-sm mb-3">Instructions</h3>
-              <Button
-                variant="ghost"
-                className="w-full justify-start text-sm"
-                onClick={() => navigate("/instructions")}
-              >
-                Manage Instructions
-              </Button>
+          <HoverCardContent side="right" className="w-64 h-screen p-0" sideOffset={8} align="start">
+            <div className="h-full flex flex-col">
+              <div className="p-3 border-b">
+                <h3 className="font-semibold text-sm">Instructions</h3>
+              </div>
+              <div className="flex-1 overflow-y-auto p-2">
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start text-sm"
+                  onClick={() => navigate("/instructions")}
+                >
+                  Manage Instructions
+                </Button>
+              </div>
             </div>
           </HoverCardContent>
         </HoverCard>
@@ -154,10 +165,14 @@ export default function ChatHistorySidebar() {
               <BookOpen className="w-5 h-5" />
             </Button>
           </HoverCardTrigger>
-          <HoverCardContent side="right" className="w-64 p-3" sideOffset={8}>
-            <div className="space-y-2">
-              <h3 className="font-semibold text-sm mb-3">Knowledge</h3>
-              <p className="text-xs text-muted-foreground">No knowledge sources yet</p>
+          <HoverCardContent side="right" className="w-64 h-screen p-0" sideOffset={8} align="start">
+            <div className="h-full flex flex-col">
+              <div className="p-3 border-b">
+                <h3 className="font-semibold text-sm">Knowledge</h3>
+              </div>
+              <div className="flex-1 overflow-y-auto p-3">
+                <p className="text-xs text-muted-foreground">No knowledge sources yet</p>
+              </div>
             </div>
           </HoverCardContent>
         </HoverCard>
@@ -169,10 +184,14 @@ export default function ChatHistorySidebar() {
               <Shield className="w-5 h-5" />
             </Button>
           </HoverCardTrigger>
-          <HoverCardContent side="right" className="w-64 p-3" sideOffset={8}>
-            <div className="space-y-2">
-              <h3 className="font-semibold text-sm mb-3">Rules</h3>
-              <p className="text-xs text-muted-foreground">No rules configured</p>
+          <HoverCardContent side="right" className="w-64 h-screen p-0" sideOffset={8} align="start">
+            <div className="h-full flex flex-col">
+              <div className="p-3 border-b">
+                <h3 className="font-semibold text-sm">Rules</h3>
+              </div>
+              <div className="flex-1 overflow-y-auto p-3">
+                <p className="text-xs text-muted-foreground">No rules configured</p>
+              </div>
             </div>
           </HoverCardContent>
         </HoverCard>
@@ -186,41 +205,45 @@ export default function ChatHistorySidebar() {
               <MessageSquare className="w-5 h-5" />
             </Button>
           </HoverCardTrigger>
-          <HoverCardContent side="right" className="w-80 p-3 max-h-96 overflow-y-auto" sideOffset={8}>
-            <div className="space-y-2">
-              <h3 className="font-semibold text-sm mb-3">Recent Chats</h3>
-              <div className="flex flex-col">
-                {mockChats.map((chat) => (
-                  <button
-                    key={chat.id}
-                    onClick={() => {
-                      setSelectedChatId(chat.id);
-                    }}
-                    className={cn(
-                      "w-full py-2 px-2 flex items-center gap-3 hover:bg-accent transition-colors rounded-md",
-                      selectedChatId === chat.id && "bg-primary/10"
-                    )}
-                  >
-                    <div className="relative shrink-0">
-                      {chat.status === "completed" && !chat.isRead ? (
-                        <CheckCircle2 className="w-4 h-4 text-green-500" />
-                      ) : (
-                        <>
-                          <MessageSquare className="w-4 h-4 text-muted-foreground" />
-                          {chat.status === "streaming" && (
-                            <div className="absolute -top-1 -right-1 w-3 h-3">
-                              <Loader2 className="w-3 h-3 text-blue-500 animate-spin" />
-                            </div>
-                          )}
-                        </>
+          <HoverCardContent side="right" className="w-80 h-screen p-0" sideOffset={8} align="start">
+            <div className="h-full flex flex-col">
+              <div className="p-3 border-b">
+                <h3 className="font-semibold text-sm">Recent Chats</h3>
+              </div>
+              <div className="flex-1 overflow-y-auto p-2">
+                <div className="flex flex-col">
+                  {mockChats.map((chat) => (
+                    <button
+                      key={chat.id}
+                      onClick={() => {
+                        setSelectedChatId(chat.id);
+                      }}
+                      className={cn(
+                        "w-full py-2 px-2 flex items-center gap-3 hover:bg-accent transition-colors rounded-md",
+                        selectedChatId === chat.id && "bg-primary/10"
                       )}
-                    </div>
-                    <div className="flex-1 text-left min-w-0">
-                      <p className="text-sm font-medium truncate">{chat.title}</p>
-                      <p className="text-xs text-muted-foreground">{chat.timestamp}</p>
-                    </div>
-                  </button>
-                ))}
+                    >
+                      <div className="relative shrink-0">
+                        {chat.status === "completed" && !chat.isRead ? (
+                          <CheckCircle2 className="w-4 h-4 text-green-500" />
+                        ) : (
+                          <>
+                            <MessageSquare className="w-4 h-4 text-muted-foreground" />
+                            {chat.status === "streaming" && (
+                              <div className="absolute -top-1 -right-1 w-3 h-3">
+                                <Loader2 className="w-3 h-3 text-blue-500 animate-spin" />
+                              </div>
+                            )}
+                          </>
+                        )}
+                      </div>
+                      <div className="flex-1 text-left min-w-0">
+                        <p className="text-sm font-medium truncate">{chat.title}</p>
+                        <p className="text-xs text-muted-foreground">{chat.timestamp}</p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </HoverCardContent>
