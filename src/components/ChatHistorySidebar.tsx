@@ -10,6 +10,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import {
   Plus,
   Search,
   Filter,
@@ -18,6 +23,10 @@ import {
   CheckCircle2,
   MoreVertical,
   Settings,
+  FolderKanban,
+  BookOpen,
+  Shield,
+  Menu,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -42,23 +51,193 @@ export default function ChatHistorySidebar() {
   const [selectedChatId, setSelectedChatId] = useState("3");
   const [searchQuery, setSearchQuery] = useState("");
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
 
   const filteredChats = mockChats.filter((chat) =>
     chat.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const shouldShowContent = !isCollapsed || isHovered;
+  if (isCollapsed) {
+    return (
+      <aside className="bg-card border-r flex flex-col h-screen w-16 items-center py-4 gap-4">
+        {/* New Chat */}
+        <Button
+          size="icon"
+          className="shrink-0"
+          onClick={() => setSelectedChatId("")}
+        >
+          <Plus className="w-5 h-5" />
+        </Button>
+
+        {/* Settings */}
+        <HoverCard openDelay={0} closeDelay={0}>
+          <HoverCardTrigger asChild>
+            <Button variant="ghost" size="icon" className="shrink-0">
+              <Settings className="w-5 h-5" />
+            </Button>
+          </HoverCardTrigger>
+          <HoverCardContent side="right" className="w-48 p-2" sideOffset={8}>
+            <div className="flex flex-col gap-1">
+              <Button
+                variant="ghost"
+                className="justify-start text-sm"
+                onClick={() => navigate("/instructions")}
+              >
+                Instruction
+              </Button>
+              <Button
+                variant="ghost"
+                className="justify-start text-sm"
+                onClick={() => console.log("Doffle clicked")}
+              >
+                Doffle
+              </Button>
+              <Button
+                variant="ghost"
+                className="justify-start text-sm"
+                onClick={() => console.log("Memories clicked")}
+              >
+                Memories
+              </Button>
+            </div>
+          </HoverCardContent>
+        </HoverCard>
+
+        {/* Project */}
+        <HoverCard openDelay={0} closeDelay={0}>
+          <HoverCardTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="shrink-0"
+              onClick={() => navigate("/projects")}
+            >
+              <FolderKanban className="w-5 h-5" />
+            </Button>
+          </HoverCardTrigger>
+          <HoverCardContent side="right" className="w-64 p-3" sideOffset={8}>
+            <div className="space-y-2">
+              <h3 className="font-semibold text-sm mb-3">Projects</h3>
+              <div className="flex flex-col gap-1">
+                <Button variant="ghost" className="justify-start text-sm" onClick={() => navigate("/projects")}>
+                  Project Alpha
+                </Button>
+                <Button variant="ghost" className="justify-start text-sm" onClick={() => navigate("/projects")}>
+                  Project Beta
+                </Button>
+                <Button variant="ghost" className="justify-start text-sm" onClick={() => navigate("/projects")}>
+                  Project Gamma
+                </Button>
+              </div>
+            </div>
+          </HoverCardContent>
+        </HoverCard>
+
+        {/* Knowledge */}
+        <HoverCard openDelay={0} closeDelay={0}>
+          <HoverCardTrigger asChild>
+            <Button variant="ghost" size="icon" className="shrink-0">
+              <BookOpen className="w-5 h-5" />
+            </Button>
+          </HoverCardTrigger>
+          <HoverCardContent side="right" className="w-64 p-3" sideOffset={8}>
+            <div className="space-y-2">
+              <h3 className="font-semibold text-sm mb-3">Knowledge</h3>
+              <p className="text-xs text-muted-foreground">No knowledge sources yet</p>
+            </div>
+          </HoverCardContent>
+        </HoverCard>
+
+        {/* Rules */}
+        <HoverCard openDelay={0} closeDelay={0}>
+          <HoverCardTrigger asChild>
+            <Button variant="ghost" size="icon" className="shrink-0">
+              <Shield className="w-5 h-5" />
+            </Button>
+          </HoverCardTrigger>
+          <HoverCardContent side="right" className="w-64 p-3" sideOffset={8}>
+            <div className="space-y-2">
+              <h3 className="font-semibold text-sm mb-3">Rules</h3>
+              <p className="text-xs text-muted-foreground">No rules configured</p>
+            </div>
+          </HoverCardContent>
+        </HoverCard>
+
+        <div className="w-8 h-px bg-border my-2" />
+
+        {/* Chats */}
+        <HoverCard openDelay={0} closeDelay={0}>
+          <HoverCardTrigger asChild>
+            <Button variant="ghost" size="icon" className="shrink-0">
+              <MessageSquare className="w-5 h-5" />
+            </Button>
+          </HoverCardTrigger>
+          <HoverCardContent side="right" className="w-80 p-3 max-h-96 overflow-y-auto" sideOffset={8}>
+            <div className="space-y-2">
+              <h3 className="font-semibold text-sm mb-3">Recent Chats</h3>
+              <div className="flex flex-col">
+                {mockChats.map((chat) => (
+                  <button
+                    key={chat.id}
+                    onClick={() => {
+                      setSelectedChatId(chat.id);
+                      setIsCollapsed(false);
+                    }}
+                    className={cn(
+                      "w-full py-2 px-2 flex items-center gap-3 hover:bg-accent transition-colors rounded-md",
+                      selectedChatId === chat.id && "bg-primary/10"
+                    )}
+                  >
+                    <div className="relative shrink-0">
+                      {chat.status === "completed" && !chat.isRead ? (
+                        <CheckCircle2 className="w-4 h-4 text-green-500" />
+                      ) : (
+                        <>
+                          <MessageSquare className="w-4 h-4 text-muted-foreground" />
+                          {chat.status === "streaming" && (
+                            <div className="absolute -top-1 -right-1 w-3 h-3">
+                              <Loader2 className="w-3 h-3 text-blue-500 animate-spin" />
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+                    <div className="flex-1 text-left min-w-0">
+                      <p className="text-sm font-medium truncate">{chat.title}</p>
+                      <p className="text-xs text-muted-foreground">{chat.timestamp}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </HoverCardContent>
+        </HoverCard>
+
+        {/* Spacer */}
+        <div className="flex-1" />
+
+        {/* Toggle Expand */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="shrink-0"
+          onClick={() => setIsCollapsed(false)}
+        >
+          <Menu className="w-5 h-5" />
+        </Button>
+
+        {/* User Avatar */}
+        <Avatar className="shrink-0">
+          <AvatarFallback className="bg-primary text-primary-foreground">
+            JD
+          </AvatarFallback>
+        </Avatar>
+      </aside>
+    );
+  }
 
   return (
-    <aside 
-      className={cn(
-        "bg-card border-r flex flex-col h-screen transition-all duration-300",
-        isCollapsed ? "w-16" : "w-80"
-      )}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <aside className="bg-card border-r flex flex-col h-screen w-80 transition-all duration-300">
+
       {/* Header */}
       <div className="p-4 border-b space-y-4">
         {/* Top Actions */}
@@ -99,78 +278,71 @@ export default function ChatHistorySidebar() {
               </div>
             </PopoverContent>
           </Popover>
-          {shouldShowContent && (
-            <Button
-              className="flex-1"
-              onClick={() => setSelectedChatId("")}
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              New Chat
-            </Button>
-          )}
+          <Button
+            className="flex-1"
+            onClick={() => setSelectedChatId("")}
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            New Chat
+          </Button>
           <Button
             variant="ghost"
             size="icon"
             className="shrink-0"
-            onClick={() => setIsCollapsed(!isCollapsed)}
+            onClick={() => setIsCollapsed(true)}
           >
-            <MessageSquare className="w-5 h-5" />
+            <Menu className="w-5 h-5" />
           </Button>
         </div>
 
         {/* Navigation Pills */}
-        {shouldShowContent && (
-          <div className="flex gap-2">
-            <Button
-              variant="secondary"
-              size="sm"
-              className="rounded-full"
-              onClick={() => navigate("/projects")}
-            >
-              Project
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="rounded-full"
-            >
-              Knowledge
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="rounded-full"
-            >
-              Rules
-            </Button>
-          </div>
-        )}
+        <div className="flex gap-2">
+          <Button
+            variant="secondary"
+            size="sm"
+            className="rounded-full"
+            onClick={() => navigate("/projects")}
+          >
+            Project
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="rounded-full"
+          >
+            Knowledge
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="rounded-full"
+          >
+            Rules
+          </Button>
+        </div>
       </div>
 
       {/* Recent Chats Section */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {shouldShowContent && (
-          <div className="p-4 border-b">
-            <h2 className="text-lg font-semibold mb-3">Recent Chats</h2>
+        <div className="p-4 border-b">
+          <h2 className="text-lg font-semibold mb-3">Recent Chats</h2>
 
-            {/* Search and Filter */}
-            <div className="flex gap-2">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search chats..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9"
-                />
-              </div>
-              <Button variant="ghost" size="icon">
-                <Filter className="w-4 h-4" />
-              </Button>
+          {/* Search and Filter */}
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Search chats..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9"
+              />
             </div>
+            <Button variant="ghost" size="icon">
+              <Filter className="w-4 h-4" />
+            </Button>
           </div>
-        )}
-        
+        </div>
 
         {/* Chat List */}
         <div className="flex-1 overflow-y-auto">
@@ -179,9 +351,8 @@ export default function ChatHistorySidebar() {
               key={chat.id}
               onClick={() => setSelectedChatId(chat.id)}
               className={cn(
-                "w-full py-3 flex items-center hover:bg-accent transition-colors border-b",
-                selectedChatId === chat.id && "bg-primary/10 border-l-4 border-l-primary",
-                isCollapsed && !isHovered ? "px-2 justify-center" : "px-4 gap-3"
+                "w-full py-3 px-4 flex items-center gap-3 hover:bg-accent transition-colors border-b",
+                selectedChatId === chat.id && "bg-primary/10 border-l-4 border-l-primary"
               )}
             >
               <div className="relative shrink-0">
@@ -199,25 +370,21 @@ export default function ChatHistorySidebar() {
                 )}
               </div>
 
-              {shouldShowContent && (
-                <>
-                  <div className="flex-1 text-left min-w-0">
-                    <div className="flex items-center justify-between gap-2">
-                      <p className="text-sm font-medium truncate">{chat.title}</p>
-                      {chat.unreadCount && chat.unreadCount > 0 && (
-                        <Badge variant="destructive" className="rounded-full px-2 py-0 h-5 text-xs">
-                          {chat.unreadCount}
-                        </Badge>
-                      )}
-                    </div>
-                    <p className="text-xs text-muted-foreground">{chat.timestamp}</p>
-                  </div>
+              <div className="flex-1 text-left min-w-0">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-sm font-medium truncate">{chat.title}</p>
+                  {chat.unreadCount && chat.unreadCount > 0 && (
+                    <Badge variant="destructive" className="rounded-full px-2 py-0 h-5 text-xs">
+                      {chat.unreadCount}
+                    </Badge>
+                  )}
+                </div>
+                <p className="text-xs text-muted-foreground">{chat.timestamp}</p>
+              </div>
 
-                  <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
-                    <MoreVertical className="w-4 h-4" />
-                  </Button>
-                </>
-              )}
+              <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0">
+                <MoreVertical className="w-4 h-4" />
+              </Button>
             </button>
           ))}
         </div>
@@ -225,34 +392,24 @@ export default function ChatHistorySidebar() {
 
       {/* User Profile */}
       <div className="p-4 border-t">
-        {shouldShowContent ? (
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Avatar>
-                  <AvatarFallback className="bg-primary text-primary-foreground">
-                    JD
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="text-xs text-muted-foreground">Acme Corp</p>
-                  <p className="text-sm font-medium">John Doe</p>
-                </div>
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Avatar>
+                <AvatarFallback className="bg-primary text-primary-foreground">
+                  JD
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="text-xs text-muted-foreground">Acme Corp</p>
+                <p className="text-sm font-medium">John Doe</p>
               </div>
-              <Button variant="link" className="text-primary text-xs">
-                Sign out
-              </Button>
             </div>
+            <Button variant="link" className="text-primary text-xs">
+              Sign out
+            </Button>
           </div>
-        ) : (
-          <div className="flex justify-center">
-            <Avatar>
-              <AvatarFallback className="bg-primary text-primary-foreground">
-                JD
-              </AvatarFallback>
-            </Avatar>
-          </div>
-        )}
+        </div>
       </div>
     </aside>
   );
