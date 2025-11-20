@@ -324,7 +324,7 @@ print(df)`,
               <div className="flex items-center justify-between w-full">
                 <div className="flex items-center gap-2">
                   <Loader2 className="w-4 h-4 animate-spin text-primary" />
-                  <span className="font-medium">AI Processing Pipeline</span>
+                  <span className="font-medium">Thinking</span>
                 </div>
               </div>
               <div className="mt-4 space-y-2">
@@ -383,7 +383,7 @@ print(df)`,
                       >
                         <div className="flex items-center gap-2">
                           <Loader2 className="w-4 h-4 animate-spin text-primary" />
-                          <span className="font-medium">AI Processing Pipeline</span>
+                          <span className="font-medium">Thinking</span>
                         </div>
                         {expandedThinking === message.id ? (
                           <ChevronUp className="w-4 h-4" />

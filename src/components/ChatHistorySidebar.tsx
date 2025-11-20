@@ -71,7 +71,7 @@ export default function ChatHistorySidebar() {
         </Button>
 
         {/* Settings */}
-        <HoverCard openDelay={0} closeDelay={0}>
+        <HoverCard openDelay={0} closeDelay={300}>
           <HoverCardTrigger asChild>
             <Button variant="ghost" size="icon" className="shrink-0">
               <Settings className="w-5 h-5" />
@@ -105,7 +105,7 @@ export default function ChatHistorySidebar() {
         </HoverCard>
 
         {/* Instruction */}
-        <HoverCard openDelay={0} closeDelay={0}>
+        <HoverCard openDelay={0} closeDelay={300}>
           <HoverCardTrigger asChild>
             <Button variant="ghost" size="icon" className="shrink-0">
               <FileText className="w-5 h-5" />
@@ -130,7 +130,7 @@ export default function ChatHistorySidebar() {
         </HoverCard>
 
         {/* Project */}
-        <HoverCard openDelay={0} closeDelay={0}>
+        <HoverCard openDelay={0} closeDelay={300}>
           <HoverCardTrigger asChild>
             <Button variant="ghost" size="icon" className="shrink-0">
               <FolderKanban className="w-5 h-5" />
@@ -159,7 +159,7 @@ export default function ChatHistorySidebar() {
         </HoverCard>
 
         {/* Knowledge */}
-        <HoverCard openDelay={0} closeDelay={0}>
+        <HoverCard openDelay={0} closeDelay={300}>
           <HoverCardTrigger asChild>
             <Button variant="ghost" size="icon" className="shrink-0">
               <BookOpen className="w-5 h-5" />
@@ -178,7 +178,7 @@ export default function ChatHistorySidebar() {
         </HoverCard>
 
         {/* Rules */}
-        <HoverCard openDelay={0} closeDelay={0}>
+        <HoverCard openDelay={0} closeDelay={300}>
           <HoverCardTrigger asChild>
             <Button variant="ghost" size="icon" className="shrink-0">
               <Shield className="w-5 h-5" />
@@ -199,7 +199,7 @@ export default function ChatHistorySidebar() {
         <div className="w-8 h-px bg-border my-2" />
 
         {/* Chats */}
-        <HoverCard openDelay={0} closeDelay={0}>
+        <HoverCard openDelay={0} closeDelay={300}>
           <HoverCardTrigger asChild>
             <Button variant="ghost" size="icon" className="shrink-0">
               <MessageSquare className="w-5 h-5" />
