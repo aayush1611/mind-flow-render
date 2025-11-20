@@ -37,6 +37,7 @@ export const InstructionForm = ({
   onSave,
   onCancel,
 }: InstructionFormProps) => {
+  const isEditMode = !!initialData;
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<InstructionFormData>(
     initialData || {
@@ -88,6 +89,14 @@ export const InstructionForm = ({
   };
 
   const handleSave = () => {
+    if (!formData.heading.trim()) {
+      toast({
+        title: "Heading required",
+        description: "Please enter a heading for the instruction",
+        variant: "destructive",
+      });
+      return;
+    }
     if (formData.workflowSteps.some((s) => !s.content.trim())) {
       toast({
         title: "Empty workflow steps",
@@ -104,6 +113,136 @@ export const InstructionForm = ({
         : "Instruction created successfully",
     });
   };
+
+  // Edit mode - show all fields at once
+  if (isEditMode) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" onClick={onCancel}>
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <div className="flex-1">
+            <h2 className="text-2xl font-bold">Edit Instruction</h2>
+            <p className="text-sm text-muted-foreground">
+              Update instruction details and workflow steps
+            </p>
+          </div>
+        </div>
+
+        <Card className="p-6 space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="heading">Instruction Heading *</Label>
+            <Input
+              id="heading"
+              placeholder="Enter instruction heading"
+              value={formData.heading}
+              onChange={(e) =>
+                setFormData({ ...formData, heading: e.target.value })
+              }
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Status</Label>
+              <Select
+                value={formData.status}
+                onValueChange={(value: "active" | "inactive") =>
+                  setFormData({ ...formData, status: value })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="inactive">Inactive</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Priority</Label>
+              <Select
+                value={formData.priority}
+                onValueChange={(value: "high" | "medium" | "low") =>
+                  setFormData({ ...formData, priority: value })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="high">High</SelectItem>
+                  <SelectItem value="medium">Medium</SelectItem>
+                  <SelectItem value="low">Low</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </Card>
+
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <Label>Workflow Steps</Label>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={addWorkflowStep}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Step
+            </Button>
+          </div>
+
+          <div className="space-y-3">
+            {formData.workflowSteps.map((workflowStep, index) => (
+              <Card key={workflowStep.id} className="p-4">
+                <div className="flex gap-3 items-start">
+                  <GripVertical className="h-5 w-5 text-muted-foreground mt-2 flex-shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <Label className="text-sm text-muted-foreground">
+                      Step {index + 1}
+                    </Label>
+                    <Textarea
+                      placeholder="Describe this workflow step..."
+                      value={workflowStep.content}
+                      onChange={(e) =>
+                        updateWorkflowStep(workflowStep.id, e.target.value)
+                      }
+                      rows={3}
+                    />
+                  </div>
+                  {formData.workflowSteps.length > 1 && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removeWorkflowStep(workflowStep.id)}
+                      className="text-destructive hover:text-destructive"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex justify-between pt-4">
+          <Button variant="outline" onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button onClick={handleSave}>Update Instruction</Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Add mode - multi-stepper form
 
   return (
     <div className="space-y-6">
