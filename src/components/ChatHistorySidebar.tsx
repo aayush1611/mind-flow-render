@@ -27,13 +27,14 @@ interface Chat {
   timestamp: string;
   status: "streaming" | "completed" | "idle";
   unreadCount?: number;
+  isRead?: boolean;
 }
 
 const mockChats: Chat[] = [
-  { id: "1", title: "Q3 Marketing Strategy", timestamp: "2h ago", status: "completed" },
-  { id: "2", title: "Financial Projections 2024", timestamp: "5h ago", status: "completed" },
-  { id: "3", title: "Customer Support Automation", timestamp: "1d ago", status: "completed", unreadCount: 2 },
-  { id: "4", title: "Meeting Minutes - 07/15", timestamp: "2d ago", status: "idle" },
+  { id: "1", title: "Q3 Marketing Strategy", timestamp: "2h ago", status: "completed", isRead: false },
+  { id: "2", title: "Financial Projections 2024", timestamp: "5h ago", status: "completed", isRead: true },
+  { id: "3", title: "Customer Support Automation", timestamp: "1d ago", status: "completed", unreadCount: 2, isRead: false },
+  { id: "4", title: "Meeting Minutes - 07/15", timestamp: "2d ago", status: "idle", isRead: true },
 ];
 
 export default function ChatHistorySidebar() {
@@ -163,11 +164,6 @@ export default function ChatHistorySidebar() {
                     <Loader2 className="w-3 h-3 text-blue-500 animate-spin" />
                   </div>
                 )}
-                {chat.status === "completed" && selectedChatId !== chat.id && (
-                  <div className="absolute -top-1 -right-1 w-3 h-3">
-                    <CheckCircle2 className="w-3 h-3 text-green-500" />
-                  </div>
-                )}
               </div>
 
               <div className="flex-1 text-left min-w-0">
@@ -182,9 +178,13 @@ export default function ChatHistorySidebar() {
                 <p className="text-xs text-muted-foreground">{chat.timestamp}</p>
               </div>
 
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <MoreVertical className="w-4 h-4" />
-              </Button>
+              {chat.status === "completed" && !chat.isRead ? (
+                <CheckCircle2 className="w-5 h-5 text-green-500" />
+              ) : (
+                <Button variant="ghost" size="icon" className="h-8 w-8">
+                  <MoreVertical className="w-4 h-4" />
+                </Button>
+              )}
             </button>
           ))}
         </div>
