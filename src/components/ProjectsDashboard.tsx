@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Plus,
@@ -9,6 +10,10 @@ import {
   Folder,
   Database,
   ChevronDown,
+  Code,
+  Users,
+  FileText,
+  type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import CreateProjectWizard from "./CreateProjectWizard";
@@ -17,6 +22,8 @@ interface Project {
   id: string;
   name: string;
   description: string;
+  icon: LucideIcon;
+  role: "admin" | "member";
 }
 
 const mockProjects: Project[] = [
@@ -24,16 +31,22 @@ const mockProjects: Project[] = [
     id: "1",
     name: "AI Code Assistant Project Alpha",
     description: "Developing context-aware code suggestions using internal documentation databases.",
+    icon: Code,
+    role: "admin",
   },
   {
     id: "2",
     name: "Customer Data Platform Analysis",
     description: "Analyzing customer interaction logs stored in Azure DevOps for behavioral insights.",
+    icon: Database,
+    role: "member",
   },
   {
     id: "3",
     name: "Internal Documentation Q&A Bot",
     description: "Training the agent on internal PDF manuals and knowledge base articles.",
+    icon: FileText,
+    role: "admin",
   },
 ];
 
@@ -54,6 +67,8 @@ export default function ProjectsDashboard() {
       id: Date.now().toString(),
       name: projectData.name,
       description: projectData.description,
+      icon: Folder,
+      role: "admin",
     };
     setProjects([...projects, newProject]);
     setShowWizard(false);
@@ -160,6 +175,14 @@ export default function ProjectsDashboard() {
                       className="hover:shadow-hover transition-shadow cursor-pointer"
                     >
                       <CardHeader>
+                        <div className="flex items-start justify-between gap-3 mb-2">
+                          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center flex-shrink-0">
+                            <project.icon className="w-5 h-5 text-white" />
+                          </div>
+                          <Badge variant={project.role === "admin" ? "default" : "secondary"}>
+                            {project.role}
+                          </Badge>
+                        </div>
                         <CardTitle className="text-lg">{project.name}</CardTitle>
                         <CardDescription className="line-clamp-2">
                           {project.description}
