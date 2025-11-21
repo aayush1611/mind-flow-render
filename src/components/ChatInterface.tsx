@@ -225,14 +225,14 @@ print(df)`,
 
   return (
     <div className="flex-1 flex flex-col h-full">
-        <div className="flex-1 overflow-y-auto px-4 py-6">
+        <div className="flex-1 overflow-y-auto px-2 md:px-4 py-4 md:py-6">
           <div className="max-w-4xl mx-auto space-y-6">
           {messages.length === 0 && !isLoading && !showThinking && (
-            <div className="flex flex-col items-center justify-center min-h-[calc(100vh-12rem)] text-center">
-              <h2 className="text-3xl font-bold mb-8 text-foreground">Hey, there</h2>
+            <div className="flex flex-col items-center justify-center min-h-[calc(100vh-12rem)] text-center px-2">
+              <h2 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-foreground">Hey, there</h2>
 
               <div className="w-full max-w-2xl">
-                <div className="relative bg-card rounded-2xl shadow-lg border p-4">
+                <div className="relative bg-card rounded-2xl shadow-lg border p-3 md:p-4">
                   <Textarea
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
@@ -242,7 +242,7 @@ print(df)`,
                         ? `Ask Office Agent anything about ${selectedApp}...`
                         : "Ask Office Agent anything..."
                     }
-                    className="min-h-[80px] pr-44 resize-none border-0 focus-visible:ring-0 shadow-none"
+                    className="min-h-[60px] md:min-h-[80px] pr-24 md:pr-44 resize-none border-0 focus-visible:ring-0 shadow-none text-sm md:text-base"
                   />
 
                   {/* Hidden file input */}
@@ -256,12 +256,12 @@ print(df)`,
                   />
 
                   {/* Controls positioned at bottom right */}
-                  <div className="absolute bottom-4 right-4 flex items-center gap-2">
+                  <div className="absolute bottom-3 md:bottom-4 right-3 md:right-4 flex items-center gap-1 md:gap-2">
                     <Button
                       onClick={() => fileInputRef.current?.click()}
                       size="icon"
                       variant="ghost"
-                      className="rounded-full h-9 w-9"
+                      className="rounded-full h-8 w-8 md:h-9 md:w-9 hidden sm:flex"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
@@ -269,7 +269,7 @@ print(df)`,
                     </Button>
 
                     <Select value={selectedApp || "all"} onValueChange={(value) => setSelectedApp(value === "all" ? null : value)}>
-                      <SelectTrigger className="w-[140px] h-9">
+                      <SelectTrigger className="w-[100px] md:w-[140px] h-8 md:h-9 text-xs md:text-sm hidden sm:flex">
                         <SelectValue placeholder="All Apps" />
                       </SelectTrigger>
                       <SelectContent>
@@ -284,15 +284,15 @@ print(df)`,
                       onClick={() => handleSend()}
                       disabled={!input.trim()}
                       size="icon"
-                      className="rounded-full h-9 w-9"
+                      className="rounded-full h-8 w-8 md:h-9 md:w-9"
                     >
-                      <Send className="w-4 h-4" />
+                      <Send className="w-3.5 h-3.5 md:w-4 md:h-4" />
                     </Button>
                   </div>
                 </div>
 
                 {/* Suggestion Pills */}
-                <div className="mt-4 flex flex-wrap gap-2 justify-center max-w-3xl mx-auto">
+                <div className="mt-3 md:mt-4 flex flex-wrap gap-2 justify-center max-w-3xl mx-auto">
                   {currentSuggestions.map((pill) => (
                     <button
                       key={pill}
@@ -301,7 +301,7 @@ print(df)`,
                         handleSend(pill);
                       }}
                       className={cn(
-                        "px-4 py-2 rounded-full text-sm border transition-all",
+                        "px-3 md:px-4 py-1.5 md:py-2 rounded-full text-xs md:text-sm border transition-all",
                         selectedPill === pill
                           ? "bg-primary text-primary-foreground border-primary"
                           : "bg-card hover:bg-accent hover:text-accent-foreground border-border"
@@ -319,7 +319,7 @@ print(df)`,
             <div key={message.id} className="space-y-4">
               {message.role === "user" ? (
                 <div className="flex justify-end">
-                  <div className="bg-primary text-primary-foreground rounded-2xl px-4 py-3 max-w-[80%]">
+                  <div className="bg-primary text-primary-foreground rounded-2xl px-3 md:px-4 py-2 md:py-3 max-w-[85%] md:max-w-[80%]">
                     {message.selectedApp && (
                       <div className="text-xs mb-2 pb-2 border-b border-primary-foreground/20 flex items-center gap-1.5">
                         <span className="font-medium">
@@ -396,9 +396,9 @@ print(df)`,
                   )}
 
                   {(message.content || (message.attachments && message.attachments.length > 0)) && (
-                    <div className="bg-card rounded-2xl p-4 border shadow-sm">
+                    <div className="bg-card rounded-2xl p-3 md:p-4 border shadow-sm">
                       {message.content && (
-                        <p className="text-foreground">{message.content}</p>
+                        <p className="text-sm md:text-base text-foreground">{message.content}</p>
                       )}
 
                       {message.attachments && message.attachments.length > 0 && (
@@ -461,7 +461,7 @@ print(df)`,
 
                     {message.isComplete && (
                       <div className="mt-4 pt-4 border-t">
-                        <div className="flex items-center justify-between">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                           <div className="flex items-center gap-2">
                             <Sparkles className="w-4 h-4 text-green-500" />
                             <span className="text-sm font-medium text-green-600 dark:text-green-400">
@@ -521,19 +521,19 @@ print(df)`,
 
         {/* Input Area - Only shown when there are messages */}
         {messages.length > 0 && (
-          <div className="border-t bg-card p-4">
+          <div className="border-t bg-card p-2 md:p-4">
             <div className="max-w-4xl mx-auto">
-              <div className="relative bg-background rounded-2xl border p-4">
+              <div className="relative bg-background rounded-2xl border p-3 md:p-4">
                 <Textarea
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyPress}
                   placeholder="Ask a follow-up question..."
-                  className="min-h-[60px] pr-36 resize-none border-0 focus-visible:ring-0 shadow-none"
+                  className="min-h-[50px] md:min-h-[60px] pr-16 md:pr-36 resize-none border-0 focus-visible:ring-0 shadow-none text-sm md:text-base"
                 />
-                <div className="absolute bottom-4 right-4 flex items-center gap-2">
+                <div className="absolute bottom-3 md:bottom-4 right-3 md:right-4 flex items-center gap-1 md:gap-2">
                   <Select value={selectedApp || "all"} onValueChange={(value) => setSelectedApp(value === "all" ? null : value)}>
-                    <SelectTrigger className="w-[120px] h-9">
+                    <SelectTrigger className="w-[90px] md:w-[120px] h-8 md:h-9 text-xs md:text-sm hidden sm:flex">
                       <SelectValue placeholder="All Apps" />
                     </SelectTrigger>
                     <SelectContent>
@@ -547,9 +547,9 @@ print(df)`,
                     onClick={() => handleSend()}
                     disabled={!input.trim() || isLoading}
                     size="icon"
-                    className="rounded-full h-9 w-9"
+                    className="rounded-full h-8 w-8 md:h-9 md:w-9"
                   >
-                    <Send className="w-4 h-4" />
+                    <Send className="w-3.5 h-3.5 md:w-4 md:h-4" />
                   </Button>
                 </div>
               </div>
