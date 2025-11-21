@@ -9,7 +9,6 @@ import ProjectDetailView from "@/components/ProjectDetailView";
 import KnowledgeDashboard from "@/components/KnowledgeDashboard";
 import KnowledgeDetailView from "@/components/KnowledgeDetailView";
 import RulesDashboard from "@/components/RulesDashboard";
-import RulesDetailView from "@/components/RulesDetailView";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -17,7 +16,6 @@ const Index = () => {
   const [activeTab, setActiveTab] = useState("chat");
   const isProjectDetailView = location.pathname.match(/^\/projects\/[^/]+$/);
   const isKnowledgeDetailView = location.pathname.match(/^\/knowledge\/[^/]+$/);
-  const isRulesDetailView = location.pathname.match(/^\/rules\/[^/]+$/);
 
   useEffect(() => {
     if (location.pathname === "/projects" || location.pathname.startsWith("/projects/")) {
@@ -26,7 +24,7 @@ const Index = () => {
       setActiveTab("instructions");
     } else if (location.pathname === "/knowledge" || location.pathname.startsWith("/knowledge/")) {
       setActiveTab("knowledge");
-    } else if (location.pathname === "/rules" || location.pathname.startsWith("/rules/")) {
+    } else if (location.pathname === "/rules") {
       setActiveTab("rules");
     } else {
       setActiveTab("chat");
@@ -54,9 +52,6 @@ const Index = () => {
   }
   if (isKnowledgeDetailView) {
     return <KnowledgeDetailView />;
-  }
-  if (isRulesDetailView) {
-    return <RulesDetailView />;
   }
 
   return (
