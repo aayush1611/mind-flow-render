@@ -172,6 +172,14 @@ const Mcp = () => {
                         {server.active ? "Active" : "Inactive"}
                       </Badge>
                     </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full mt-2"
+                      onClick={() => handleTestConnection()}
+                    >
+                      Test Connection
+                    </Button>
                   </CardContent>
                 </Card>
               ))}
