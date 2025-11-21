@@ -79,6 +79,33 @@ const suggestionsByApp = {
   ]
 };
 
+const suggestionsByModule = {
+  "project-alpha": [
+    "Show me the latest updates in Project Alpha",
+    "What are the pending tasks?",
+    "Generate a project status report",
+    "Who are the team members?"
+  ],
+  "knowledge-base": [
+    "Search for documentation about APIs",
+    "What are the best practices for security?",
+    "Find tutorials on database optimization",
+    "Summarize the onboarding guide"
+  ],
+  "rules-engine": [
+    "What rules are currently active?",
+    "Explain the validation rules",
+    "Show me the approval workflow",
+    "Which rules apply to new users?"
+  ],
+  "mcp-server-1": [
+    "Test the database connection",
+    "List all available API endpoints",
+    "Show me the authentication flow",
+    "What tools are available?"
+  ]
+};
+
 const mockModules = [
   { id: "project-alpha", name: "Project Alpha", type: "Project" },
   { id: "knowledge-base", name: "Knowledge Base", type: "Knowledge" },
@@ -99,7 +126,9 @@ export default function ChatInterface() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const currentSuggestions = selectedApp
+  const currentSuggestions = selectedModule
+    ? suggestionsByModule[selectedModule as keyof typeof suggestionsByModule] || suggestionsByApp.default
+    : selectedApp
     ? suggestionsByApp[selectedApp as keyof typeof suggestionsByApp]
     : suggestionsByApp.default;
 
