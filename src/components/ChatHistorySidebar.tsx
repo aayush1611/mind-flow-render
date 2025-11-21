@@ -52,6 +52,7 @@ export default function ChatHistorySidebar() {
   const [selectedChatId, setSelectedChatId] = useState("3");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedOrg, setSelectedOrg] = useState("Acme Corp");
+  const [openPopup, setOpenPopup] = useState<string | null>(null);
 
   const filteredChats = mockChats.filter((chat) =>
     chat.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -60,7 +61,10 @@ export default function ChatHistorySidebar() {
   const organizations = ["Acme Corp", "Tech Industries", "Global Solutions"];
 
   return (
-    <aside className="bg-card border-r flex flex-col h-screen w-16 items-center py-4 gap-4">
+    <aside 
+      className="bg-card border-r flex flex-col h-screen w-16 items-center py-4 gap-4"
+      onMouseLeave={() => setOpenPopup(null)}
+    >
         {/* New Chat */}
         <Button
           size="icon"
@@ -71,9 +75,14 @@ export default function ChatHistorySidebar() {
         </Button>
 
         {/* Settings */}
-        <HoverCard openDelay={0} closeDelay={300}>
+        <HoverCard open={openPopup === 'settings'} onOpenChange={(open) => !open && setOpenPopup(null)}>
           <HoverCardTrigger asChild>
-            <Button variant="ghost" size="icon" className="shrink-0">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="shrink-0"
+              onMouseEnter={() => setOpenPopup('settings')}
+            >
               <Settings className="w-5 h-5" />
             </Button>
           </HoverCardTrigger>
@@ -105,9 +114,14 @@ export default function ChatHistorySidebar() {
         </HoverCard>
 
         {/* Instruction */}
-        <HoverCard openDelay={0} closeDelay={300}>
+        <HoverCard open={openPopup === 'instruction'} onOpenChange={(open) => !open && setOpenPopup(null)}>
           <HoverCardTrigger asChild>
-            <Button variant="ghost" size="icon" className="shrink-0">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="shrink-0"
+              onMouseEnter={() => setOpenPopup('instruction')}
+            >
               <FileText className="w-5 h-5" />
             </Button>
           </HoverCardTrigger>
@@ -130,9 +144,14 @@ export default function ChatHistorySidebar() {
         </HoverCard>
 
         {/* Project */}
-        <HoverCard openDelay={0} closeDelay={300}>
+        <HoverCard open={openPopup === 'project'} onOpenChange={(open) => !open && setOpenPopup(null)}>
           <HoverCardTrigger asChild>
-            <Button variant="ghost" size="icon" className="shrink-0">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="shrink-0"
+              onMouseEnter={() => setOpenPopup('project')}
+            >
               <FolderKanban className="w-5 h-5" />
             </Button>
           </HoverCardTrigger>
@@ -159,9 +178,14 @@ export default function ChatHistorySidebar() {
         </HoverCard>
 
         {/* Knowledge */}
-        <HoverCard openDelay={0} closeDelay={300}>
+        <HoverCard open={openPopup === 'knowledge'} onOpenChange={(open) => !open && setOpenPopup(null)}>
           <HoverCardTrigger asChild>
-            <Button variant="ghost" size="icon" className="shrink-0">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="shrink-0"
+              onMouseEnter={() => setOpenPopup('knowledge')}
+            >
               <BookOpen className="w-5 h-5" />
             </Button>
           </HoverCardTrigger>
@@ -178,9 +202,14 @@ export default function ChatHistorySidebar() {
         </HoverCard>
 
         {/* Rules */}
-        <HoverCard openDelay={0} closeDelay={300}>
+        <HoverCard open={openPopup === 'rules'} onOpenChange={(open) => !open && setOpenPopup(null)}>
           <HoverCardTrigger asChild>
-            <Button variant="ghost" size="icon" className="shrink-0">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="shrink-0"
+              onMouseEnter={() => setOpenPopup('rules')}
+            >
               <Shield className="w-5 h-5" />
             </Button>
           </HoverCardTrigger>
@@ -199,9 +228,14 @@ export default function ChatHistorySidebar() {
         <div className="w-8 h-px bg-border my-2" />
 
         {/* Chats */}
-        <HoverCard openDelay={0} closeDelay={300}>
+        <HoverCard open={openPopup === 'chats'} onOpenChange={(open) => !open && setOpenPopup(null)}>
           <HoverCardTrigger asChild>
-            <Button variant="ghost" size="icon" className="shrink-0">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="shrink-0"
+              onMouseEnter={() => setOpenPopup('chats')}
+            >
               <MessageSquare className="w-5 h-5" />
             </Button>
           </HoverCardTrigger>
