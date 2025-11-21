@@ -17,7 +17,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import CreateProjectWizard from "./CreateProjectWizard";
+import CreateProjectForm from "./CreateProjectForm";
 
 interface Project {
   id: string;
@@ -81,7 +81,7 @@ export default function ProjectsDashboard() {
     <div className="h-full bg-background overflow-auto">
       {viewMode === "wizard" ? (
         <div className="container mx-auto px-6 py-8">
-          <CreateProjectWizard
+          <CreateProjectForm
             onClose={() => setViewMode("list")}
             onComplete={handleCreateProject}
           />
@@ -89,7 +89,7 @@ export default function ProjectsDashboard() {
       ) : (
         <>
           {showWizard && (
-            <CreateProjectWizard
+            <CreateProjectForm
               onClose={() => setShowWizard(false)}
               onComplete={handleCreateProject}
             />
