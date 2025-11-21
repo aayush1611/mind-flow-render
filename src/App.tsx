@@ -26,8 +26,8 @@ const App = () => (
             <Route path="/knowledge" element={<Index />} />
             <Route path="/knowledge/:id" element={<Index />} />
             <Route path="/rules" element={<Index />} />
+            <Route path="/mcp" element={<Index />} />
             <Route path="/memories" element={<Memories />} />
-            <Route path="/mcp" element={<Mcp />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
