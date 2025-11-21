@@ -2,7 +2,11 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Send, Loader2, ChevronDown, ChevronUp, Download, FileCode, BarChart3, Star, Sparkles } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Send, Loader2, ChevronDown, ChevronUp, Download, FileCode, BarChart3, Star, Sparkles, Puzzle, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ReactECharts from "echarts-for-react";
 
@@ -75,6 +79,13 @@ const suggestionsByApp = {
   ]
 };
 
+const mockModules = [
+  { id: "project-alpha", name: "Project Alpha", type: "Project" },
+  { id: "knowledge-base", name: "Knowledge Base", type: "Knowledge" },
+  { id: "rules-engine", name: "Rules Engine", type: "Rules" },
+  { id: "mcp-server-1", name: "Production API", type: "MCP" },
+];
+
 export default function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -83,6 +94,8 @@ export default function ChatInterface() {
   const [showThinking, setShowThinking] = useState(false);
   const [selectedPill, setSelectedPill] = useState<string | null>(null);
   const [selectedApp, setSelectedApp] = useState<string | null>(null);
+  const [selectedModule, setSelectedModule] = useState<string | null>(null);
+  const [isModulePopoverOpen, setIsModulePopoverOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -255,6 +268,25 @@ print(df)`,
                     }}
                   />
 
+                  {/* Module pill at bottom left */}
+                  {selectedModule && (
+                    <div className="absolute bottom-3 md:bottom-4 left-3 md:left-4">
+                      <Badge variant="secondary" className="flex items-center gap-1.5 pr-1">
+                        <span className="text-xs">
+                          {mockModules.find(m => m.id === selectedModule)?.name}
+                        </span>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="h-4 w-4 rounded-full hover:bg-destructive hover:text-destructive-foreground p-0"
+                          onClick={() => setSelectedModule(null)}
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </Badge>
+                    </div>
+                  )}
+
                   {/* Controls positioned at bottom right */}
                   <div className="absolute bottom-3 md:bottom-4 right-3 md:right-4 flex items-center gap-1 md:gap-2">
                     <Button
@@ -268,11 +300,72 @@ print(df)`,
                       </svg>
                     </Button>
 
+                    <Popover open={isModulePopoverOpen} onOpenChange={setIsModulePopoverOpen}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          className="rounded-full h-8 w-8 md:h-9 md:w-9 hidden sm:flex"
+                        >
+                          <Puzzle className="w-4 h-4" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-80 bg-popover z-50" align="end" side="top">
+                        <div className="space-y-4">
+                          <div>
+                            <h4 className="font-semibold text-sm mb-1">Select Integration</h4>
+                            <p className="text-xs text-muted-foreground">
+                              Choose a module to integrate with your query
+                            </p>
+                          </div>
+                          <RadioGroup value={selectedModule || ""} onValueChange={setSelectedModule}>
+                            <div className="space-y-3">
+                              {mockModules.map((module) => (
+                                <div key={module.id} className="flex items-center space-x-2">
+                                  <RadioGroupItem value={module.id} id={module.id} />
+                                  <Label
+                                    htmlFor={module.id}
+                                    className="flex-1 cursor-pointer flex items-center justify-between"
+                                  >
+                                    <span className="text-sm">{module.name}</span>
+                                    <Badge variant="outline" className="text-xs">
+                                      {module.type}
+                                    </Badge>
+                                  </Label>
+                                </div>
+                              ))}
+                            </div>
+                          </RadioGroup>
+                          <div className="flex gap-2 pt-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="flex-1"
+                              onClick={() => {
+                                setSelectedModule(null);
+                                setIsModulePopoverOpen(false);
+                              }}
+                            >
+                              Reset
+                            </Button>
+                            <Button
+                              size="sm"
+                              className="flex-1"
+                              onClick={() => setIsModulePopoverOpen(false)}
+                              disabled={!selectedModule}
+                            >
+                              Apply
+                            </Button>
+                          </div>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+
                     <Select value={selectedApp || "all"} onValueChange={(value) => setSelectedApp(value === "all" ? null : value)}>
                       <SelectTrigger className="w-[100px] md:w-[140px] h-8 md:h-9 text-xs md:text-sm hidden sm:flex">
                         <SelectValue placeholder="All Apps" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-popover z-50">
                         <SelectItem value="all">All Apps</SelectItem>
                         <SelectItem value="powerpoint">🎨 PowerPoint</SelectItem>
                         <SelectItem value="word">📄 Word</SelectItem>
@@ -531,12 +624,93 @@ print(df)`,
                   placeholder="Ask a follow-up question..."
                   className="min-h-[50px] md:min-h-[60px] pr-16 md:pr-36 resize-none border-0 focus-visible:ring-0 shadow-none text-sm md:text-base"
                 />
+
+                {/* Module pill at bottom left */}
+                {selectedModule && (
+                  <div className="absolute bottom-3 md:bottom-4 left-3 md:left-4">
+                    <Badge variant="secondary" className="flex items-center gap-1.5 pr-1">
+                      <span className="text-xs">
+                        {mockModules.find(m => m.id === selectedModule)?.name}
+                      </span>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-4 w-4 rounded-full hover:bg-destructive hover:text-destructive-foreground p-0"
+                        onClick={() => setSelectedModule(null)}
+                      >
+                        <X className="h-3 w-3" />
+                      </Button>
+                    </Badge>
+                  </div>
+                )}
+
                 <div className="absolute bottom-3 md:bottom-4 right-3 md:right-4 flex items-center gap-1 md:gap-2">
+                  <Popover open={isModulePopoverOpen} onOpenChange={setIsModulePopoverOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="rounded-full h-8 w-8 md:h-9 md:w-9 hidden sm:flex"
+                      >
+                        <Puzzle className="w-4 h-4" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-80 bg-popover z-50" align="end" side="top">
+                      <div className="space-y-4">
+                        <div>
+                          <h4 className="font-semibold text-sm mb-1">Select Integration</h4>
+                          <p className="text-xs text-muted-foreground">
+                            Choose a module to integrate with your query
+                          </p>
+                        </div>
+                        <RadioGroup value={selectedModule || ""} onValueChange={setSelectedModule}>
+                          <div className="space-y-3">
+                            {mockModules.map((module) => (
+                              <div key={module.id} className="flex items-center space-x-2">
+                                <RadioGroupItem value={module.id} id={`follow-${module.id}`} />
+                                <Label
+                                  htmlFor={`follow-${module.id}`}
+                                  className="flex-1 cursor-pointer flex items-center justify-between"
+                                >
+                                  <span className="text-sm">{module.name}</span>
+                                  <Badge variant="outline" className="text-xs">
+                                    {module.type}
+                                  </Badge>
+                                </Label>
+                              </div>
+                            ))}
+                          </div>
+                        </RadioGroup>
+                        <div className="flex gap-2 pt-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="flex-1"
+                            onClick={() => {
+                              setSelectedModule(null);
+                              setIsModulePopoverOpen(false);
+                            }}
+                          >
+                            Reset
+                          </Button>
+                          <Button
+                            size="sm"
+                            className="flex-1"
+                            onClick={() => setIsModulePopoverOpen(false)}
+                            disabled={!selectedModule}
+                          >
+                            Apply
+                          </Button>
+                        </div>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+
                   <Select value={selectedApp || "all"} onValueChange={(value) => setSelectedApp(value === "all" ? null : value)}>
                     <SelectTrigger className="w-[90px] md:w-[120px] h-8 md:h-9 text-xs md:text-sm hidden sm:flex">
                       <SelectValue placeholder="All Apps" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-popover z-50">
                       <SelectItem value="all">All Apps</SelectItem>
                       <SelectItem value="powerpoint">🎨 PPT</SelectItem>
                       <SelectItem value="word">📄 Word</SelectItem>
