@@ -5,11 +5,13 @@ import ProjectsDashboard from "@/components/ProjectsDashboard";
 import { InstructionManagement } from "@/components/InstructionManagement";
 import TopNavigation from "@/components/TopNavigation";
 import ChatHistorySidebar from "@/components/ChatHistorySidebar";
+import ProjectDetailView from "@/components/ProjectDetailView";
 
 const Index = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState("chat");
+  const isProjectDetailView = location.pathname.match(/^\/projects\/[^/]+$/);
 
   useEffect(() => {
     if (location.pathname === "/projects" || location.pathname.startsWith("/projects/")) {
@@ -31,6 +33,11 @@ const Index = () => {
       navigate("/");
     }
   };
+
+  // If viewing a specific project detail, render ProjectDetailView without sidebar
+  if (isProjectDetailView) {
+    return <ProjectDetailView />;
+  }
 
   return (
     <div className="h-screen bg-background">
