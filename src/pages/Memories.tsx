@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -17,6 +18,7 @@ import {
 import { Trash2, Brain } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import TopNavigation from "@/components/TopNavigation";
 
 interface Memory {
   id: string;
@@ -24,12 +26,31 @@ interface Memory {
 }
 
 export default function Memories() {
+  const navigate = useNavigate();
   const [memoriesEnabled, setMemoriesEnabled] = useState(true);
   const [memories, setMemories] = useState<Memory[]>([
     { id: "mem_001", content: "User prefers dark mode for better readability" },
     { id: "mem_002", content: "User is working on a React project with TypeScript" },
     { id: "mem_003", content: "User prefers concise responses without verbose explanations" },
   ]);
+
+  const handleTabChange = (tab: string) => {
+    if (tab === "projects") {
+      navigate("/projects");
+    } else if (tab === "instructions") {
+      navigate("/instructions");
+    } else if (tab === "knowledge") {
+      navigate("/knowledge");
+    } else if (tab === "rules") {
+      navigate("/rules");
+    } else if (tab === "mcp") {
+      navigate("/mcp");
+    } else if (tab === "memories") {
+      navigate("/memories");
+    } else {
+      navigate("/");
+    }
+  };
 
   const handleToggleMemories = () => {
     setMemoriesEnabled(!memoriesEnabled);
@@ -42,8 +63,9 @@ export default function Memories() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto p-6 max-w-4xl">
+    <div className="min-h-screen bg-background flex flex-col">
+      <TopNavigation activeTab="memories" onTabChange={handleTabChange} />
+      <div className="container mx-auto p-6 max-w-4xl flex-1">
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <Brain className="w-8 h-8 text-primary" />
