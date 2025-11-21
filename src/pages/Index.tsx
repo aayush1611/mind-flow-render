@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MessageSquare, FolderKanban, FileText } from "lucide-react";
 import ChatInterface from "@/components/ChatInterface";
 import ProjectsDashboard from "@/components/ProjectsDashboard";
 import { InstructionManagement } from "@/components/InstructionManagement";
+import TopNavigation from "@/components/TopNavigation";
+import ChatHistorySidebar from "@/components/ChatHistorySidebar";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -33,10 +33,16 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {activeTab === "chat" && <ChatInterface />}
-      {activeTab === "projects" && <ProjectsDashboard />}
-      {activeTab === "instructions" && <InstructionManagement />}
+    <div className="flex h-screen bg-background">
+      <ChatHistorySidebar />
+      <div className="flex-1 flex flex-col min-w-0">
+        <TopNavigation activeTab={activeTab} onTabChange={handleTabChange} />
+        <div className="flex-1 overflow-auto">
+          {activeTab === "chat" && <ChatInterface />}
+          {activeTab === "projects" && <ProjectsDashboard />}
+          {activeTab === "instructions" && <InstructionManagement />}
+        </div>
+      </div>
     </div>
   );
 };

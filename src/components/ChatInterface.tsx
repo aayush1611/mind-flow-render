@@ -5,7 +5,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Send, Loader2, ChevronDown, ChevronUp, Download, FileCode, BarChart3 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ReactECharts from "echarts-for-react";
-import ChatHistorySidebar from "@/components/ChatHistorySidebar";
 
 interface Message {
   id: string;
@@ -223,12 +222,7 @@ print(df)`,
   };
 
   return (
-    <div className="flex h-screen bg-background">
-      {/* Chat History Sidebar */}
-      <ChatHistorySidebar />
-
-      {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col">
+    <div className="flex-1 flex flex-col h-full">
         <div className="flex-1 overflow-y-auto px-4 py-6">
           <div className="max-w-4xl mx-auto space-y-6">
           {messages.length === 0 && !isLoading && !showThinking && (
@@ -554,7 +548,6 @@ print(df)`,
             </div>
           </div>
         )}
-      </div>
     </div>
   );
 }
