@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Trash2, Brain } from "lucide-react";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 interface Memory {
   id: string;
@@ -43,7 +44,7 @@ export default function Memories() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto p-6 max-w-4xl">
-        <div className="mb-6">
+        <div className="mb-8">
           <div className="flex items-center gap-3 mb-2">
             <Brain className="w-8 h-8 text-primary" />
             <h1 className="text-3xl font-bold text-foreground">Memories</h1>
@@ -53,55 +54,47 @@ export default function Memories() {
           </p>
         </div>
 
-        <Card className="mb-6">
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="memories-toggle" className="text-base font-medium cursor-pointer">
-                  Memory System
-                </Label>
-                <p className="text-sm text-muted-foreground">
-                  {memoriesEnabled ? "Memories are active and being used" : "Memories are currently disabled"}
-                </p>
-              </div>
-              <Switch
-                id="memories-toggle"
-                checked={memoriesEnabled}
-                onCheckedChange={handleToggleMemories}
-              />
-            </div>
-          </CardContent>
-        </Card>
-
         {memories.length > 0 && (
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">All Memories ({memories.length})</h2>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="gap-2 text-destructive hover:text-destructive"
-                >
-                  <Trash2 className="w-4 h-4" />
-                  Delete All
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete all your stored memories and conversation context.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleDeleteAll} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <Label htmlFor="memories-toggle" className="text-sm font-medium cursor-pointer">
+                  {memoriesEnabled ? "Enabled" : "Disabled"}
+                </Label>
+                <Switch
+                  id="memories-toggle"
+                  checked={memoriesEnabled}
+                  onCheckedChange={handleToggleMemories}
+                />
+              </div>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-2 text-destructive hover:text-destructive"
+                  >
+                    <Trash2 className="w-4 h-4" />
                     Delete All
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete all your stored memories and conversation context.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleDeleteAll} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                      Delete All
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
           </div>
         )}
 
@@ -117,7 +110,7 @@ export default function Memories() {
         ) : (
           <div className="space-y-4">
             {memories.map((memory) => (
-              <Card key={memory.id}>
+              <Card key={memory.id} className={cn(!memoriesEnabled && "opacity-50 pointer-events-none")}>
                 <CardHeader>
                   <CardTitle className="text-sm font-mono text-muted-foreground mb-2">
                     {memory.id}
