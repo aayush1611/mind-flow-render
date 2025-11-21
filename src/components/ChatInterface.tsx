@@ -393,10 +393,13 @@ print(df)`,
                     </div>
                   )}
 
-                  <div className="bg-card rounded-2xl p-4 border shadow-sm">
-                    <p className="text-foreground">{message.content}</p>
+                  {(message.content || (message.attachments && message.attachments.length > 0)) && (
+                    <div className="bg-card rounded-2xl p-4 border shadow-sm">
+                      {message.content && (
+                        <p className="text-foreground">{message.content}</p>
+                      )}
 
-                    {message.attachments && message.attachments.length > 0 && (
+                      {message.attachments && message.attachments.length > 0 && (
                       <div className="mt-4 space-y-3">
                           {message.attachments.map((attachment, idx) => (
                           <div key={idx}>
@@ -470,6 +473,7 @@ print(df)`,
                       </div>
                     )}
                   </div>
+                  )}
                 </div>
               )}
             </div>
