@@ -382,6 +382,13 @@ const Mcp = () => {
                   </Button>
                 </div>
 
+                <div className="pb-4 border-b">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Total Tools</span>
+                    <Badge variant="outline">{mockTools.length}</Badge>
+                  </div>
+                </div>
+
                 <div className="space-y-3">
                   {mockTools.map((tool) => (
                     <Card key={tool.id} className="hover:shadow-md transition-shadow">
@@ -402,13 +409,6 @@ const Mcp = () => {
                       </CardContent>
                     </Card>
                   ))}
-                </div>
-
-                <div className="pt-4 border-t">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Total Tools</span>
-                    <Badge variant="outline">{mockTools.length}</Badge>
-                  </div>
                 </div>
               </div>
             </div>
