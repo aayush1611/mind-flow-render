@@ -31,6 +31,7 @@ import {
   ChevronDown,
   Sun,
   Moon,
+  Trash2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -50,6 +51,12 @@ const mockChats: Chat[] = [
   { id: "4", title: "Meeting Minutes - 07/15", timestamp: "2d ago", status: "idle", isRead: true },
 ];
 
+const mockProjects = [
+  { id: "1", name: "Project Alpha", role: "admin" as const },
+  { id: "2", name: "Project Beta", role: "member" as const },
+  { id: "3", name: "Project Gamma", role: "admin" as const },
+];
+
 export default function ChatHistorySidebar() {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
@@ -57,12 +64,18 @@ export default function ChatHistorySidebar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedOrg, setSelectedOrg] = useState("Acme Corp");
   const [openPopup, setOpenPopup] = useState<string | null>(null);
+  const [projects, setProjects] = useState(mockProjects);
 
   const filteredChats = mockChats.filter((chat) =>
     chat.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const organizations = ["Acme Corp", "Tech Industries", "Global Solutions"];
+
+  const handleDeleteProject = (projectId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setProjects(projects.filter(p => p.id !== projectId));
+  };
 
   const renderPopupContent = () => {
     switch (openPopup) {
@@ -117,15 +130,30 @@ export default function ChatHistorySidebar() {
             </div>
             <div className="flex-1 overflow-y-auto p-2">
               <div className="flex flex-col gap-1">
-                <Button variant="ghost" className="justify-start text-sm" onClick={() => navigate("/projects/1")}>
-                  Project Alpha
-                </Button>
-                <Button variant="ghost" className="justify-start text-sm" onClick={() => navigate("/projects/2")}>
-                  Project Beta
-                </Button>
-                <Button variant="ghost" className="justify-start text-sm" onClick={() => navigate("/projects/3")}>
-                  Project Gamma
-                </Button>
+                {projects.map((project) => (
+                  <div 
+                    key={project.id}
+                    className="group flex items-center gap-2 hover:bg-accent rounded-md transition-colors"
+                  >
+                    <Button 
+                      variant="ghost" 
+                      className="flex-1 justify-start text-sm"
+                      onClick={() => navigate(`/projects/${project.id}`)}
+                    >
+                      {project.name}
+                    </Button>
+                    {project.role === "admin" && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity text-destructive hover:text-destructive"
+                        onClick={(e) => handleDeleteProject(project.id, e)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           </div>
