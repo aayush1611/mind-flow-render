@@ -187,7 +187,8 @@ export default function RulesDashboard() {
                               variant="outline"
                               size="sm"
                               className="flex-1"
-                              onClick={() => {
+                              onClick={(e) => {
+                                e.stopPropagation();
                                 console.log("Edit rule:", rule.id);
                               }}
                             >
@@ -196,7 +197,8 @@ export default function RulesDashboard() {
                             <Button
                               variant="destructive"
                               size="sm"
-                              onClick={() => {
+                              onClick={(e) => {
+                                e.stopPropagation();
                                 setRules(rules.filter(r => r.id !== rule.id));
                               }}
                             >
