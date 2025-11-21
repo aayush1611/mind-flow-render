@@ -7,6 +7,7 @@ import { ThemeProvider } from "next-themes";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Memories from "./pages/Memories";
+import Mcp from "./pages/Mcp";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ const App = () => (
             <Route path="/knowledge/:id" element={<Index />} />
             <Route path="/rules" element={<Index />} />
             <Route path="/memories" element={<Memories />} />
+            <Route path="/mcp" element={<Mcp />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

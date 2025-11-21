@@ -32,6 +32,7 @@ import {
   Sun,
   Moon,
   Trash2,
+  Network,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -196,6 +197,23 @@ export default function ChatHistorySidebar({ isMobileExpanded = false }: ChatHis
             </div>
           </div>
         );
+      case 'mcp':
+        return (
+          <div className="h-full flex flex-col">
+            <div className="p-3 border-b">
+              <h3 className="font-semibold text-sm">MCP Servers</h3>
+            </div>
+            <div className="flex-1 overflow-y-auto p-2">
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-sm"
+                onClick={() => navigate("/mcp")}
+              >
+                Manage MCP Servers
+              </Button>
+            </div>
+          </div>
+        );
       case 'chats':
         return (
           <div className="h-full flex flex-col">
@@ -323,6 +341,18 @@ export default function ChatHistorySidebar({ isMobileExpanded = false }: ChatHis
         >
           <Shield className="w-5 h-5" />
           {isMobileExpanded && <span className="ml-2">Rules</span>}
+        </Button>
+
+        {/* MCP */}
+        <Button 
+          variant="ghost" 
+          size={isMobileExpanded ? "default" : "icon"}
+          className={cn("shrink-0", isMobileExpanded && "w-full justify-start")}
+          onMouseEnter={() => !isMobileExpanded && setOpenPopup('mcp')}
+          onClick={() => navigate('/mcp')}
+        >
+          <Network className="w-5 h-5" />
+          {isMobileExpanded && <span className="ml-2">MCP</span>}
         </Button>
 
         <div className={cn("bg-border my-2", isMobileExpanded ? "w-full h-px" : "w-8 h-px")} />
