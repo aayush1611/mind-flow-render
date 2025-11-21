@@ -277,7 +277,10 @@ export default function ChatHistorySidebar({ isMobileExpanded = false }: ChatHis
         <Button
           size={isMobileExpanded ? "default" : "icon"}
           className={cn("shrink-0", isMobileExpanded && "w-full justify-start")}
-          onClick={() => setSelectedChatId("")}
+          onClick={() => {
+            setSelectedChatId("");
+            navigate("/");
+          }}
         >
           <Plus className="w-5 h-5" />
           {isMobileExpanded && <span className="ml-2">New Chat</span>}
