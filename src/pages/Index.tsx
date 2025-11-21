@@ -9,11 +9,14 @@ import ProjectDetailView from "@/components/ProjectDetailView";
 import KnowledgeDashboard from "@/components/KnowledgeDashboard";
 import KnowledgeDetailView from "@/components/KnowledgeDetailView";
 import RulesDashboard from "@/components/RulesDashboard";
+import { Button } from "@/components/ui/button";
+import { Menu, X } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState("chat");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isProjectDetailView = location.pathname.match(/^\/projects\/[^/]+$/);
   const isKnowledgeDetailView = location.pathname.match(/^\/knowledge\/[^/]+$/);
 
@@ -57,10 +60,35 @@ const Index = () => {
   return (
     <div className="h-screen bg-background">
       {activeTab === "chat" ? (
-        <div className="flex h-full">
-          <div className="hidden md:block">
+        <div className="flex h-full relative">
+          {/* Mobile hamburger button */}
+          <Button
+            size="icon"
+            variant="ghost"
+            className="md:hidden fixed top-4 left-4 z-50"
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          >
+            {isSidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </Button>
+
+          {/* Backdrop for mobile */}
+          {isSidebarOpen && (
+            <div 
+              className="md:hidden fixed inset-0 bg-black/50 z-40"
+              onClick={() => setIsSidebarOpen(false)}
+            />
+          )}
+
+          {/* Sidebar */}
+          <div className={`
+            fixed md:relative inset-y-0 left-0 z-40
+            transition-transform duration-300 ease-in-out
+            ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+            md:translate-x-0
+          `}>
             <ChatHistorySidebar />
           </div>
+
           <div className="flex-1 overflow-auto">
             <ChatInterface />
           </div>
