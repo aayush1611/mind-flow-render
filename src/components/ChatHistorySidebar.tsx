@@ -201,10 +201,12 @@ export default function ChatHistorySidebar() {
   };
 
   return (
-    <div className="relative flex">
+    <div 
+      className="relative flex"
+      onMouseLeave={() => setOpenPopup(null)}
+    >
       <aside 
         className="bg-card border-r flex flex-col h-screen w-16 items-center py-4 gap-4"
-        onMouseLeave={() => setOpenPopup(null)}
       >
         {/* New Chat */}
         <Button
@@ -341,7 +343,6 @@ export default function ChatHistorySidebar() {
             "fixed left-16 top-0 h-screen bg-popover border-r shadow-md z-50",
             openPopup === 'chats' ? "w-80" : "w-64"
           )}
-          onMouseLeave={() => setOpenPopup(null)}
         >
           {renderPopupContent()}
         </div>
