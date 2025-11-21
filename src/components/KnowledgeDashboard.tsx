@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Plus,
   Search,
@@ -106,16 +105,8 @@ export default function KnowledgeDashboard() {
           )}
 
           <main className="container mx-auto px-6 py-8">
-            <Tabs defaultValue="sources" className="space-y-6">
-              <TabsList>
-                <TabsTrigger value="sources">
-                  <BookOpen className="w-4 h-4 mr-2" />
-                  Knowledge Sources
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="sources" className="space-y-6">
-                <div className="flex items-center justify-between gap-4">
+            <div className="space-y-6">
+              <div className="flex items-center justify-between gap-4">
                   <div className="relative flex-1 max-w-md">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input
@@ -187,8 +178,7 @@ export default function KnowledgeDashboard() {
                     </div>
                   </div>
                 )}
-              </TabsContent>
-            </Tabs>
+              </div>
           </main>
         </>
       )}
