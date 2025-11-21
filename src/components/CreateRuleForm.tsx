@@ -7,11 +7,12 @@ import { X, Shield } from "lucide-react";
 interface CreateRuleFormProps {
   onClose: () => void;
   onComplete: (ruleData: { name: string; description: string }) => void;
+  initialData?: { name: string; description: string };
 }
 
-export default function CreateRuleForm({ onClose, onComplete }: CreateRuleFormProps) {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
+export default function CreateRuleForm({ onClose, onComplete, initialData }: CreateRuleFormProps) {
+  const [name, setName] = useState(initialData?.name || "");
+  const [description, setDescription] = useState(initialData?.description || "");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,9 +26,11 @@ export default function CreateRuleForm({ onClose, onComplete }: CreateRuleFormPr
       <div className="bg-background border rounded-2xl shadow-elegant max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <form onSubmit={handleSubmit} className="p-8 space-y-6">
           <div className="text-center space-y-2">
-            <h1 className="text-4xl font-bold text-primary">Create New Rule</h1>
+            <h1 className="text-4xl font-bold text-primary">
+              {initialData ? "Edit Rule" : "Create New Rule"}
+            </h1>
             <p className="text-muted-foreground">
-              Define a rule to govern AI behavior and enforce policies
+              {initialData ? "Update the rule details" : "Define a rule to govern AI behavior and enforce policies"}
             </p>
           </div>
 
@@ -84,7 +87,7 @@ export default function CreateRuleForm({ onClose, onComplete }: CreateRuleFormPr
               disabled={!name.trim()}
               className="gap-2"
             >
-              Create Rule
+              {initialData ? "Update Rule" : "Create Rule"}
             </Button>
           </div>
         </form>
