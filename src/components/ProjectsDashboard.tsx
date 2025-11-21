@@ -53,7 +53,6 @@ export default function ProjectsDashboard() {
   const navigate = useNavigate();
   const [projects, setProjects] = useState<Project[]>(mockProjects);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showWizard, setShowWizard] = useState(false);
   const [viewMode, setViewMode] = useState<"list" | "wizard">("list");
 
   const filteredProjects = projects.filter(
@@ -71,7 +70,6 @@ export default function ProjectsDashboard() {
       role: "admin",
     };
     setProjects([...projects, newProject]);
-    setShowWizard(false);
     setViewMode("list");
   };
 
@@ -85,15 +83,7 @@ export default function ProjectsDashboard() {
           />
         </div>
       ) : (
-        <>
-          {showWizard && (
-            <CreateProjectForm
-              onClose={() => setShowWizard(false)}
-              onComplete={handleCreateProject}
-            />
-          )}
-
-      <main className="container mx-auto px-6 py-8">
+        <main className="container mx-auto px-6 py-8">
         <div className="space-y-6">
           <div className="flex items-center justify-between gap-4">
             <div className="relative flex-1 max-w-md">
@@ -125,7 +115,7 @@ export default function ProjectsDashboard() {
               <p className="text-muted-foreground max-w-md mb-6">
                 Upload materials, set custom instructions, and organize conversations in one space.
               </p>
-              <Button onClick={() => setShowWizard(true)}>
+              <Button onClick={() => setViewMode("wizard")}>
                 <Plus className="w-4 h-4 mr-2" />
                 New project
               </Button>
@@ -172,7 +162,6 @@ export default function ProjectsDashboard() {
           )}
         </div>
       </main>
-        </>
       )}
     </div>
   );
