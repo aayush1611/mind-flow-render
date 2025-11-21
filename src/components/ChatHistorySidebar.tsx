@@ -329,8 +329,8 @@ export default function ChatHistorySidebar({ isMobileExpanded = false }: ChatHis
 
         {/* Chats - show button on desktop, list on mobile */}
         {isMobileExpanded ? (
-          <div className="flex-1 flex flex-col gap-2 min-h-0 w-full">
-            <div className="px-1">
+          <div className="flex-1 flex flex-col gap-2 min-h-0 overflow-hidden w-full">
+            <div className="px-1 shrink-0">
               <h3 className="font-semibold text-sm mb-2">Recent Chats</h3>
               <div className="relative">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -342,7 +342,7 @@ export default function ChatHistorySidebar({ isMobileExpanded = false }: ChatHis
                 />
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto px-1">
+            <div className="flex-1 overflow-y-auto px-1 pb-4">
               <div className="flex flex-col gap-1">
                 {filteredChats.map((chat) => (
                   <button
@@ -351,7 +351,7 @@ export default function ChatHistorySidebar({ isMobileExpanded = false }: ChatHis
                       setSelectedChatId(chat.id);
                     }}
                     className={cn(
-                      "w-full py-2 px-2 flex items-center gap-3 hover:bg-accent transition-colors rounded-md",
+                      "w-full py-2.5 px-3 flex items-center gap-3 hover:bg-accent transition-colors rounded-md",
                       selectedChatId === chat.id && "bg-primary/10"
                     )}
                   >
