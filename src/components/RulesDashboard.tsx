@@ -5,6 +5,16 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
   Plus,
   Search,
   Shield,
@@ -56,6 +66,7 @@ export default function RulesDashboard() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [editingRule, setEditingRule] = useState<Rule | null>(null);
+  const [deletingRule, setDeletingRule] = useState<Rule | null>(null);
   const [viewMode, setViewMode] = useState<"list" | "form">("list");
 
   const filteredRules = rules.filter(
@@ -96,6 +107,13 @@ export default function RulesDashboard() {
   const handleCloseForm = () => {
     setShowForm(false);
     setEditingRule(null);
+  };
+
+  const handleDeleteRule = () => {
+    if (deletingRule) {
+      setRules(rules.filter(r => r.id !== deletingRule.id));
+      setDeletingRule(null);
+    }
   };
 
   const getPriorityColor = (priority: string) => {
@@ -218,7 +236,7 @@ export default function RulesDashboard() {
                               size="sm"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                setRules(rules.filter(r => r.id !== rule.id));
+                                setDeletingRule(rule);
                               }}
                             >
                               Delete
@@ -234,6 +252,23 @@ export default function RulesDashboard() {
           </main>
         </>
       )}
+
+      <AlertDialog open={!!deletingRule} onOpenChange={() => setDeletingRule(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Rule</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{deletingRule?.name}"? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteRule} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
