@@ -88,7 +88,7 @@ const Index = () => {
             ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
             md:translate-x-0
           `}>
-            <ChatHistorySidebar />
+            <ChatHistorySidebar isMobileExpanded={isSidebarOpen} />
           </div>
 
           <div className="flex-1 overflow-auto">

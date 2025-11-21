@@ -57,7 +57,11 @@ const mockProjects = [
   { id: "3", name: "Project Gamma", role: "admin" as const },
 ];
 
-export default function ChatHistorySidebar() {
+interface ChatHistorySidebarProps {
+  isMobileExpanded?: boolean;
+}
+
+export default function ChatHistorySidebar({ isMobileExpanded = false }: ChatHistorySidebarProps) {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const [selectedChatId, setSelectedChatId] = useState("3");
@@ -243,83 +247,95 @@ export default function ChatHistorySidebar() {
   return (
     <div 
       className="relative flex"
-      onMouseLeave={() => setOpenPopup(null)}
+      onMouseLeave={() => !isMobileExpanded && setOpenPopup(null)}
     >
       <aside 
-        className="bg-card border-r flex flex-col h-screen w-16 items-center py-4 gap-4"
+        className={cn(
+          "bg-card border-r flex flex-col h-screen py-4 gap-4 transition-all duration-300",
+          isMobileExpanded ? "w-64 px-4" : "w-16 items-center"
+        )}
       >
         {/* New Chat */}
         <Button
-          size="icon"
-          className="shrink-0"
+          size={isMobileExpanded ? "default" : "icon"}
+          className={cn("shrink-0", isMobileExpanded && "w-full justify-start")}
           onClick={() => setSelectedChatId("")}
         >
           <Plus className="w-5 h-5" />
+          {isMobileExpanded && <span className="ml-2">New Chat</span>}
         </Button>
 
         {/* Settings */}
         <Button 
           variant="ghost" 
-          size="icon" 
-          className="shrink-0"
-          onMouseEnter={() => setOpenPopup('settings')}
+          size={isMobileExpanded ? "default" : "icon"}
+          className={cn("shrink-0", isMobileExpanded && "w-full justify-start")}
+          onMouseEnter={() => !isMobileExpanded && setOpenPopup('settings')}
+          onClick={() => isMobileExpanded && console.log("Settings clicked")}
         >
           <Settings className="w-5 h-5" />
+          {isMobileExpanded && <span className="ml-2">Settings</span>}
         </Button>
 
         {/* Instruction */}
         <Button 
           variant="ghost" 
-          size="icon" 
-          className="shrink-0"
-          onMouseEnter={() => setOpenPopup('instruction')}
+          size={isMobileExpanded ? "default" : "icon"}
+          className={cn("shrink-0", isMobileExpanded && "w-full justify-start")}
+          onMouseEnter={() => !isMobileExpanded && setOpenPopup('instruction')}
+          onClick={() => navigate('/instructions')}
         >
           <FileText className="w-5 h-5" />
+          {isMobileExpanded && <span className="ml-2">Instructions</span>}
         </Button>
 
         {/* Project */}
         <Button 
           variant="ghost" 
-          size="icon" 
-          className="shrink-0"
-          onMouseEnter={() => setOpenPopup('project')}
+          size={isMobileExpanded ? "default" : "icon"}
+          className={cn("shrink-0", isMobileExpanded && "w-full justify-start")}
+          onMouseEnter={() => !isMobileExpanded && setOpenPopup('project')}
           onClick={() => navigate('/projects')}
         >
           <FolderKanban className="w-5 h-5" />
+          {isMobileExpanded && <span className="ml-2">Projects</span>}
         </Button>
 
         {/* Knowledge */}
         <Button 
           variant="ghost" 
-          size="icon" 
-          className="shrink-0"
-          onMouseEnter={() => setOpenPopup('knowledge')}
+          size={isMobileExpanded ? "default" : "icon"}
+          className={cn("shrink-0", isMobileExpanded && "w-full justify-start")}
+          onMouseEnter={() => !isMobileExpanded && setOpenPopup('knowledge')}
           onClick={() => navigate('/knowledge')}
         >
           <BookOpen className="w-5 h-5" />
+          {isMobileExpanded && <span className="ml-2">Knowledge</span>}
         </Button>
 
         {/* Rules */}
         <Button 
           variant="ghost" 
-          size="icon" 
-          className="shrink-0"
-          onMouseEnter={() => setOpenPopup('rules')}
+          size={isMobileExpanded ? "default" : "icon"}
+          className={cn("shrink-0", isMobileExpanded && "w-full justify-start")}
+          onMouseEnter={() => !isMobileExpanded && setOpenPopup('rules')}
           onClick={() => navigate('/rules')}
         >
           <Shield className="w-5 h-5" />
+          {isMobileExpanded && <span className="ml-2">Rules</span>}
         </Button>
 
-        <div className="w-8 h-px bg-border my-2" />
+        <div className={cn("bg-border my-2", isMobileExpanded ? "w-full h-px" : "w-8 h-px")} />
 
         {/* Chats */}
         <Button 
           variant="ghost" 
-          size="icon" 
-          className="shrink-0"
-          onMouseEnter={() => setOpenPopup('chats')}
+          size={isMobileExpanded ? "default" : "icon"}
+          className={cn("shrink-0", isMobileExpanded && "w-full justify-start")}
+          onMouseEnter={() => !isMobileExpanded && setOpenPopup('chats')}
         >
           <MessageSquare className="w-5 h-5" />
+          {isMobileExpanded && <span className="ml-2">Chats</span>}
         </Button>
 
         {/* Spacer */}
@@ -328,8 +344,8 @@ export default function ChatHistorySidebar() {
         {/* Theme Toggle */}
         <Button
           variant="ghost"
-          size="icon"
-          className="shrink-0"
+          size={isMobileExpanded ? "default" : "icon"}
+          className={cn("shrink-0", isMobileExpanded && "w-full justify-start")}
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
         >
           {theme === "dark" ? (
@@ -337,21 +353,27 @@ export default function ChatHistorySidebar() {
           ) : (
             <Moon className="w-5 h-5" />
           )}
+          {isMobileExpanded && <span className="ml-2">{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>}
         </Button>
 
         {/* Organization Switcher */}
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="ghost" size="icon" className="shrink-0 relative">
+            <Button 
+              variant="ghost" 
+              size={isMobileExpanded ? "default" : "icon"}
+              className={cn("shrink-0 relative", isMobileExpanded && "w-full justify-start")}
+            >
               <Avatar className="w-8 h-8">
                 <AvatarFallback className="bg-primary text-primary-foreground text-xs">
                   {selectedOrg.substring(0, 2).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
-              <ChevronDown className="w-3 h-3 absolute -bottom-1 -right-1 bg-card rounded-full" />
+              {isMobileExpanded && <span className="ml-2">{selectedOrg}</span>}
+              <ChevronDown className={cn("w-3 h-3 bg-card rounded-full", isMobileExpanded ? "ml-auto" : "absolute -bottom-1 -right-1")} />
             </Button>
           </PopoverTrigger>
-          <PopoverContent side="right" className="w-64 p-2" sideOffset={8}>
+          <PopoverContent side={isMobileExpanded ? "bottom" : "right"} className="w-64 p-2" sideOffset={8}>
             <div className="space-y-2">
               <p className="text-xs text-muted-foreground px-2 py-1">Switch Organization</p>
               <div className="flex flex-col gap-1">
@@ -379,8 +401,8 @@ export default function ChatHistorySidebar() {
         </Popover>
       </aside>
 
-      {/* Single Popup Container */}
-      {openPopup && (
+      {/* Single Popup Container - hidden on mobile expanded */}
+      {openPopup && !isMobileExpanded && (
         <div 
           className={cn(
             "fixed left-16 top-0 h-screen bg-popover border-r shadow-md z-50",
