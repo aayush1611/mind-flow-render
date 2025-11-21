@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -60,10 +60,12 @@ const mockProjects = [
 
 interface ChatHistorySidebarProps {
   isMobileExpanded?: boolean;
+  onNewChat?: () => void;
 }
 
-export default function ChatHistorySidebar({ isMobileExpanded = false }: ChatHistorySidebarProps) {
+export default function ChatHistorySidebar({ isMobileExpanded = false, onNewChat }: ChatHistorySidebarProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const { theme, setTheme } = useTheme();
   const [selectedChatId, setSelectedChatId] = useState("3");
   const [searchQuery, setSearchQuery] = useState("");
@@ -80,6 +82,17 @@ export default function ChatHistorySidebar({ isMobileExpanded = false }: ChatHis
   const handleDeleteProject = (projectId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setProjects(projects.filter(p => p.id !== projectId));
+  };
+
+  const handleNewChat = () => {
+    setSelectedChatId("");
+    const isOnChatPage = location.pathname === "/";
+    
+    if (isOnChatPage && onNewChat) {
+      onNewChat();
+    } else {
+      navigate("/");
+    }
   };
 
   const renderPopupContent = () => {
@@ -277,10 +290,7 @@ export default function ChatHistorySidebar({ isMobileExpanded = false }: ChatHis
         <Button
           size={isMobileExpanded ? "default" : "icon"}
           className={cn("shrink-0", isMobileExpanded && "w-full justify-start")}
-          onClick={() => {
-            setSelectedChatId("");
-            navigate("/");
-          }}
+          onClick={handleNewChat}
         >
           <Plus className="w-5 h-5" />
           {isMobileExpanded && <span className="ml-2">New Chat</span>}
