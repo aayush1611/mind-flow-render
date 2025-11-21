@@ -17,8 +17,13 @@ const Index = () => {
   const location = useLocation();
   const [activeTab, setActiveTab] = useState("chat");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [chatKey, setChatKey] = useState(0);
   const isProjectDetailView = location.pathname.match(/^\/projects\/[^/]+$/);
   const isKnowledgeDetailView = location.pathname.match(/^\/knowledge\/[^/]+$/);
+
+  const handleNewChat = () => {
+    setChatKey(prev => prev + 1);
+  };
 
   useEffect(() => {
     if (location.pathname === "/projects" || location.pathname.startsWith("/projects/")) {
@@ -88,11 +93,11 @@ const Index = () => {
             ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
             md:translate-x-0
           `}>
-            <ChatHistorySidebar isMobileExpanded={isSidebarOpen} />
+            <ChatHistorySidebar isMobileExpanded={isSidebarOpen} onNewChat={handleNewChat} />
           </div>
 
           <div className="flex-1 overflow-auto">
-            <ChatInterface />
+            <ChatInterface key={chatKey} />
           </div>
         </div>
       ) : (
