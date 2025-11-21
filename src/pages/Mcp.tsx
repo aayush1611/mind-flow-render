@@ -154,7 +154,12 @@ const Mcp = () => {
           </div>
 
           {!showForm && servers.length > 0 && (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className={cn(
+              "grid gap-4",
+              showToolsPanel 
+                ? "md:grid-cols-2" 
+                : "md:grid-cols-2 lg:grid-cols-3"
+            )}>
               {servers.map((server) => (
                 <Card key={server.id}>
                   <CardHeader>
