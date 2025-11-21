@@ -46,7 +46,7 @@ const ProjectDetailView = () => {
   const [projectDescription, setProjectDescription] = useState("Advanced machine learning research and development project focusing on natural language processing.");
   
   // Mock current user role - in real app, this would come from auth
-  const currentUserRole = "member" as "admin" | "member"; // Change to "admin" to test admin view
+  const currentUserRole = "admin" as "admin" | "member"; // Change to "member" to test member view
   const isAdmin = currentUserRole === "admin";
 
   // Mock data
