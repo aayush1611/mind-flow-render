@@ -46,7 +46,7 @@ const ProjectDetailView = () => {
   const [projectDescription, setProjectDescription] = useState("Advanced machine learning research and development project focusing on natural language processing.");
   
   // Mock current user role - in real app, this would come from auth
-  const currentUserRole = "admin";
+  const currentUserRole = "member" as "admin" | "member"; // Change to "admin" to test admin view
   const isAdmin = currentUserRole === "admin";
 
   // Mock data
@@ -175,14 +175,16 @@ const ProjectDetailView = () => {
                 <div>
                   <div className="flex items-center gap-3">
                     <h1 className="text-3xl font-bold">{projectName}</h1>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setIsEditingProject(true)}
-                      className="h-8 w-8"
-                    >
-                      <Edit2 className="h-4 w-4" />
-                    </Button>
+                    {isAdmin && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setIsEditingProject(true)}
+                        className="h-8 w-8"
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                    )}
                   </div>
                   <p className="text-muted-foreground mt-2">{projectDescription}</p>
                 </div>
@@ -212,10 +214,12 @@ const ProjectDetailView = () => {
                     <FileText className="h-5 w-5" />
                     Knowledge Sources
                   </CardTitle>
-                  <Button size="sm">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Source
-                  </Button>
+                  {isAdmin && (
+                    <Button size="sm">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Source
+                    </Button>
+                  )}
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -273,9 +277,11 @@ const ProjectDetailView = () => {
                     <Users className="h-5 w-5" />
                     Members
                   </CardTitle>
-                  <Button size="sm" variant="outline">
-                    <UserPlus className="h-4 w-4" />
-                  </Button>
+                  {isAdmin && (
+                    <Button size="sm" variant="outline">
+                      <UserPlus className="h-4 w-4" />
+                    </Button>
+                  )}
                 </div>
               </CardHeader>
               <CardContent className="space-y-3">
