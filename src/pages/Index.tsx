@@ -61,15 +61,17 @@ const Index = () => {
     <div className="h-screen bg-background">
       {activeTab === "chat" ? (
         <div className="flex h-full relative">
-          {/* Mobile hamburger button */}
-          <Button
-            size="icon"
-            variant="ghost"
-            className="md:hidden fixed top-4 left-4 z-50"
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          >
-            {isSidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </Button>
+          {/* Mobile hamburger button - hidden when sidebar is open */}
+          {!isSidebarOpen && (
+            <Button
+              size="icon"
+              variant="ghost"
+              className="md:hidden fixed top-4 left-4 z-50"
+              onClick={() => setIsSidebarOpen(true)}
+            >
+              <Menu className="h-5 w-5" />
+            </Button>
+          )}
 
           {/* Backdrop for mobile */}
           {isSidebarOpen && (
