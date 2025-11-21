@@ -57,11 +57,11 @@ const Index = () => {
   return (
     <div className="h-screen bg-background">
       {activeTab === "chat" ? (
-        <div className="flex h-full relative">
-          <div className="fixed md:relative z-50">
+        <div className="flex h-full">
+          <div className="hidden md:block">
             <ChatHistorySidebar />
           </div>
-          <div className="flex-1 overflow-auto md:ml-0">
+          <div className="flex-1 overflow-auto">
             <ChatInterface />
           </div>
         </div>
