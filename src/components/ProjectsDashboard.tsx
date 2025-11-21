@@ -76,7 +76,7 @@ export default function ProjectsDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="h-full bg-background overflow-auto">
       {viewMode === "wizard" ? (
         <div className="container mx-auto px-6 py-8">
           <CreateProjectWizard
@@ -92,21 +92,6 @@ export default function ProjectsDashboard() {
               onComplete={handleCreateProject}
             />
           )}
-          <header className="border-b bg-card">
-            <div className="container mx-auto px-6 py-6">
-              <div className="flex items-center gap-4 mb-2">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-                  <Folder className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-3xl font-bold">Projects Dashboard</h1>
-                  <p className="text-muted-foreground">
-                    Manage your projects and knowledge sources in one place
-                  </p>
-                </div>
-              </div>
-            </div>
-          </header>
 
       <main className="container mx-auto px-6 py-8">
         <Tabs defaultValue="projects" className="space-y-6">

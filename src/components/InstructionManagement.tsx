@@ -94,22 +94,25 @@ export const InstructionManagement = () => {
 
   if (showForm) {
     return (
-      <div className="container mx-auto px-6 py-8 max-w-4xl">
-        <InstructionForm
-          initialData={editingInstruction || undefined}
-          onSave={handleSave}
-          onCancel={handleCancel}
-        />
+      <div className="h-full bg-background overflow-auto">
+        <div className="container mx-auto px-6 py-8 max-w-4xl">
+          <InstructionForm
+            initialData={editingInstruction || undefined}
+            onSave={handleSave}
+            onCancel={handleCancel}
+          />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-6 py-8 max-w-6xl">
-      <div className="space-y-6">
+    <div className="h-full bg-background overflow-auto">
+      <div className="container mx-auto px-6 py-8 max-w-6xl">
+        <div className="space-y-6">
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>
-            <h1 className="text-4xl font-bold">System Instructions</h1>
+            <h1 className="text-3xl font-bold">System Instructions</h1>
             <p className="text-muted-foreground mt-2">
               Manage and organize your AI instruction workflows
             </p>
@@ -189,6 +192,7 @@ export const InstructionManagement = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      </div>
     </div>
   );
 };
