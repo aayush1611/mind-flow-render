@@ -33,16 +33,25 @@ const Index = () => {
   };
 
   return (
-    <div className="flex h-screen bg-background">
-      <ChatHistorySidebar />
-      <div className="flex-1 flex flex-col min-w-0">
-        <TopNavigation activeTab={activeTab} onTabChange={handleTabChange} />
-        <div className="flex-1 overflow-auto">
-          {activeTab === "chat" && <ChatInterface />}
-          {activeTab === "projects" && <ProjectsDashboard />}
-          {activeTab === "instructions" && <InstructionManagement />}
+    <div className="h-screen bg-background">
+      {activeTab === "chat" ? (
+        <div className="flex h-full">
+          <ChatHistorySidebar />
+          <div className="flex-1 overflow-auto">
+            <ChatInterface />
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="flex h-full">
+          <div className="flex-1 flex flex-col min-w-0">
+            <TopNavigation activeTab={activeTab} onTabChange={handleTabChange} />
+            <div className="flex-1 overflow-auto">
+              {activeTab === "projects" && <ProjectsDashboard />}
+              {activeTab === "instructions" && <InstructionManagement />}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
