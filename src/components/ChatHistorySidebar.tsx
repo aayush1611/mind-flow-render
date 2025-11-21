@@ -75,7 +75,7 @@ export default function ChatHistorySidebar() {
         </Button>
 
         {/* Settings */}
-        <HoverCard open={openPopup === 'settings'} onOpenChange={(open) => !open && setOpenPopup(null)}>
+        <HoverCard open={openPopup === 'settings'}>
           <HoverCardTrigger asChild>
             <Button 
               variant="ghost" 
@@ -114,7 +114,7 @@ export default function ChatHistorySidebar() {
         </HoverCard>
 
         {/* Instruction */}
-        <HoverCard open={openPopup === 'instruction'} onOpenChange={(open) => !open && setOpenPopup(null)}>
+        <HoverCard open={openPopup === 'instruction'}>
           <HoverCardTrigger asChild>
             <Button 
               variant="ghost" 
@@ -144,7 +144,7 @@ export default function ChatHistorySidebar() {
         </HoverCard>
 
         {/* Project */}
-        <HoverCard open={openPopup === 'project'} onOpenChange={(open) => !open && setOpenPopup(null)}>
+        <HoverCard open={openPopup === 'project'}>
           <HoverCardTrigger asChild>
             <Button 
               variant="ghost" 
@@ -178,7 +178,7 @@ export default function ChatHistorySidebar() {
         </HoverCard>
 
         {/* Knowledge */}
-        <HoverCard open={openPopup === 'knowledge'} onOpenChange={(open) => !open && setOpenPopup(null)}>
+        <HoverCard open={openPopup === 'knowledge'}>
           <HoverCardTrigger asChild>
             <Button 
               variant="ghost" 
@@ -202,7 +202,7 @@ export default function ChatHistorySidebar() {
         </HoverCard>
 
         {/* Rules */}
-        <HoverCard open={openPopup === 'rules'} onOpenChange={(open) => !open && setOpenPopup(null)}>
+        <HoverCard open={openPopup === 'rules'}>
           <HoverCardTrigger asChild>
             <Button 
               variant="ghost" 
@@ -228,7 +228,7 @@ export default function ChatHistorySidebar() {
         <div className="w-8 h-px bg-border my-2" />
 
         {/* Chats */}
-        <HoverCard open={openPopup === 'chats'} onOpenChange={(open) => !open && setOpenPopup(null)}>
+        <HoverCard open={openPopup === 'chats'}>
           <HoverCardTrigger asChild>
             <Button 
               variant="ghost" 
