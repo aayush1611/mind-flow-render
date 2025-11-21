@@ -246,17 +246,19 @@ print(df)`,
 
               <div className="w-full max-w-2xl">
                 <div className="relative bg-card rounded-2xl shadow-lg border p-3 md:p-4">
-                  <Textarea
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={handleKeyPress}
-                    placeholder={
-                      selectedApp
-                        ? `Ask Office Agent anything about ${selectedApp}...`
-                        : "Ask Office Agent anything..."
-                    }
-                    className="min-h-[60px] md:min-h-[80px] pr-24 md:pr-44 resize-none border-0 focus-visible:ring-0 shadow-none text-sm md:text-base"
-                  />
+                <Textarea
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={handleKeyPress}
+                  placeholder={
+                    selectedModule
+                      ? `Ask about ${mockModules.find(m => m.id === selectedModule)?.name}...`
+                      : selectedApp
+                      ? `Ask Office Agent anything about ${selectedApp}...`
+                      : "Ask Office Agent anything..."
+                  }
+                  className="min-h-[60px] md:min-h-[80px] pr-24 md:pr-44 resize-none border-0 focus-visible:ring-0 shadow-none text-sm md:text-base"
+                />
 
                   {/* Hidden file input */}
                   <input
@@ -621,7 +623,11 @@ print(df)`,
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={handleKeyPress}
-                  placeholder="Ask a follow-up question..."
+                  placeholder={
+                    selectedModule
+                      ? `Ask about ${mockModules.find(m => m.id === selectedModule)?.name}...`
+                      : "Ask a follow-up question..."
+                  }
                   className="min-h-[50px] md:min-h-[60px] pr-16 md:pr-36 resize-none border-0 focus-visible:ring-0 shadow-none text-sm md:text-base"
                 />
 
