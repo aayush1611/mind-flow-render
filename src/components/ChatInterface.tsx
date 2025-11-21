@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Send, Loader2, ChevronDown, ChevronUp, Download, FileCode, BarChart3 } from "lucide-react";
+import { Send, Loader2, ChevronDown, ChevronUp, Download, FileCode, BarChart3, Star, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ReactECharts from "echarts-for-react";
 
@@ -15,6 +15,7 @@ interface Message {
   attachments?: Attachment[];
   selectedApp?: string | null;
   followUps?: string[];
+  isComplete?: boolean;
 }
 
 interface ThinkingStep {
@@ -146,15 +147,16 @@ export default function ChatInterface() {
           status: "complete" as ThinkingStep["status"],
         }));
 
-        setMessages((prev) =>
-          prev.map((msg) =>
-            msg.id === assistantMessageId
-              ? {
-                  ...msg,
-                  thinking: completeSteps,
-                  content: "Perfect! I've completed the comprehensive analysis of your Q3 sales data. Here's your detailed breakdown by region with all the requested deliverables.",
-                  isStreaming: false,
-                  attachments: [
+          setMessages((prev) =>
+            prev.map((msg) =>
+              msg.id === assistantMessageId
+                ? {
+                    ...msg,
+                    thinking: completeSteps,
+                    content: "Perfect! I've completed the comprehensive analysis of your Q3 sales data. Here's your detailed breakdown by region with all the requested deliverables.",
+                    isStreaming: false,
+                    isComplete: true,
+                    attachments: [
                     {
                       type: "chart",
                       content: "chart-placeholder",
@@ -457,19 +459,54 @@ print(df)`,
                       </div>
                     )}
 
-                    {message.followUps && (
-                      <div className="mt-4 flex flex-wrap gap-2">
-                        {message.followUps.map((followUp, idx) => (
-                          <Button
-                            key={idx}
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleSend(followUp)}
-                            className="text-xs"
-                          >
-                            {followUp}
-                          </Button>
-                        ))}
+                    {message.isComplete && (
+                      <div className="mt-4 pt-4 border-t">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Sparkles className="w-4 h-4 text-green-500" />
+                            <span className="text-sm font-medium text-green-600 dark:text-green-400">
+                              Answer completed
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <span className="text-xs text-muted-foreground mr-2">How was this result?</span>
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <button
+                                key={star}
+                                className="p-1 hover:scale-110 transition-transform"
+                                onClick={() => console.log("Rating:", star)}
+                              >
+                                <Star className="w-4 h-4 text-muted-foreground hover:text-yellow-500 hover:fill-yellow-500 transition-colors" />
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {message.followUps && message.followUps.length > 0 && (
+                      <div className="mt-4 pt-4 border-t">
+                        <div className="flex items-start gap-3">
+                          <div className="flex-shrink-0 mt-1">
+                            <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                              <Sparkles className="w-3.5 h-3.5 text-primary" />
+                            </div>
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-sm font-medium mb-3">Suggested follow-ups:</p>
+                            <div className="flex flex-col gap-2">
+                              {message.followUps.map((followUp, idx) => (
+                                <button
+                                  key={idx}
+                                  onClick={() => handleSend(followUp)}
+                                  className="text-left px-4 py-2.5 rounded-lg border border-border bg-card hover:bg-accent hover:border-primary/50 transition-all text-sm group"
+                                >
+                                  <span className="group-hover:text-primary transition-colors">{followUp}</span>
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>
