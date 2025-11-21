@@ -21,6 +21,9 @@ interface KnowledgeSource {
   description: string;
   icon: LucideIcon;
   status: "active" | "indexing" | "failed";
+  provider?: string;
+  repoUrl?: string;
+  repoBranch?: string;
 }
 
 const mockKnowledgeSources: KnowledgeSource[] = [
@@ -51,7 +54,6 @@ export default function KnowledgeDashboard() {
   const navigate = useNavigate();
   const [knowledgeSources, setKnowledgeSources] = useState<KnowledgeSource[]>(mockKnowledgeSources);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showForm, setShowForm] = useState(false);
   const [viewMode, setViewMode] = useState<"list" | "form">("list");
 
   const filteredSources = knowledgeSources.filter(
@@ -60,16 +62,25 @@ export default function KnowledgeDashboard() {
       k.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleCreateKnowledge = (knowledgeData: { name: string; description: string }) => {
+  const handleCreateKnowledge = (knowledgeData: {
+    name: string;
+    description: string;
+    provider: string;
+    repoUrl: string;
+    repoBranch: string;
+    patToken?: string;
+  }) => {
     const newKnowledge: KnowledgeSource = {
       id: Date.now().toString(),
       name: knowledgeData.name,
       description: knowledgeData.description,
       icon: FileText,
-      status: "active",
+      status: "indexing",
+      provider: knowledgeData.provider,
+      repoUrl: knowledgeData.repoUrl,
+      repoBranch: knowledgeData.repoBranch,
     };
     setKnowledgeSources([...knowledgeSources, newKnowledge]);
-    setShowForm(false);
     setViewMode("list");
   };
 
@@ -96,15 +107,7 @@ export default function KnowledgeDashboard() {
           />
         </div>
       ) : (
-        <>
-          {showForm && (
-            <CreateKnowledgeForm
-              onClose={() => setShowForm(false)}
-              onComplete={handleCreateKnowledge}
-            />
-          )}
-
-          <main className="container mx-auto px-6 py-8">
+        <main className="container mx-auto px-6 py-8">
             <div className="space-y-6">
               <div className="flex items-center justify-between gap-4">
                   <div className="relative flex-1 max-w-md">
@@ -136,7 +139,7 @@ export default function KnowledgeDashboard() {
                     <p className="text-muted-foreground max-w-md mb-6">
                       Add your first knowledge source to get started with AI-powered insights
                     </p>
-                    <Button onClick={() => setShowForm(true)}>
+                    <Button onClick={() => setViewMode("form")}>
                       <Plus className="w-4 h-4 mr-2" />
                       Add Knowledge Source
                     </Button>
@@ -180,7 +183,6 @@ export default function KnowledgeDashboard() {
                 )}
               </div>
           </main>
-        </>
       )}
     </div>
   );
