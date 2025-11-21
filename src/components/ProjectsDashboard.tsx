@@ -160,7 +160,10 @@ export default function ProjectsDashboard() {
                     <Card
                       key={project.id}
                       className="hover:shadow-hover transition-shadow cursor-pointer"
-                      onClick={() => navigate(`/projects/${project.id}`)}
+                      onClick={() => {
+                        console.log(`Navigating to project ${project.id}`);
+                        navigate(`/projects/${project.id}`);
+                      }}
                     >
                       <CardHeader>
                         <div className="flex items-start justify-between gap-3 mb-2">
