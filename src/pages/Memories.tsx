@@ -43,41 +43,48 @@ export default function Memories() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto p-6 max-w-4xl">
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <Brain className="w-8 h-8 text-primary" />
-                <h1 className="text-3xl font-bold text-foreground">Memories</h1>
+        <div className="mb-6">
+          <div className="flex items-center gap-3 mb-2">
+            <Brain className="w-8 h-8 text-primary" />
+            <h1 className="text-3xl font-bold text-foreground">Memories</h1>
+          </div>
+          <p className="text-muted-foreground">
+            Manage your conversation memories. Enable or disable memories to control what the AI remembers about your preferences and context.
+          </p>
+        </div>
+
+        <Card className="mb-6">
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <Label htmlFor="memories-toggle" className="text-base font-medium cursor-pointer">
+                  Memory System
+                </Label>
+                <p className="text-sm text-muted-foreground">
+                  {memoriesEnabled ? "Memories are active and being used" : "Memories are currently disabled"}
+                </p>
               </div>
-              <p className="text-muted-foreground">
-                Manage your conversation memories. Enable or disable memories to control what the AI remembers about your preferences and context.
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <Label htmlFor="memories-toggle" className="text-sm font-medium">
-                {memoriesEnabled ? "Enabled" : "Disabled"}
-              </Label>
               <Switch
                 id="memories-toggle"
                 checked={memoriesEnabled}
                 onCheckedChange={handleToggleMemories}
               />
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
         {memories.length > 0 && (
-          <div className="flex justify-end mb-4">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold">All Memories ({memories.length})</h2>
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button
-                  variant="destructive"
+                  variant="outline"
                   size="sm"
-                  className="gap-2"
+                  className="gap-2 text-destructive hover:text-destructive"
                 >
                   <Trash2 className="w-4 h-4" />
-                  Delete All Memories
+                  Delete All
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
