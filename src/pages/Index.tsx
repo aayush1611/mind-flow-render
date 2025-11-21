@@ -10,6 +10,7 @@ import KnowledgeDashboard from "@/components/KnowledgeDashboard";
 import KnowledgeDetailView from "@/components/KnowledgeDetailView";
 import RulesDashboard from "@/components/RulesDashboard";
 import Mcp from "@/pages/Mcp";
+import Memories from "@/pages/Memories";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 
@@ -37,6 +38,8 @@ const Index = () => {
       setActiveTab("rules");
     } else if (location.pathname === "/mcp") {
       setActiveTab("mcp");
+    } else if (location.pathname === "/memories") {
+      setActiveTab("memories");
     } else {
       setActiveTab("chat");
     }
@@ -54,6 +57,8 @@ const Index = () => {
       navigate("/rules");
     } else if (value === "mcp") {
       navigate("/mcp");
+    } else if (value === "memories") {
+      navigate("/memories");
     } else {
       navigate("/");
     }
@@ -115,6 +120,7 @@ const Index = () => {
               {activeTab === "knowledge" && <KnowledgeDashboard />}
               {activeTab === "rules" && <RulesDashboard />}
               {activeTab === "mcp" && <Mcp />}
+              {activeTab === "memories" && <Memories />}
             </div>
           </div>
         </div>
