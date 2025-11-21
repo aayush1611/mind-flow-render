@@ -242,11 +242,11 @@ export default function ChatHistorySidebar() {
 
   return (
     <div 
-      className="relative flex"
+      className="relative flex h-full"
       onMouseLeave={() => setOpenPopup(null)}
     >
       <aside 
-        className="bg-card border-r flex flex-col h-screen w-16 items-center py-4 gap-4"
+        className="bg-card border-r flex flex-col h-screen w-16 items-center py-4 gap-4 shadow-lg md:shadow-none"
       >
         {/* New Chat */}
         <Button
