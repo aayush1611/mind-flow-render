@@ -313,39 +313,6 @@ print(df)`,
             </div>
           )}
 
-          {showThinking && (
-            <div className="bg-gradient-to-br from-primary/5 to-accent/5 rounded-xl p-4 border border-primary/20 animate-fade-in">
-              <div className="flex items-center justify-between w-full">
-                <div className="flex items-center gap-2">
-                  <Loader2 className="w-4 h-4 animate-spin text-primary" />
-                  <span className="font-medium">Thinking</span>
-                </div>
-              </div>
-              <div className="mt-4 space-y-2">
-                {mockThinkingSteps.map((step) => (
-                  <div key={step.id} className="flex items-start gap-3">
-                    {step.status === "complete" && (
-                      <div className="w-5 h-5 rounded-full bg-success flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <svg className="w-3 h-3 text-white" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
-                          <path d="M5 13l4 4L19 7" />
-                        </svg>
-                      </div>
-                    )}
-                    {step.status === "processing" && (
-                      <Loader2 className="w-5 h-5 animate-spin text-primary flex-shrink-0 mt-0.5" />
-                    )}
-                    {step.status === "pending" && (
-                      <div className="w-5 h-5 rounded-full border-2 border-muted flex-shrink-0 mt-0.5" />
-                    )}
-                    <span className={cn("text-sm", step.status === "pending" && "text-muted-foreground")}>
-                      {step.label}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
           {messages.map((message) => (
             <div key={message.id} className="space-y-4">
               {message.role === "user" ? (
