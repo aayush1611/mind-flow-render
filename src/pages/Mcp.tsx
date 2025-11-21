@@ -23,7 +23,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Plus, Edit, Trash2, Link as LinkIcon, Server } from "lucide-react";
-import TopNavigation from "@/components/TopNavigation";
 import { cn } from "@/lib/utils";
 
 interface McpServer {
@@ -130,9 +129,7 @@ const Mcp = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen">
-      <TopNavigation activeTab="mcp" onTabChange={() => {}} />
-      
+    <div className="flex flex-col h-full">
       <div className="flex-1 overflow-auto">
         <div className="flex h-full">
           <div className={cn(
