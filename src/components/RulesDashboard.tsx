@@ -55,6 +55,7 @@ export default function RulesDashboard() {
   const [rules, setRules] = useState<Rule[]>(mockRules);
   const [searchQuery, setSearchQuery] = useState("");
   const [showForm, setShowForm] = useState(false);
+  const [editingRule, setEditingRule] = useState<Rule | null>(null);
   const [viewMode, setViewMode] = useState<"list" | "form">("list");
 
   const filteredRules = rules.filter(
@@ -64,17 +65,37 @@ export default function RulesDashboard() {
   );
 
   const handleCreateRule = (ruleData: { name: string; description: string }) => {
-    const newRule: Rule = {
-      id: Date.now().toString(),
-      name: ruleData.name,
-      description: ruleData.description,
-      icon: Shield,
-      status: "active",
-      priority: "medium",
-    };
-    setRules([...rules, newRule]);
+    if (editingRule) {
+      setRules(rules.map(rule => 
+        rule.id === editingRule.id 
+          ? { ...rule, name: ruleData.name, description: ruleData.description }
+          : rule
+      ));
+      setEditingRule(null);
+    } else {
+      const newRule: Rule = {
+        id: Date.now().toString(),
+        name: ruleData.name,
+        description: ruleData.description,
+        icon: Shield,
+        status: "active",
+        priority: "medium",
+      };
+      setRules([...rules, newRule]);
+    }
     setShowForm(false);
     setViewMode("list");
+  };
+
+  const handleEditRule = (e: React.MouseEvent, rule: Rule) => {
+    e.stopPropagation();
+    setEditingRule(rule);
+    setShowForm(true);
+  };
+
+  const handleCloseForm = () => {
+    setShowForm(false);
+    setEditingRule(null);
   };
 
   const getPriorityColor = (priority: string) => {
@@ -103,8 +124,9 @@ export default function RulesDashboard() {
         <>
           {showForm && (
             <CreateRuleForm
-              onClose={() => setShowForm(false)}
+              onClose={handleCloseForm}
               onComplete={handleCreateRule}
+              initialData={editingRule ? { name: editingRule.name, description: editingRule.description } : undefined}
             />
           )}
 
@@ -187,10 +209,7 @@ export default function RulesDashboard() {
                               variant="outline"
                               size="sm"
                               className="flex-1"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                console.log("Edit rule:", rule.id);
-                              }}
+                              onClick={(e) => handleEditRule(e, rule)}
                             >
                               Edit
                             </Button>
