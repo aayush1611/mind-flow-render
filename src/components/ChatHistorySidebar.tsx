@@ -117,13 +117,13 @@ export default function ChatHistorySidebar() {
             </div>
             <div className="flex-1 overflow-y-auto p-2">
               <div className="flex flex-col gap-1">
-                <Button variant="ghost" className="justify-start text-sm" onClick={() => navigate("/projects")}>
+                <Button variant="ghost" className="justify-start text-sm" onClick={() => navigate("/projects/1")}>
                   Project Alpha
                 </Button>
-                <Button variant="ghost" className="justify-start text-sm" onClick={() => navigate("/projects")}>
+                <Button variant="ghost" className="justify-start text-sm" onClick={() => navigate("/projects/2")}>
                   Project Beta
                 </Button>
-                <Button variant="ghost" className="justify-start text-sm" onClick={() => navigate("/projects")}>
+                <Button variant="ghost" className="justify-start text-sm" onClick={() => navigate("/projects/3")}>
                   Project Gamma
                 </Button>
               </div>
@@ -243,6 +243,7 @@ export default function ChatHistorySidebar() {
           size="icon" 
           className="shrink-0"
           onMouseEnter={() => setOpenPopup('project')}
+          onClick={() => navigate('/projects')}
         >
           <FolderKanban className="w-5 h-5" />
         </Button>

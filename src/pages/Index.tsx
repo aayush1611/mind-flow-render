@@ -12,7 +12,7 @@ const Index = () => {
   const [activeTab, setActiveTab] = useState("chat");
 
   useEffect(() => {
-    if (location.pathname === "/projects") {
+    if (location.pathname === "/projects" || location.pathname.startsWith("/projects/")) {
       setActiveTab("projects");
     } else if (location.pathname === "/instructions") {
       setActiveTab("instructions");
