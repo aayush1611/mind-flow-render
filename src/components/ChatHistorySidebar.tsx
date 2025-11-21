@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -28,6 +29,8 @@ import {
   Shield,
   FileText,
   ChevronDown,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -49,6 +52,7 @@ const mockChats: Chat[] = [
 
 export default function ChatHistorySidebar() {
   const navigate = useNavigate();
+  const { theme, setTheme } = useTheme();
   const [selectedChatId, setSelectedChatId] = useState("3");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedOrg, setSelectedOrg] = useState("Acme Corp");
@@ -275,6 +279,20 @@ export default function ChatHistorySidebar() {
 
         {/* Spacer */}
         <div className="flex-1" />
+
+        {/* Theme Toggle */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="shrink-0"
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+        >
+          {theme === "dark" ? (
+            <Sun className="w-5 h-5" />
+          ) : (
+            <Moon className="w-5 h-5" />
+          )}
+        </Button>
 
         {/* Organization Switcher */}
         <Popover>
