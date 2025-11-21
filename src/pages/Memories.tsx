@@ -3,29 +3,36 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Trash2, Brain } from "lucide-react";
 import { toast } from "sonner";
 
 interface Memory {
   id: string;
   content: string;
-  enabled: boolean;
 }
 
 export default function Memories() {
+  const [memoriesEnabled, setMemoriesEnabled] = useState(true);
   const [memories, setMemories] = useState<Memory[]>([
-    { id: "mem_001", content: "User prefers dark mode for better readability", enabled: true },
-    { id: "mem_002", content: "User is working on a React project with TypeScript", enabled: true },
-    { id: "mem_003", content: "User prefers concise responses without verbose explanations", enabled: false },
+    { id: "mem_001", content: "User prefers dark mode for better readability" },
+    { id: "mem_002", content: "User is working on a React project with TypeScript" },
+    { id: "mem_003", content: "User prefers concise responses without verbose explanations" },
   ]);
 
-  const handleToggleMemory = (id: string) => {
-    setMemories(prev =>
-      prev.map(mem =>
-        mem.id === id ? { ...mem, enabled: !mem.enabled } : mem
-      )
-    );
-    toast.success("Memory status updated");
+  const handleToggleMemories = () => {
+    setMemoriesEnabled(!memoriesEnabled);
+    toast.success(memoriesEnabled ? "Memories disabled" : "Memories enabled");
   };
 
   const handleDeleteAll = () => {
@@ -37,26 +44,57 @@ export default function Memories() {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto p-6 max-w-4xl">
         <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <Brain className="w-8 h-8 text-primary" />
-            <h1 className="text-3xl font-bold text-foreground">Memories</h1>
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <Brain className="w-8 h-8 text-primary" />
+                <h1 className="text-3xl font-bold text-foreground">Memories</h1>
+              </div>
+              <p className="text-muted-foreground">
+                Manage your conversation memories. Enable or disable memories to control what the AI remembers about your preferences and context.
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <Label htmlFor="memories-toggle" className="text-sm font-medium">
+                {memoriesEnabled ? "Enabled" : "Disabled"}
+              </Label>
+              <Switch
+                id="memories-toggle"
+                checked={memoriesEnabled}
+                onCheckedChange={handleToggleMemories}
+              />
+            </div>
           </div>
-          <p className="text-muted-foreground">
-            Manage your conversation memories. Enable or disable specific memories to control what the AI remembers about your preferences and context.
-          </p>
         </div>
 
         {memories.length > 0 && (
           <div className="flex justify-end mb-4">
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={handleDeleteAll}
-              className="gap-2"
-            >
-              <Trash2 className="w-4 h-4" />
-              Delete All Memories
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  className="gap-2"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Delete All Memories
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete all your stored memories and conversation context.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleDeleteAll} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                    Delete All
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         )}
 
@@ -74,29 +112,12 @@ export default function Memories() {
             {memories.map((memory) => (
               <Card key={memory.id}>
                 <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <CardTitle className="text-sm font-mono text-muted-foreground mb-2">
-                        {memory.id}
-                      </CardTitle>
-                      <CardDescription className="text-base text-foreground">
-                        {memory.content}
-                      </CardDescription>
-                    </div>
-                    <div className="flex items-center gap-2 ml-4">
-                      <Label
-                        htmlFor={`memory-${memory.id}`}
-                        className="text-sm text-muted-foreground cursor-pointer"
-                      >
-                        {memory.enabled ? "Enabled" : "Disabled"}
-                      </Label>
-                      <Switch
-                        id={`memory-${memory.id}`}
-                        checked={memory.enabled}
-                        onCheckedChange={() => handleToggleMemory(memory.id)}
-                      />
-                    </div>
-                  </div>
+                  <CardTitle className="text-sm font-mono text-muted-foreground mb-2">
+                    {memory.id}
+                  </CardTitle>
+                  <CardDescription className="text-base text-foreground">
+                    {memory.content}
+                  </CardDescription>
                 </CardHeader>
               </Card>
             ))}

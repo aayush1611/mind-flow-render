@@ -101,7 +101,7 @@ export default function ChatHistorySidebar({ isMobileExpanded = false }: ChatHis
                 <Button
                   variant="ghost"
                   className="justify-start text-sm"
-                  onClick={() => console.log("Memories clicked")}
+                  onClick={() => navigate("/memories")}
                 >
                   Memories
                 </Button>
