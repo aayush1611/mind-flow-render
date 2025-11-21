@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Plus, Edit, Trash2, Link as LinkIcon, Server } from "lucide-react";
 import TopNavigation from "@/components/TopNavigation";
+import { cn } from "@/lib/utils";
 
 interface McpServer {
   id: string;
@@ -50,12 +51,23 @@ const mockServers: McpServer[] = [
   },
 ];
 
+const mockTools = [
+  { id: "1", name: "query_database", description: "Execute SQL queries against the database", category: "Database" },
+  { id: "2", name: "send_email", description: "Send emails to specified recipients", category: "Communication" },
+  { id: "3", name: "create_user", description: "Create a new user account in the system", category: "User Management" },
+  { id: "4", name: "upload_file", description: "Upload files to cloud storage", category: "Storage" },
+  { id: "5", name: "fetch_analytics", description: "Retrieve analytics and metrics data", category: "Analytics" },
+  { id: "6", name: "schedule_task", description: "Schedule a task for future execution", category: "Automation" },
+];
+
 const Mcp = () => {
   const [servers, setServers] = useState<McpServer[]>(mockServers);
   const [showForm, setShowForm] = useState(false);
   const [editingServer, setEditingServer] = useState<McpServer | null>(null);
   const [deleteServerId, setDeleteServerId] = useState<string | null>(null);
   const [showConnections, setShowConnections] = useState(false);
+  const [showToolsPanel, setShowToolsPanel] = useState(false);
+  const [activeServerId, setActiveServerId] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({
     name: "",
@@ -108,16 +120,26 @@ const Mcp = () => {
     setFormData({ name: "", url: "", type: "REST", active: true });
   };
 
-  const handleTestConnection = () => {
-    setShowConnections(true);
+  const handleTestConnection = (serverId?: string) => {
+    if (serverId) {
+      setActiveServerId(serverId);
+      setShowToolsPanel(true);
+    } else {
+      setShowConnections(true);
+    }
   };
 
   return (
     <div className="flex flex-col h-screen">
       <TopNavigation activeTab="mcp" onTabChange={() => {}} />
       
-      <div className="flex-1 overflow-auto p-6">
-        <div className="max-w-6xl mx-auto space-y-6">
+      <div className="flex-1 overflow-auto">
+        <div className="flex h-full">
+          <div className={cn(
+            "transition-all duration-300 p-6 overflow-auto",
+            showToolsPanel ? "w-full lg:w-[70%]" : "w-full"
+          )}>
+            <div className="max-w-6xl mx-auto space-y-6">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold tracking-tight">MCP Servers</h1>
@@ -176,7 +198,7 @@ const Mcp = () => {
                       variant="outline"
                       size="sm"
                       className="w-full mt-2"
-                      onClick={() => handleTestConnection()}
+                      onClick={() => handleTestConnection(server.id)}
                     >
                       Test Connection
                     </Button>
@@ -267,7 +289,7 @@ const Mcp = () => {
                 <div className="flex gap-3 pt-4">
                   <Button
                     variant="outline"
-                    onClick={handleTestConnection}
+                    onClick={() => handleTestConnection()}
                     disabled={!formData.url}
                   >
                     Test Connection
@@ -331,6 +353,65 @@ const Mcp = () => {
                 </Button>
               </CardContent>
             </Card>
+          )}
+            </div>
+          </div>
+
+          {/* Tools Panel */}
+          {showToolsPanel && (
+            <div className="w-full lg:w-[30%] border-l bg-card overflow-auto">
+              <div className="p-6 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-lg font-semibold">Available Tools</h2>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {servers.find(s => s.id === activeServerId)?.name}
+                    </p>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => {
+                      setShowToolsPanel(false);
+                      setActiveServerId(null);
+                    }}
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </Button>
+                </div>
+
+                <div className="space-y-3">
+                  {mockTools.map((tool) => (
+                    <Card key={tool.id} className="hover:shadow-md transition-shadow">
+                      <CardContent className="p-4">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-2">
+                              <h3 className="font-medium text-sm truncate">{tool.name}</h3>
+                              <Badge variant="secondary" className="text-xs shrink-0">
+                                {tool.category}
+                              </Badge>
+                            </div>
+                            <p className="text-xs text-muted-foreground line-clamp-2">
+                              {tool.description}
+                            </p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+
+                <div className="pt-4 border-t">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Total Tools</span>
+                    <Badge variant="outline">{mockTools.length}</Badge>
+                  </div>
+                </div>
+              </div>
+            </div>
           )}
         </div>
       </div>
