@@ -1,4 +1,4 @@
-import { MessageSquare, FolderKanban, FileText, BookOpen, Shield } from "lucide-react";
+import { MessageSquare, FolderKanban, FileText, BookOpen, Shield, Network } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface TopNavigationProps {
@@ -12,6 +12,7 @@ export default function TopNavigation({ activeTab, onTabChange }: TopNavigationP
     { id: "projects", label: "Projects", icon: FolderKanban },
     { id: "knowledge", label: "Knowledge", icon: BookOpen },
     { id: "rules", label: "Rules", icon: Shield },
+    { id: "mcp", label: "MCP", icon: Network },
     { id: "instructions", label: "Instructions", icon: FileText },
   ];
 
