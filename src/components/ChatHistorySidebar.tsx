@@ -33,6 +33,7 @@ import {
   Moon,
   Trash2,
   Network,
+  Brain,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -366,6 +367,17 @@ export default function ChatHistorySidebar({ isMobileExpanded = false, onNewChat
         >
           <Network className="w-5 h-5" />
           {isMobileExpanded && <span className="ml-2">MCP</span>}
+        </Button>
+
+        {/* Memories */}
+        <Button 
+          variant="ghost" 
+          size={isMobileExpanded ? "default" : "icon"}
+          className={cn("shrink-0", isMobileExpanded && "w-full justify-start")}
+          onClick={() => navigate('/memories')}
+        >
+          <Brain className="w-5 h-5" />
+          {isMobileExpanded && <span className="ml-2">Memories</span>}
         </Button>
 
         <div className={cn("bg-border my-2", isMobileExpanded ? "w-full h-px" : "w-8 h-px")} />
