@@ -1,0 +1,94 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { X, BookOpen } from "lucide-react";
+
+interface CreateKnowledgeFormProps {
+  onClose: () => void;
+  onComplete: (knowledgeData: { name: string; description: string }) => void;
+}
+
+export default function CreateKnowledgeForm({ onClose, onComplete }: CreateKnowledgeFormProps) {
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (name.trim()) {
+      onComplete({ name, description });
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div className="bg-background border rounded-2xl shadow-elegant max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <form onSubmit={handleSubmit} className="p-8 space-y-6">
+          <div className="text-center space-y-2">
+            <h1 className="text-4xl font-bold text-primary">Add Knowledge Source</h1>
+            <p className="text-muted-foreground">
+              Create a new knowledge source for your AI assistant
+            </p>
+          </div>
+
+          <div className="border rounded-xl p-6 bg-card shadow-sm space-y-6">
+            <div className="flex items-start gap-4 bg-primary/5 p-4 rounded-lg">
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <BookOpen className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-foreground">Source Details</h3>
+                <p className="text-sm text-muted-foreground">
+                  Provide information about this knowledge source
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-semibold">
+                Source Name <span className="text-destructive">*</span>
+              </label>
+              <Input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="e.g., Product Documentation, Support Articles..."
+                className="text-base"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-semibold">Description (Optional)</label>
+              <Textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Describe what this knowledge source contains..."
+                className="min-h-[120px] text-base"
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between pt-4 border-t">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onClose}
+              className="gap-2"
+            >
+              <X className="w-4 h-4" />
+              Cancel
+            </Button>
+
+            <Button
+              type="submit"
+              disabled={!name.trim()}
+              className="gap-2"
+            >
+              Add Source
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}

@@ -164,8 +164,14 @@ export default function ChatHistorySidebar() {
             <div className="p-3 border-b">
               <h3 className="font-semibold text-sm">Knowledge</h3>
             </div>
-            <div className="flex-1 overflow-y-auto p-3">
-              <p className="text-xs text-muted-foreground">No knowledge sources yet</p>
+            <div className="flex-1 overflow-y-auto p-2">
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-sm"
+                onClick={() => navigate("/knowledge")}
+              >
+                Manage Knowledge Sources
+              </Button>
             </div>
           </div>
         );
@@ -175,8 +181,14 @@ export default function ChatHistorySidebar() {
             <div className="p-3 border-b">
               <h3 className="font-semibold text-sm">Rules</h3>
             </div>
-            <div className="flex-1 overflow-y-auto p-3">
-              <p className="text-xs text-muted-foreground">No rules configured</p>
+            <div className="flex-1 overflow-y-auto p-2">
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-sm"
+                onClick={() => navigate("/rules")}
+              >
+                Manage Rules
+              </Button>
             </div>
           </div>
         );
@@ -282,6 +294,7 @@ export default function ChatHistorySidebar() {
           size="icon" 
           className="shrink-0"
           onMouseEnter={() => setOpenPopup('knowledge')}
+          onClick={() => navigate('/knowledge')}
         >
           <BookOpen className="w-5 h-5" />
         </Button>
@@ -292,6 +305,7 @@ export default function ChatHistorySidebar() {
           size="icon" 
           className="shrink-0"
           onMouseEnter={() => setOpenPopup('rules')}
+          onClick={() => navigate('/rules')}
         >
           <Shield className="w-5 h-5" />
         </Button>

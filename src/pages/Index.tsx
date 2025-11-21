@@ -6,18 +6,28 @@ import { InstructionManagement } from "@/components/InstructionManagement";
 import TopNavigation from "@/components/TopNavigation";
 import ChatHistorySidebar from "@/components/ChatHistorySidebar";
 import ProjectDetailView from "@/components/ProjectDetailView";
+import KnowledgeDashboard from "@/components/KnowledgeDashboard";
+import KnowledgeDetailView from "@/components/KnowledgeDetailView";
+import RulesDashboard from "@/components/RulesDashboard";
+import RulesDetailView from "@/components/RulesDetailView";
 
 const Index = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState("chat");
   const isProjectDetailView = location.pathname.match(/^\/projects\/[^/]+$/);
+  const isKnowledgeDetailView = location.pathname.match(/^\/knowledge\/[^/]+$/);
+  const isRulesDetailView = location.pathname.match(/^\/rules\/[^/]+$/);
 
   useEffect(() => {
     if (location.pathname === "/projects" || location.pathname.startsWith("/projects/")) {
       setActiveTab("projects");
     } else if (location.pathname === "/instructions") {
       setActiveTab("instructions");
+    } else if (location.pathname === "/knowledge" || location.pathname.startsWith("/knowledge/")) {
+      setActiveTab("knowledge");
+    } else if (location.pathname === "/rules" || location.pathname.startsWith("/rules/")) {
+      setActiveTab("rules");
     } else {
       setActiveTab("chat");
     }
@@ -29,14 +39,24 @@ const Index = () => {
       navigate("/projects");
     } else if (value === "instructions") {
       navigate("/instructions");
+    } else if (value === "knowledge") {
+      navigate("/knowledge");
+    } else if (value === "rules") {
+      navigate("/rules");
     } else {
       navigate("/");
     }
   };
 
-  // If viewing a specific project detail, render ProjectDetailView without sidebar
+  // If viewing a specific detail page, render without sidebar
   if (isProjectDetailView) {
     return <ProjectDetailView />;
+  }
+  if (isKnowledgeDetailView) {
+    return <KnowledgeDetailView />;
+  }
+  if (isRulesDetailView) {
+    return <RulesDetailView />;
   }
 
   return (
@@ -55,6 +75,8 @@ const Index = () => {
             <div className="flex-1 overflow-auto">
               {activeTab === "projects" && <ProjectsDashboard />}
               {activeTab === "instructions" && <InstructionManagement />}
+              {activeTab === "knowledge" && <KnowledgeDashboard />}
+              {activeTab === "rules" && <RulesDashboard />}
             </div>
           </div>
         </div>
