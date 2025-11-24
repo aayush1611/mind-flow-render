@@ -291,7 +291,7 @@ print(df)`,
 
               <div className="w-full max-w-2xl">
                 {/* Module Selector Dropdown - positioned above input */}
-                <div className="mb-2">
+                <div className="mb-2 flex justify-start">
                   <Popover open={isModulePopoverOpen} onOpenChange={setIsModulePopoverOpen}>
                     <PopoverTrigger asChild>
                       <Button
