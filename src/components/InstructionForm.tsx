@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -39,6 +39,7 @@ export const InstructionForm = ({
 }: InstructionFormProps) => {
   const isEditMode = !!initialData;
   const [step, setStep] = useState(1);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [formData, setFormData] = useState<InstructionFormData>(
     initialData || {
       heading: "",
@@ -47,6 +48,12 @@ export const InstructionForm = ({
       workflowSteps: [{ id: crypto.randomUUID(), content: "" }],
     }
   );
+
+  useEffect(() => {
+    if (scrollContainerRef.current && step === 2) {
+      scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
+    }
+  }, [formData.workflowSteps.length, step]);
 
   const addWorkflowStep = () => {
     setFormData({
@@ -348,7 +355,7 @@ export const InstructionForm = ({
               </Button>
             </div>
 
-            <div className="flex-1 overflow-y-auto space-y-3 pr-2">
+            <div ref={scrollContainerRef} className="flex-1 overflow-y-auto space-y-3 pr-2">
               {formData.workflowSteps.map((workflowStep, index) => (
                 <Card key={workflowStep.id} className="p-3">
                   <div className="flex gap-3 items-start">
