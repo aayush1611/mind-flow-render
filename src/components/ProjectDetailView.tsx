@@ -30,6 +30,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 import CreateKnowledgeForm from "@/components/CreateKnowledgeForm";
 import CreateProjectForm from "@/components/CreateProjectForm";
 import { toast } from "sonner";
@@ -57,6 +66,8 @@ const ProjectDetailView = () => {
   const [projectDescription, setProjectDescription] = useState("Advanced machine learning research and development project focusing on natural language processing.");
   const [showAddSourceForm, setShowAddSourceForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
+  const [showAddMembersModal, setShowAddMembersModal] = useState(false);
+  const [selectedMemberIds, setSelectedMemberIds] = useState<string[]>([]);
   
   // Mock projects data to determine user role for each project
   const projectRoles: Record<string, "admin" | "member"> = {
@@ -115,6 +126,16 @@ const ProjectDetailView = () => {
     },
   ]);
 
+  // Mock org members - all available members in the organization
+  const orgMembers = [
+    { id: "1", name: "John Doe", email: "john@example.com" },
+    { id: "2", name: "Jane Smith", email: "jane@example.com" },
+    { id: "3", name: "Bob Johnson", email: "bob@example.com" },
+    { id: "4", name: "Alice Williams", email: "alice@example.com" },
+    { id: "5", name: "Charlie Brown", email: "charlie@example.com" },
+    { id: "6", name: "Diana Prince", email: "diana@example.com" },
+  ];
+
   const handleSaveProject = (projectData: { name: string; description: string }) => {
     setProjectName(projectData.name);
     setProjectDescription(projectData.description);
@@ -142,6 +163,27 @@ const ProjectDetailView = () => {
     console.log("Adding knowledge source:", knowledgeData);
     toast.success("Knowledge source added successfully!");
     setShowAddSourceForm(false);
+  };
+
+  const handleOpenAddMembersModal = () => {
+    // Pre-select members already in the project
+    const currentMemberIds = members.map(m => m.id);
+    setSelectedMemberIds(currentMemberIds);
+    setShowAddMembersModal(true);
+  };
+
+  const handleToggleMember = (memberId: string) => {
+    setSelectedMemberIds(prev => 
+      prev.includes(memberId)
+        ? prev.filter(id => id !== memberId)
+        : [...prev, memberId]
+    );
+  };
+
+  const handleSaveMembers = () => {
+    console.log("Saving members:", selectedMemberIds);
+    toast.success("Members updated successfully!");
+    setShowAddMembersModal(false);
   };
 
   const getStatusColor = (status: string) => {
@@ -321,7 +363,7 @@ const ProjectDetailView = () => {
                     Members
                   </CardTitle>
                   {isAdmin && (
-                    <Button size="sm" variant="outline">
+                    <Button size="sm" variant="outline" onClick={handleOpenAddMembersModal}>
                       <UserPlus className="h-4 w-4" />
                     </Button>
                   )}
@@ -364,6 +406,47 @@ const ProjectDetailView = () => {
             </Card>
           </div>
         </div>
+
+        {/* Add Members Modal */}
+        <Dialog open={showAddMembersModal} onOpenChange={setShowAddMembersModal}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Add Members to Project</DialogTitle>
+              <DialogDescription>
+                Select members from your organization to add to this project.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-3 max-h-[400px] overflow-y-auto">
+              {orgMembers.map((member) => (
+                <div
+                  key={member.id}
+                  className="flex items-center space-x-3 border rounded-lg p-3"
+                >
+                  <Checkbox
+                    id={`member-${member.id}`}
+                    checked={selectedMemberIds.includes(member.id)}
+                    onCheckedChange={() => handleToggleMember(member.id)}
+                  />
+                  <label
+                    htmlFor={`member-${member.id}`}
+                    className="flex-1 cursor-pointer"
+                  >
+                    <p className="font-medium">{member.name}</p>
+                    <p className="text-sm text-muted-foreground">{member.email}</p>
+                  </label>
+                </div>
+              ))}
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowAddMembersModal(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleSaveMembers}>
+                Save Changes
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
