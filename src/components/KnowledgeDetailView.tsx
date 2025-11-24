@@ -21,17 +21,26 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/hooks/use-toast";
+import CreateKnowledgeForm from "@/components/CreateKnowledgeForm";
 
 const KnowledgeDetailView = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [isEditing, setIsEditing] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false);
   const [name, setName] = useState("Product Documentation");
   const [description, setDescription] = useState("Complete product documentation and user guides for all our software products.");
   const [showShareDialog, setShowShareDialog] = useState(false);
   
   // Mock data - replace with actual data
   const isAdmin = true;
+  const [knowledgeData, setKnowledgeData] = useState({
+    provider: "github" as "github" | "gitlab" | "azure-devops",
+    repoUrl: "https://github.com/example/docs",
+    repoBranch: "main",
+    isPrivate: false,
+    patToken: ""
+  });
   const knowledgeSource = {
     id: id || "kb-12345",
     status: "indexed",
@@ -68,6 +77,30 @@ const KnowledgeDetailView = () => {
 
   const handleSave = () => {
     setIsEditing(false);
+  };
+
+  const handleEditComplete = (updatedData: {
+    name: string;
+    description: string;
+    provider: string;
+    repoUrl: string;
+    repoBranch: string;
+    patToken?: string;
+  }) => {
+    setName(updatedData.name);
+    setDescription(updatedData.description);
+    setKnowledgeData({
+      provider: updatedData.provider as "github" | "gitlab" | "azure-devops",
+      repoUrl: updatedData.repoUrl,
+      repoBranch: updatedData.repoBranch,
+      isPrivate: !!updatedData.patToken,
+      patToken: updatedData.patToken || ""
+    });
+    setShowEditForm(false);
+    toast({
+      title: "Knowledge source updated",
+      description: "Your changes have been saved successfully."
+    });
   };
 
   const handleDelete = () => {
@@ -119,6 +152,29 @@ const KnowledgeDetailView = () => {
     }
   };
 
+  if (showEditForm) {
+    return (
+      <div className="h-full bg-background overflow-auto">
+        <div className="container mx-auto px-6 py-8">
+          <CreateKnowledgeForm
+            onClose={() => setShowEditForm(false)}
+            onComplete={handleEditComplete}
+            initialData={{
+              name,
+              description,
+              provider: knowledgeData.provider,
+              repoUrl: knowledgeData.repoUrl,
+              repoBranch: knowledgeData.repoBranch,
+              isPrivate: knowledgeData.isPrivate,
+              patToken: knowledgeData.patToken
+            }}
+            isEditMode={true}
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-5xl mx-auto space-y-8">
@@ -164,14 +220,16 @@ const KnowledgeDetailView = () => {
                 <div>
                   <div className="flex items-center gap-3">
                     <h1 className="text-3xl font-bold">{name}</h1>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setIsEditing(true)}
-                      className="h-8 w-8"
-                    >
-                      <Edit2 className="h-4 w-4" />
-                    </Button>
+                    {isAdmin && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setShowEditForm(true)}
+                        className="h-8 w-8"
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                    )}
                   </div>
                   <p className="text-muted-foreground mt-2">{description}</p>
                 </div>
