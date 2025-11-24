@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Memories from "./pages/Memories";
 import Mcp from "./pages/Mcp";
+import StarterPrompts from "./pages/StarterPrompts";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/rules" element={<Index />} />
             <Route path="/mcp" element={<Index />} />
             <Route path="/memories" element={<Memories />} />
+            <Route path="/starterPrompts" element={<StarterPrompts />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
