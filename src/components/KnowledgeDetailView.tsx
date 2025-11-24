@@ -52,6 +52,7 @@ const KnowledgeDetailView = () => {
 
   const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
   const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
+  const [shareWithOrganization, setShareWithOrganization] = useState(false);
   
   const mockProjects = [
     { id: "1", name: "AI Assistant Project" },
@@ -119,13 +120,21 @@ const KnowledgeDetailView = () => {
   };
 
   const handleShare = () => {
-    toast({
-      title: "Knowledge source shared",
-      description: `Shared with ${selectedProjects.length} projects and ${selectedMembers.length} members.`
-    });
+    if (shareWithOrganization) {
+      toast({
+        title: "Knowledge source shared",
+        description: "Shared with entire organization. All members now have access as viewers."
+      });
+    } else {
+      toast({
+        title: "Knowledge source shared",
+        description: `Shared with ${selectedProjects.length} projects and ${selectedMembers.length} members.`
+      });
+    }
     setShowShareDialog(false);
     setSelectedProjects([]);
     setSelectedMembers([]);
+    setShareWithOrganization(false);
   };
 
   const getIntegrationIcon = (type: string) => {
@@ -309,15 +318,41 @@ const KnowledgeDetailView = () => {
             <DialogHeader>
               <DialogTitle>Share Knowledge Source</DialogTitle>
             </DialogHeader>
+            
+            <div className="flex items-start space-x-3 p-4 border rounded-lg bg-muted/50">
+              <Checkbox
+                id="share-org"
+                checked={shareWithOrganization}
+                onCheckedChange={(checked) => {
+                  setShareWithOrganization(checked as boolean);
+                  if (checked) {
+                    setSelectedProjects([]);
+                    setSelectedMembers([]);
+                  }
+                }}
+              />
+              <div className="flex-1">
+                <label
+                  htmlFor="share-org"
+                  className="text-sm font-medium cursor-pointer"
+                >
+                  Share with entire organization
+                </label>
+                <p className="text-xs text-muted-foreground mt-1">
+                  All organization members will have view-only access. They won't be able to reload, share, or delete this knowledge source.
+                </p>
+              </div>
+            </div>
+
             <Tabs defaultValue="projects" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="projects">Projects</TabsTrigger>
-                <TabsTrigger value="members">Members</TabsTrigger>
+              <TabsList className={`grid w-full grid-cols-2 ${shareWithOrganization ? 'opacity-50 pointer-events-none' : ''}`}>
+                <TabsTrigger value="projects" disabled={shareWithOrganization}>Projects</TabsTrigger>
+                <TabsTrigger value="members" disabled={shareWithOrganization}>Members</TabsTrigger>
               </TabsList>
               
               <TabsContent value="projects" className="mt-4">
                 <ScrollArea className="h-[400px] pr-4">
-                  <div className="space-y-2">
+                  <div className={`space-y-2 ${shareWithOrganization ? 'opacity-50 pointer-events-none' : ''}`}>
                     {mockProjects.map((project) => (
                       <div key={project.id} className="flex items-center space-x-2 p-2 rounded-lg hover:bg-accent/50">
                         <Checkbox
@@ -345,7 +380,7 @@ const KnowledgeDetailView = () => {
               
               <TabsContent value="members" className="mt-4">
                 <ScrollArea className="h-[400px] pr-4">
-                  <div className="space-y-2">
+                  <div className={`space-y-2 ${shareWithOrganization ? 'opacity-50 pointer-events-none' : ''}`}>
                     {mockMembers.map((member) => (
                       <div key={member.id} className="flex items-center space-x-2 p-2 rounded-lg hover:bg-accent/50">
                         <Checkbox
@@ -379,8 +414,14 @@ const KnowledgeDetailView = () => {
               <Button variant="outline" onClick={() => setShowShareDialog(false)}>
                 Cancel
               </Button>
-              <Button onClick={handleShare} disabled={selectedProjects.length === 0 && selectedMembers.length === 0}>
-                Share ({selectedProjects.length + selectedMembers.length})
+              <Button 
+                onClick={handleShare} 
+                disabled={!shareWithOrganization && selectedProjects.length === 0 && selectedMembers.length === 0}
+              >
+                {shareWithOrganization 
+                  ? 'Share with Organization' 
+                  : `Share (${selectedProjects.length + selectedMembers.length})`
+                }
               </Button>
             </div>
           </DialogContent>
