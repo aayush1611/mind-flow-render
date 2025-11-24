@@ -22,6 +22,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import CreateKnowledgeForm from "@/components/CreateKnowledgeForm";
+import { toast } from "sonner";
 
 interface KnowledgeSource {
   id: string;
@@ -44,6 +46,7 @@ const ProjectDetailView = () => {
   const [isEditingProject, setIsEditingProject] = useState(false);
   const [projectName, setProjectName] = useState("AI Research Project");
   const [projectDescription, setProjectDescription] = useState("Advanced machine learning research and development project focusing on natural language processing.");
+  const [showAddSourceForm, setShowAddSourceForm] = useState(false);
   
   // Mock projects data to determine user role for each project
   const projectRoles: Record<string, "admin" | "member"> = {
@@ -123,6 +126,12 @@ const ProjectDetailView = () => {
     navigate("/projects");
   };
 
+  const handleAddKnowledgeSource = (knowledgeData: any) => {
+    console.log("Adding knowledge source:", knowledgeData);
+    toast.success("Knowledge source added successfully!");
+    setShowAddSourceForm(false);
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case "completed":
@@ -135,6 +144,19 @@ const ProjectDetailView = () => {
         return "bg-muted text-muted-foreground";
     }
   };
+
+  if (showAddSourceForm) {
+    return (
+      <div className="min-h-screen bg-background p-6">
+        <div className="max-w-7xl mx-auto">
+          <CreateKnowledgeForm 
+            onClose={() => setShowAddSourceForm(false)}
+            onComplete={handleAddKnowledgeSource}
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background p-6">
@@ -211,9 +233,9 @@ const ProjectDetailView = () => {
           )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           {/* Knowledge Sources Section */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-3">
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
@@ -222,7 +244,7 @@ const ProjectDetailView = () => {
                     Knowledge Sources
                   </CardTitle>
                   {isAdmin && (
-                    <Button size="sm">
+                    <Button size="sm" onClick={() => setShowAddSourceForm(true)}>
                       <Plus className="h-4 w-4 mr-2" />
                       Add Source
                     </Button>
@@ -262,12 +284,12 @@ const ProjectDetailView = () => {
                       )}
                     </div>
                     
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between text-sm">
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between text-xs">
                         <span className="text-muted-foreground">Indexing Progress</span>
                         <span className="font-medium">{source.indexedPercentage}%</span>
                       </div>
-                      <Progress value={source.indexedPercentage} />
+                      <Progress value={source.indexedPercentage} className="h-1.5" />
                     </div>
                   </div>
                 ))}
@@ -276,7 +298,7 @@ const ProjectDetailView = () => {
           </div>
 
           {/* Members Section */}
-          <div>
+          <div className="lg:col-span-2">
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
