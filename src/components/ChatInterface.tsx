@@ -482,42 +482,34 @@ print(df)`,
                 <div className="space-y-4">
                   {message.thinking && !message.isComplete && (
                     <div className="bg-gradient-to-br from-primary/5 to-accent/5 rounded-xl p-4 border border-primary/20">
-                      <button
-                        onClick={() =>
-                          setExpandedThinking(expandedThinking === message.id ? null : message.id)
-                        }
-                        className="flex items-center justify-between w-full text-left"
-                      >
-                        <div className="flex items-center gap-2">
-                          <Loader2 className="w-4 h-4 animate-spin text-primary" />
-                          <span className="font-medium">Thinking</span>
-                        </div>
-                        {expandedThinking === message.id ? (
-                          <ChevronUp className="w-4 h-4" />
-                        ) : (
-                          <ChevronDown className="w-4 h-4" />
-                        )}
-                      </button>
-
-                      {expandedThinking === message.id && (
-                        <div className="mt-4 space-y-2">
-                          {message.thinking.map((step) => (
+                      <div className="flex items-center gap-3">
+                        {(() => {
+                          const currentStep = message.thinking.find(s => s.status === "processing") || 
+                                            message.thinking[message.thinking.filter(s => s.status === "complete").length];
+                          return currentStep ? (
                             <button
-                              key={step.id}
-                              onClick={() => setSelectedProcessingStep({
-                                ...step,
-                                details: `Processing ${step.label.toLowerCase()}. This step involves analyzing the request and preparing necessary resources.`,
-                                logs: [
-                                  `[${new Date().toISOString()}] Step initiated: ${step.label}`,
-                                  `[${new Date().toISOString()}] Allocating resources...`,
-                                  `[${new Date().toISOString()}] Connecting to database...`,
-                                  `[${new Date().toISOString()}] Executing query...`,
-                                  step.status === "complete" ? `[${new Date().toISOString()}] Step completed successfully` : `[${new Date().toISOString()}] Step in progress...`,
-                                ]
-                              })}
+                              onClick={() => {
+                                setSelectedProcessingStep(null);
+                                setTimeout(() => {
+                                  setSelectedProcessingStep({
+                                    ...currentStep,
+                                    details: `Processing ${currentStep.label.toLowerCase()}. This step involves analyzing the request and preparing necessary resources.`,
+                                    logs: [
+                                      `[${new Date().toISOString()}] Step initiated: ${currentStep.label}`,
+                                      `[${new Date().toISOString()}] Allocating resources...`,
+                                      `[${new Date().toISOString()}] Connecting to database...`,
+                                      `[${new Date().toISOString()}] Executing query...`,
+                                      currentStep.status === "complete" ? `[${new Date().toISOString()}] Step completed successfully` : `[${new Date().toISOString()}] Step in progress...`,
+                                    ]
+                                  });
+                                }, 50);
+                              }}
                               className="flex items-start gap-3 w-full text-left hover:bg-accent/50 rounded-lg p-2 transition-colors"
                             >
-                              {step.status === "complete" && (
+                              {currentStep.status === "processing" && (
+                                <Loader2 className="w-5 h-5 animate-spin text-primary flex-shrink-0 mt-0.5" />
+                              )}
+                              {currentStep.status === "complete" && (
                                 <div className="w-5 h-5 rounded-full bg-success flex items-center justify-center flex-shrink-0 mt-0.5">
                                   <svg
                                     className="w-3 h-3 text-white"
@@ -532,24 +524,11 @@ print(df)`,
                                   </svg>
                                 </div>
                               )}
-                              {step.status === "processing" && (
-                                <Loader2 className="w-5 h-5 animate-spin text-primary flex-shrink-0 mt-0.5" />
-                              )}
-                              {step.status === "pending" && (
-                                <div className="w-5 h-5 rounded-full border-2 border-muted flex-shrink-0 mt-0.5" />
-                              )}
-                              <span
-                                className={cn(
-                                  "text-sm",
-                                  step.status === "pending" && "text-muted-foreground"
-                                )}
-                              >
-                                {step.label}
-                              </span>
+                              <span className="text-sm">{currentStep.label}</span>
                             </button>
-                          ))}
-                        </div>
-                      )}
+                          ) : null;
+                        })()}
+                      </div>
                     </div>
                   )}
 
@@ -575,17 +554,22 @@ print(df)`,
                           {message.thinking.map((step) => (
                             <button
                               key={step.id}
-                              onClick={() => setSelectedProcessingStep({
-                                ...step,
-                                details: `Processing ${step.label.toLowerCase()}. This step involves analyzing the request and preparing necessary resources.`,
-                                logs: [
-                                  `[${new Date().toISOString()}] Step initiated: ${step.label}`,
-                                  `[${new Date().toISOString()}] Allocating resources...`,
-                                  `[${new Date().toISOString()}] Connecting to database...`,
-                                  `[${new Date().toISOString()}] Executing query...`,
-                                  `[${new Date().toISOString()}] Step completed successfully`,
-                                ]
-                              })}
+                              onClick={() => {
+                                setSelectedProcessingStep(null);
+                                setTimeout(() => {
+                                  setSelectedProcessingStep({
+                                    ...step,
+                                    details: `Processing ${step.label.toLowerCase()}. This step involves analyzing the request and preparing necessary resources.`,
+                                    logs: [
+                                      `[${new Date().toISOString()}] Step initiated: ${step.label}`,
+                                      `[${new Date().toISOString()}] Allocating resources...`,
+                                      `[${new Date().toISOString()}] Connecting to database...`,
+                                      `[${new Date().toISOString()}] Executing query...`,
+                                      `[${new Date().toISOString()}] Step completed successfully`,
+                                    ]
+                                  });
+                                }, 50);
+                              }}
                               className="flex items-start gap-3 w-full text-left hover:bg-accent/50 rounded-lg p-2 transition-colors"
                             >
                               <div className="w-5 h-5 rounded-full bg-success flex items-center justify-center flex-shrink-0 mt-0.5">
