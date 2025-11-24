@@ -590,7 +590,7 @@ export default function ChatHistorySidebar({ isMobileExpanded = false, onNewChat
       {openPopup && !isMobileExpanded && (
         <div 
           className={cn(
-            "fixed left-16 top-0 h-screen bg-popover border-r shadow-md z-50",
+            "fixed left-20 top-0 h-screen bg-popover border-r shadow-md z-50",
             openPopup === 'chats' ? "w-80" : "w-64"
           )}
         >
