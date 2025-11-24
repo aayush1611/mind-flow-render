@@ -1,4 +1,4 @@
-import { X, Monitor, Cpu, CheckCircle2, Loader2 } from "lucide-react";
+import { X, Activity, CheckCircle2, Loader2, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -20,112 +20,105 @@ export default function ProcessingViewPanel({ step, onClose, className }: Proces
   return (
     <div 
       className={cn(
-        "fixed right-0 top-0 h-full w-[40%] bg-background border-l shadow-2xl z-40 flex flex-col animate-slide-in-right",
+        "fixed right-0 top-0 h-full w-[40%] bg-background border-l shadow-elegant z-40 flex flex-col animate-slide-in-right",
         className
       )}
     >
-      {/* Computer Header - Monitor Style */}
-      <div className="bg-gradient-to-b from-muted/50 to-background border-b flex flex-col shrink-0">
-        {/* Top Bar - Monitor Bezel */}
-        <div className="h-8 bg-muted/30 flex items-center justify-between px-4 border-b">
-          <div className="flex items-center gap-2">
-            <Monitor className="w-4 h-4 text-primary" />
-            <span className="text-xs font-semibold text-muted-foreground">PROCESSING VIEW</span>
+      {/* Header */}
+      <div className="bg-card border-b flex items-center justify-between px-4 py-3 shrink-0">
+        <div className="flex items-center gap-3">
+          <div className={cn(
+            "w-8 h-8 rounded-lg flex items-center justify-center shrink-0",
+            step.status === "complete" && "bg-success/10",
+            step.status === "processing" && "bg-primary/10",
+            step.status === "pending" && "bg-muted"
+          )}>
+            {step.status === "complete" && <CheckCircle2 className="w-4 h-4 text-success" />}
+            {step.status === "processing" && <Loader2 className="w-4 h-4 animate-spin text-primary" />}
+            {step.status === "pending" && <Clock className="w-4 h-4 text-muted-foreground" />}
           </div>
-          <Button
-            size="icon"
-            variant="ghost"
-            className="h-6 w-6 rounded-md"
-            onClick={onClose}
-            title="Close"
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
-        
-        {/* Step Info Header */}
-        <div className="px-4 py-4 space-y-3">
-          <div className="flex items-start gap-3">
-            <div className={cn(
-              "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
-              step.status === "complete" && "bg-green-500/10",
-              step.status === "processing" && "bg-primary/10",
-              step.status === "pending" && "bg-muted"
-            )}>
-              {step.status === "complete" && <CheckCircle2 className="w-5 h-5 text-green-500" />}
-              {step.status === "processing" && <Loader2 className="w-5 h-5 animate-spin text-primary" />}
-              {step.status === "pending" && <Cpu className="w-5 h-5 text-muted-foreground" />}
-            </div>
-            <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-sm mb-1">{step.label}</h3>
-              <div className={cn(
-                "text-xs font-medium px-2 py-1 rounded-md w-fit",
-                step.status === "complete" && "bg-green-500/10 text-green-500",
-                step.status === "processing" && "bg-primary/10 text-primary",
-                step.status === "pending" && "bg-muted text-muted-foreground"
-              )}>
-                {step.status === "complete" && "Completed"}
-                {step.status === "processing" && "Processing..."}
-                {step.status === "pending" && "Pending"}
-              </div>
-            </div>
+          <div>
+            <h3 className="font-semibold text-sm">Processing Details</h3>
+            <p className="text-xs text-muted-foreground">Step {step.id}</p>
           </div>
         </div>
+        <Button
+          size="icon"
+          variant="ghost"
+          className="h-8 w-8 rounded-md"
+          onClick={onClose}
+          title="Close"
+        >
+          <X className="h-4 w-4" />
+        </Button>
       </div>
 
-      {/* Content Area - Terminal/Console Like */}
-      <div className="flex-1 overflow-auto bg-muted/20">
+      {/* Content Area */}
+      <div className="flex-1 overflow-auto">
         <div className="p-4 space-y-4">
+          {/* Step Status Card */}
+          <div className="bg-card rounded-xl border p-4 shadow-sm">
+            <div className="flex items-center gap-2 mb-3">
+              <Activity className="w-4 h-4 text-primary" />
+              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Current Step</span>
+            </div>
+            <h4 className="font-medium text-sm mb-2">{step.label}</h4>
+            <div className={cn(
+              "inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-md",
+              step.status === "complete" && "bg-success/10 text-success",
+              step.status === "processing" && "bg-primary/10 text-primary",
+              step.status === "pending" && "bg-muted text-muted-foreground"
+            )}>
+              {step.status === "complete" && <CheckCircle2 className="w-3 h-3" />}
+              {step.status === "processing" && <Loader2 className="w-3 h-3 animate-spin" />}
+              {step.status === "pending" && <Clock className="w-3 h-3" />}
+              <span className="capitalize">{step.status}</span>
+            </div>
+          </div>
+
           {/* Step Details */}
           {step.details && (
-            <div className="bg-card rounded-lg border p-4 space-y-2">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Details</span>
-              </div>
+            <div className="bg-card rounded-xl border p-4 shadow-sm">
+              <h5 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Details</h5>
               <p className="text-sm text-foreground leading-relaxed">{step.details}</p>
             </div>
           )}
 
           {/* Process Logs */}
-          <div className="bg-card rounded-lg border overflow-hidden">
-            <div className="bg-muted/50 px-4 py-2 border-b flex items-center gap-2">
-              <div className="flex gap-1.5">
-                <div className="w-3 h-3 rounded-full bg-red-500/80" />
-                <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-                <div className="w-3 h-3 rounded-full bg-green-500/80" />
-              </div>
-              <span className="text-xs font-mono text-muted-foreground ml-2">process.log</span>
+          <div className="bg-card rounded-xl border overflow-hidden shadow-sm">
+            <div className="bg-muted/30 px-4 py-2.5 border-b">
+              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Process Logs</span>
             </div>
             
-            <div className="p-4 font-mono text-xs space-y-1.5 bg-muted/20 max-h-[400px] overflow-auto">
+            <div className="p-4 font-mono text-xs space-y-1.5 bg-muted/5 max-h-[400px] overflow-auto">
               {step.logs && step.logs.length > 0 ? (
                 step.logs.map((log, idx) => (
-                  <div key={idx} className="flex gap-3 text-foreground/90">
-                    <span className="text-muted-foreground select-none">{String(idx + 1).padStart(3, '0')}</span>
-                    <span className="flex-1">{log}</span>
+                  <div key={idx} className="flex gap-3 hover:bg-accent/5 px-2 py-1 rounded transition-colors">
+                    <span className="text-muted-foreground select-none shrink-0">{String(idx + 1).padStart(2, '0')}</span>
+                    <span className="flex-1 text-foreground/90">{log}</span>
                   </div>
                 ))
               ) : (
-                <div className="text-muted-foreground italic">No logs available for this step</div>
+                <div className="text-muted-foreground italic text-center py-4">No logs available</div>
               )}
             </div>
           </div>
 
-          {/* System Info */}
-          <div className="bg-card rounded-lg border p-4 space-y-3">
-            <div className="flex items-center gap-2 mb-3">
-              <Cpu className="w-4 h-4 text-primary" />
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">System Info</span>
-            </div>
-            <div className="grid grid-cols-2 gap-3 text-xs">
-              <div className="space-y-1">
-                <div className="text-muted-foreground">Step ID</div>
-                <div className="font-mono font-medium">{step.id}</div>
+          {/* Metadata */}
+          <div className="bg-card rounded-xl border p-4 shadow-sm">
+            <h5 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Metadata</h5>
+            <div className="space-y-2.5">
+              <div className="flex justify-between items-center py-1.5 border-b border-border/50">
+                <span className="text-xs text-muted-foreground">Step ID</span>
+                <span className="text-xs font-mono font-medium">{step.id}</span>
               </div>
-              <div className="space-y-1">
-                <div className="text-muted-foreground">Status</div>
-                <div className="font-mono font-medium capitalize">{step.status}</div>
+              <div className="flex justify-between items-center py-1.5 border-b border-border/50">
+                <span className="text-xs text-muted-foreground">Status</span>
+                <span className="text-xs font-medium capitalize">{step.status}</span>
+              </div>
+              <div className="flex justify-between items-center py-1.5">
+                <span className="text-xs text-muted-foreground">Type</span>
+                <span className="text-xs font-medium">Processing Step</span>
               </div>
             </div>
           </div>
