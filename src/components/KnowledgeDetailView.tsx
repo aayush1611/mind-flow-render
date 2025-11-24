@@ -314,7 +314,7 @@ const KnowledgeDetailView = () => {
         </div>
 
         <Dialog open={showShareDialog} onOpenChange={setShowShareDialog}>
-          <DialogContent className="max-w-2xl max-h-[80vh]">
+          <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col">
             <DialogHeader>
               <DialogTitle>Share Knowledge Source</DialogTitle>
             </DialogHeader>
@@ -330,8 +330,9 @@ const KnowledgeDetailView = () => {
                     setSelectedMembers([]);
                   }
                 }}
+                className="mt-1"
               />
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <label
                   htmlFor="share-org"
                   className="text-base font-semibold cursor-pointer block"
@@ -344,14 +345,14 @@ const KnowledgeDetailView = () => {
               </div>
             </div>
 
-            <Tabs defaultValue="projects" className="w-full">
+            <Tabs defaultValue="projects" className="w-full flex-1 overflow-hidden flex flex-col">
               <TabsList className={`grid w-full grid-cols-2 ${shareWithOrganization ? 'opacity-50 pointer-events-none' : ''}`}>
                 <TabsTrigger value="projects" disabled={shareWithOrganization}>Projects</TabsTrigger>
                 <TabsTrigger value="members" disabled={shareWithOrganization}>Members</TabsTrigger>
               </TabsList>
               
-              <TabsContent value="projects" className="mt-4">
-                <ScrollArea className="h-[400px] pr-4">
+              <TabsContent value="projects" className="mt-4 flex-1 overflow-hidden">
+                <ScrollArea className="h-[300px] pr-4">
                   <div className={`space-y-2 ${shareWithOrganization ? 'opacity-50 pointer-events-none' : ''}`}>
                     {mockProjects.map((project) => (
                       <div key={project.id} className="flex items-center space-x-2 p-2 rounded-lg hover:bg-accent/50">
@@ -378,8 +379,8 @@ const KnowledgeDetailView = () => {
                 </ScrollArea>
               </TabsContent>
               
-              <TabsContent value="members" className="mt-4">
-                <ScrollArea className="h-[400px] pr-4">
+              <TabsContent value="members" className="mt-4 flex-1 overflow-hidden">
+                <ScrollArea className="h-[300px] pr-4">
                   <div className={`space-y-2 ${shareWithOrganization ? 'opacity-50 pointer-events-none' : ''}`}>
                     {mockMembers.map((member) => (
                       <div key={member.id} className="flex items-center space-x-2 p-2 rounded-lg hover:bg-accent/50">
@@ -410,7 +411,7 @@ const KnowledgeDetailView = () => {
               </TabsContent>
             </Tabs>
 
-            <div className="flex justify-end gap-2 pt-4 border-t">
+            <div className="flex justify-end gap-2 pt-4 border-t mt-auto">
               <Button variant="outline" onClick={() => setShowShareDialog(false)}>
                 Cancel
               </Button>
@@ -419,7 +420,7 @@ const KnowledgeDetailView = () => {
                 disabled={!shareWithOrganization && selectedProjects.length === 0 && selectedMembers.length === 0}
               >
                 {shareWithOrganization 
-                  ? 'Share with Organization' 
+                  ? 'Share with Organisation' 
                   : `Share (${selectedProjects.length + selectedMembers.length})`
                 }
               </Button>
