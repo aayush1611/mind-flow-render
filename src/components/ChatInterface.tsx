@@ -6,7 +6,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Send, Loader2, ChevronDown, ChevronUp, Download, FileCode, BarChart3, Star, Sparkles, Puzzle, X } from "lucide-react";
+import { Send, Loader2, ChevronDown, ChevronUp, Download, FileCode, BarChart3, Star, Sparkles, Puzzle, X, Copy, CheckCircle2, XCircle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import ReactECharts from "echarts-for-react";
 
@@ -122,9 +123,12 @@ export default function ChatInterface() {
   const [selectedPill, setSelectedPill] = useState<string | null>(null);
   const [selectedApp, setSelectedApp] = useState<string | null>(null);
   const [selectedModule, setSelectedModule] = useState<string | null>(null);
+  const [tempSelectedModule, setTempSelectedModule] = useState<string | null>(null);
   const [isModulePopoverOpen, setIsModulePopoverOpen] = useState(false);
+  const [openFilePreview, setOpenFilePreview] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
   const currentSuggestions = selectedModule
     ? suggestionsByModule[selectedModule as keyof typeof suggestionsByModule] || suggestionsByApp.default
@@ -349,7 +353,7 @@ print(df)`,
                               Choose a module to integrate with your query
                             </p>
                           </div>
-                          <RadioGroup value={selectedModule || ""} onValueChange={setSelectedModule}>
+                          <RadioGroup value={tempSelectedModule || ""} onValueChange={setTempSelectedModule}>
                             <div className="space-y-3">
                               {mockModules.map((module) => (
                                 <div key={module.id} className="flex items-center space-x-2">
@@ -373,6 +377,7 @@ print(df)`,
                               variant="outline"
                               className="flex-1"
                               onClick={() => {
+                                setTempSelectedModule(null);
                                 setSelectedModule(null);
                                 setIsModulePopoverOpen(false);
                               }}
@@ -382,8 +387,11 @@ print(df)`,
                             <Button
                               size="sm"
                               className="flex-1"
-                              onClick={() => setIsModulePopoverOpen(false)}
-                              disabled={!selectedModule}
+                              onClick={() => {
+                                setSelectedModule(tempSelectedModule);
+                                setIsModulePopoverOpen(false);
+                              }}
+                              disabled={!tempSelectedModule}
                             >
                               Apply
                             </Button>
@@ -460,7 +468,7 @@ print(df)`,
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {message.thinking && (
+                  {message.thinking && !message.isComplete && (
                     <div className="bg-gradient-to-br from-primary/5 to-accent/5 rounded-xl p-4 border border-primary/20">
                       <button
                         onClick={() =>
@@ -519,6 +527,48 @@ print(df)`,
                     </div>
                   )}
 
+                  {message.thinking && message.isComplete && (
+                    <div className="bg-gradient-to-br from-primary/5 to-accent/5 rounded-xl p-4 border border-primary/20">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-green-500" />
+                          <span className="font-medium text-sm">All steps completed</span>
+                        </div>
+                        <button
+                          onClick={() =>
+                            setExpandedThinking(expandedThinking === message.id ? null : message.id)
+                          }
+                          className="text-xs text-muted-foreground hover:text-foreground"
+                        >
+                          {expandedThinking === message.id ? "Hide details" : "Show details"}
+                        </button>
+                      </div>
+
+                      {expandedThinking === message.id && (
+                        <div className="mt-4 space-y-2">
+                          {message.thinking.map((step) => (
+                            <div key={step.id} className="flex items-start gap-3">
+                              <div className="w-5 h-5 rounded-full bg-success flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <svg
+                                  className="w-3 h-3 text-white"
+                                  fill="none"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  viewBox="0 0 24 24"
+                                  stroke="currentColor"
+                                >
+                                  <path d="M5 13l4 4L19 7" />
+                                </svg>
+                              </div>
+                              <span className="text-sm">{step.label}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   {(message.content || (message.attachments && message.attachments.length > 0)) && (
                     <div className="bg-card rounded-2xl p-3 md:p-4 border shadow-sm">
                       {message.content && (
@@ -526,7 +576,8 @@ print(df)`,
                       )}
 
                       {message.attachments && message.attachments.length > 0 && (
-                      <div className="mt-4 space-y-3">
+                      <div className={cn("mt-4", openFilePreview ? "flex gap-4" : "space-y-3")}>
+                        <div className={cn(openFilePreview ? "flex-1" : "w-full", "space-y-3")}>
                           {message.attachments.map((attachment, idx) => (
                           <div key={idx}>
                             {attachment.type === "chart" && (
@@ -544,9 +595,24 @@ print(df)`,
                                       {attachment.language} Code
                                     </span>
                                   </div>
-                                  <Button variant="ghost" size="sm">
-                                    <Download className="w-4 h-4" />
-                                  </Button>
+                                  <div className="flex items-center gap-2">
+                                    <Button 
+                                      variant="ghost" 
+                                      size="sm"
+                                      onClick={() => {
+                                        navigator.clipboard.writeText(attachment.content || "");
+                                        toast({
+                                          title: "Copied!",
+                                          description: "Code copied to clipboard",
+                                        });
+                                      }}
+                                    >
+                                      <Copy className="w-4 h-4" />
+                                    </Button>
+                                    <Button variant="ghost" size="sm">
+                                      <Download className="w-4 h-4" />
+                                    </Button>
+                                  </div>
                                 </div>
                                 <pre className="p-4 overflow-x-auto text-sm">
                                   <code>{attachment.content}</code>
@@ -555,7 +621,19 @@ print(df)`,
                             )}
 
                             {attachment.type === "file" && (
-                              <div className="bg-card border rounded-lg p-4 flex items-center justify-between hover:shadow-hover transition-shadow">
+                              <div 
+                                className={cn(
+                                  "bg-card border rounded-lg p-4 flex items-center justify-between transition-all cursor-pointer",
+                                  openFilePreview === attachment.fileName 
+                                    ? "shadow-lg ring-2 ring-primary" 
+                                    : "hover:shadow-hover"
+                                )}
+                                onClick={() => {
+                                  if (attachment.fileType === "pdf" || attachment.fileType === "excel") {
+                                    setOpenFilePreview(openFilePreview === attachment.fileName ? null : attachment.fileName);
+                                  }
+                                }}
+                              >
                                 <div className="flex items-center gap-3">
                                   {attachment.fileType === "pdf" ? (
                                     <div className="w-10 h-10 rounded-lg bg-red-100 dark:bg-red-950 flex items-center justify-center">
@@ -573,13 +651,36 @@ print(df)`,
                                     <p className="text-xs text-muted-foreground">{attachment.fileSize}</p>
                                   </div>
                                 </div>
-                                <Button variant="ghost" size="icon">
+                                <Button variant="ghost" size="icon" onClick={(e) => e.stopPropagation()}>
                                   <Download className="w-4 h-4" />
                                 </Button>
                               </div>
                             )}
                           </div>
                         ))}
+                        </div>
+
+                        {openFilePreview && (
+                          <div className="w-[40%] border rounded-lg bg-card overflow-hidden flex flex-col">
+                            <div className="bg-secondary px-4 py-3 border-b flex items-center justify-between">
+                              <span className="text-sm font-medium">{openFilePreview}</span>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-7 w-7"
+                                onClick={() => setOpenFilePreview(null)}
+                              >
+                                <X className="w-4 h-4" />
+                              </Button>
+                            </div>
+                            <div className="flex-1 p-4 overflow-auto">
+                              <div className="text-sm text-muted-foreground text-center py-8">
+                                {openFilePreview.endsWith('.pdf') ? 'PDF Preview' : 'Excel Preview'}
+                                <div className="mt-2 text-xs">Content preview would appear here</div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
 
@@ -698,7 +799,7 @@ print(df)`,
                             Choose a module to integrate with your query
                           </p>
                         </div>
-                        <RadioGroup value={selectedModule || ""} onValueChange={setSelectedModule}>
+                        <RadioGroup value={tempSelectedModule || ""} onValueChange={setTempSelectedModule}>
                           <div className="space-y-3">
                             {mockModules.map((module) => (
                               <div key={module.id} className="flex items-center space-x-2">
@@ -722,6 +823,7 @@ print(df)`,
                             variant="outline"
                             className="flex-1"
                             onClick={() => {
+                              setTempSelectedModule(null);
                               setSelectedModule(null);
                               setIsModulePopoverOpen(false);
                             }}
@@ -731,8 +833,11 @@ print(df)`,
                           <Button
                             size="sm"
                             className="flex-1"
-                            onClick={() => setIsModulePopoverOpen(false)}
-                            disabled={!selectedModule}
+                            onClick={() => {
+                              setSelectedModule(tempSelectedModule);
+                              setIsModulePopoverOpen(false);
+                            }}
+                            disabled={!tempSelectedModule}
                           >
                             Apply
                           </Button>
