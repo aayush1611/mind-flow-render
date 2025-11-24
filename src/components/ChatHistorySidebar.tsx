@@ -302,6 +302,7 @@ export default function ChatHistorySidebar({ isMobileExpanded = false, onNewChat
           size={isMobileExpanded ? "default" : "icon"}
           className={cn("shrink-0", isMobileExpanded && "w-full justify-start")}
           onClick={handleNewChat}
+          onMouseEnter={() => setOpenPopup(null)}
         >
           <Plus className="w-5 h-5" />
           {isMobileExpanded && <span className="ml-2">New Chat</span>}
