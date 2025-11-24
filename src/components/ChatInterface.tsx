@@ -304,9 +304,9 @@ print(df)`,
                         </span>
                         <ChevronDown className="w-4 h-4 ml-1" />
                       </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-80 bg-popover z-50" align="start">
-                      <div className="space-y-4">
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80 bg-popover z-50" align="start" side="top">
+                    <div className="space-y-4">
                         <div>
                           <h4 className="font-semibold text-sm mb-1">Select Integration Module</h4>
                           <p className="text-xs text-muted-foreground">
@@ -767,7 +767,7 @@ print(df)`,
                       <ChevronDown className="w-4 h-4 ml-1" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-80 bg-popover z-50" align="start">
+                  <PopoverContent className="w-80 bg-popover z-50" align="start" side="top">
                     <div className="space-y-4">
                       <div>
                         <h4 className="font-semibold text-sm mb-1">Select Integration Module</h4>
