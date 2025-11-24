@@ -276,8 +276,8 @@ export const InstructionForm = ({
         </div>
       </div>
 
-      {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto py-6">
+      {/* Content Area */}
+      <div className="flex-1 overflow-hidden flex flex-col py-6">
         {step === 1 && (
           <Card className="p-6 space-y-6">
             <div className="space-y-2">
@@ -334,8 +334,8 @@ export const InstructionForm = ({
         )}
 
         {step === 2 && (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
+          <div className="flex flex-col h-full overflow-hidden">
+            <div className="shrink-0 flex items-center justify-between mb-4">
               <Label>Workflow Steps</Label>
               <Button
                 type="button"
@@ -348,7 +348,7 @@ export const InstructionForm = ({
               </Button>
             </div>
 
-            <div className="space-y-3">
+            <div className="flex-1 overflow-y-auto space-y-3 pr-2">
               {formData.workflowSteps.map((workflowStep, index) => (
                 <Card key={workflowStep.id} className="p-3">
                   <div className="flex gap-3 items-start">
