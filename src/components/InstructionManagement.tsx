@@ -94,8 +94,8 @@ export const InstructionManagement = () => {
 
   if (showForm) {
     return (
-      <div className="h-full bg-background overflow-auto">
-        <div className="container mx-auto px-6 py-8 max-w-4xl">
+      <div className="h-full bg-background flex flex-col">
+        <div className="container mx-auto px-6 py-8 max-w-4xl flex-1 flex flex-col overflow-hidden">
           <InstructionForm
             initialData={editingInstruction || undefined}
             onSave={handleSave}
