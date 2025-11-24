@@ -113,13 +113,6 @@ export default function ChatHistorySidebar({ isMobileExpanded = false, onNewChat
                 >
                   Doffle
                 </Button>
-                <Button
-                  variant="ghost"
-                  className="justify-start text-sm"
-                  onClick={() => navigate("/memories")}
-                >
-                  Memories
-                </Button>
               </div>
             </div>
           </div>
@@ -224,6 +217,23 @@ export default function ChatHistorySidebar({ isMobileExpanded = false, onNewChat
                 onClick={() => navigate("/mcp")}
               >
                 Manage MCP Servers
+              </Button>
+            </div>
+          </div>
+        );
+      case 'memories':
+        return (
+          <div className="h-full flex flex-col">
+            <div className="p-3 border-b">
+              <h3 className="font-semibold text-sm">Memories</h3>
+            </div>
+            <div className="flex-1 overflow-y-auto p-2">
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-sm"
+                onClick={() => navigate("/memories")}
+              >
+                Manage Memories
               </Button>
             </div>
           </div>
@@ -374,6 +384,7 @@ export default function ChatHistorySidebar({ isMobileExpanded = false, onNewChat
           variant="ghost" 
           size={isMobileExpanded ? "default" : "icon"}
           className={cn("shrink-0", isMobileExpanded && "w-full justify-start")}
+          onMouseEnter={() => !isMobileExpanded && setOpenPopup('memories')}
           onClick={() => navigate('/memories')}
         >
           <Brain className="w-5 h-5" />
