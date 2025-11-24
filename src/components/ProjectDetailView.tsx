@@ -13,7 +13,9 @@ import {
   UserPlus, 
   Plus,
   FileText,
-  Users
+  Users,
+  MoreVertical,
+  Sparkles
 } from "lucide-react";
 import {
   Select,
@@ -22,6 +24,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import CreateKnowledgeForm from "@/components/CreateKnowledgeForm";
 import CreateProjectForm from "@/components/CreateProjectForm";
 import { toast } from "sonner";
@@ -197,14 +205,29 @@ const ProjectDetailView = () => {
                 <div className="flex items-center gap-3">
                   <h1 className="text-3xl font-bold">{projectName}</h1>
                   {isAdmin && (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setShowEditForm(true)}
-                      className="h-8 w-8"
-                    >
-                      <Edit2 className="h-4 w-4" />
-                    </Button>
+                    <>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setShowEditForm(true)}
+                        className="h-8 w-8"
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="start">
+                          <DropdownMenuItem onClick={() => navigate("/starterPrompts")}>
+                            <Sparkles className="h-4 w-4 mr-2" />
+                            Manage Starter Prompts
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </>
                   )}
                 </div>
                 <p className="text-muted-foreground mt-2">{projectDescription}</p>
