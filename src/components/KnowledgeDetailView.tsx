@@ -13,22 +13,12 @@ import {
   RefreshCw,
   Share2,
   FileText,
-  Upload,
   Github,
   GitBranch
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/hooks/use-toast";
-
-interface Document {
-  id: string;
-  name: string;
-  type: string;
-  size: string;
-  uploadedAt: string;
-  status: "indexed" | "processing" | "failed";
-}
 
 const KnowledgeDetailView = () => {
   const navigate = useNavigate();
@@ -63,33 +53,6 @@ const KnowledgeDetailView = () => {
     { id: "2", name: "Jane Smith", email: "jane@example.com" },
     { id: "3", name: "Bob Johnson", email: "bob@example.com" }
   ];
-  
-  const [documents] = useState<Document[]>([
-    {
-      id: "1",
-      name: "User Manual v2.0.pdf",
-      type: "PDF",
-      size: "2.4 MB",
-      uploadedAt: "2024-01-15",
-      status: "indexed",
-    },
-    {
-      id: "2",
-      name: "API Documentation.md",
-      type: "Markdown",
-      size: "156 KB",
-      uploadedAt: "2024-01-18",
-      status: "processing",
-    },
-    {
-      id: "3",
-      name: "Quick Start Guide.pdf",
-      type: "PDF",
-      size: "980 KB",
-      uploadedAt: "2024-01-10",
-      status: "indexed",
-    },
-  ]);
 
   const handleSave = () => {
     setIsEditing(false);
@@ -146,7 +109,7 @@ const KnowledgeDetailView = () => {
 
   return (
     <div className="min-h-screen bg-background p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
+      <div className="max-w-5xl mx-auto space-y-8">
         <div className="flex items-start gap-4">
           <Button
             variant="ghost"
@@ -203,9 +166,12 @@ const KnowledgeDetailView = () => {
               )}
             </div>
 
-            <Card>
-              <CardContent className="pt-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Card className="border-2">
+              <CardHeader>
+                <CardTitle>Knowledge Source Details</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div>
                     <p className="text-sm text-muted-foreground mb-1">ID</p>
                     <p className="font-mono text-sm">{knowledgeSource.id}</p>
@@ -234,11 +200,11 @@ const KnowledgeDetailView = () => {
                     <p className="text-sm text-muted-foreground mb-1">Last Indexed</p>
                     <p>{new Date(knowledgeSource.lastIndexedAt).toLocaleDateString()}</p>
                   </div>
-                  <div className="lg:col-span-3">
-                    <p className="text-sm text-muted-foreground mb-2">Indexing Progress</p>
-                    <div className="flex items-center gap-3">
-                      <Progress value={knowledgeSource.indexingProgress} className="flex-1" />
-                      <span className="text-sm font-medium">{knowledgeSource.indexingProgress}%</span>
+                  <div className="md:col-span-2">
+                    <p className="text-sm font-medium mb-3">Indexing Progress</p>
+                    <div className="flex items-center gap-4">
+                      <Progress value={knowledgeSource.indexingProgress} className="flex-1 h-2" />
+                      <span className="text-lg font-semibold min-w-[3rem]">{knowledgeSource.indexingProgress}%</span>
                     </div>
                   </div>
                 </div>
@@ -246,72 +212,27 @@ const KnowledgeDetailView = () => {
             </Card>
 
             {isAdmin && (
-              <div className="flex gap-2">
-                <Button variant="outline" onClick={handleReload}>
-                  <RefreshCw className="h-4 w-4 mr-2" />
-                  Reload Details
-                </Button>
-                <Button variant="outline" onClick={() => setShowShareDialog(true)}>
-                  <Share2 className="h-4 w-4 mr-2" />
-                  Share
-                </Button>
-                <Button variant="destructive" onClick={handleDelete}>
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Delete
-                </Button>
-              </div>
+              <Card className="bg-muted/50">
+                <CardContent className="pt-6">
+                  <div className="flex flex-wrap gap-3">
+                    <Button variant="outline" onClick={handleReload} className="flex-1 sm:flex-none">
+                      <RefreshCw className="h-4 w-4 mr-2" />
+                      Reload Details
+                    </Button>
+                    <Button variant="outline" onClick={() => setShowShareDialog(true)} className="flex-1 sm:flex-none">
+                      <Share2 className="h-4 w-4 mr-2" />
+                      Share
+                    </Button>
+                    <Button variant="destructive" onClick={handleDelete} className="flex-1 sm:flex-none">
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Delete
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             )}
           </div>
         </div>
-
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="h-5 w-5" />
-                Documents
-              </CardTitle>
-              <Button size="sm">
-                <Upload className="h-4 w-4 mr-2" />
-                Upload Document
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {documents.map((doc) => (
-              <div
-                key={doc.id}
-                className="border rounded-lg p-4 space-y-3"
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3">
-                      <h3 className="font-semibold">{doc.name}</h3>
-                      <Badge
-                        variant="outline"
-                        className={getStatusColor(doc.status)}
-                      >
-                        {doc.status}
-                      </Badge>
-                    </div>
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
-                      <span>{doc.type}</span>
-                      <span>{doc.size}</span>
-                      <span>Uploaded {new Date(doc.uploadedAt).toLocaleDateString()}</span>
-                    </div>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-destructive hover:text-destructive"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
 
         <Dialog open={showShareDialog} onOpenChange={setShowShareDialog}>
           <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
