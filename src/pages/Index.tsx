@@ -11,6 +11,7 @@ import KnowledgeDetailView from "@/components/KnowledgeDetailView";
 import RulesDashboard from "@/components/RulesDashboard";
 import Mcp from "@/pages/Mcp";
 import Memories from "@/pages/Memories";
+import ChatThreads from "@/pages/ChatThreads";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 
@@ -22,6 +23,7 @@ const Index = () => {
   const [chatKey, setChatKey] = useState(0);
   const isProjectDetailView = location.pathname.match(/^\/projects\/[^/]+$/);
   const isKnowledgeDetailView = location.pathname.match(/^\/knowledge\/[^/]+$/);
+  const isChatThreadsView = location.pathname === "/chatThreads";
 
   const handleNewChat = () => {
     setChatKey(prev => prev + 1);
@@ -40,6 +42,8 @@ const Index = () => {
       setActiveTab("mcp");
     } else if (location.pathname === "/memories") {
       setActiveTab("memories");
+    } else if (location.pathname === "/chatThreads") {
+      setActiveTab("chat");
     } else {
       setActiveTab("chat");
     }
@@ -70,6 +74,9 @@ const Index = () => {
   }
   if (isKnowledgeDetailView) {
     return <KnowledgeDetailView />;
+  }
+  if (isChatThreadsView) {
+    return <ChatThreads />;
   }
 
   return (
