@@ -6,6 +6,8 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
   ArrowLeft, 
   Edit2, 
@@ -45,13 +47,23 @@ const KnowledgeDetailView = () => {
   const mockProjects = [
     { id: "1", name: "AI Assistant Project" },
     { id: "2", name: "Dashboard Analytics" },
-    { id: "3", name: "Mobile App" }
+    { id: "3", name: "Mobile App" },
+    { id: "4", name: "E-commerce Platform" },
+    { id: "5", name: "Social Media Integration" },
+    { id: "6", name: "Payment Gateway" },
+    { id: "7", name: "Customer Portal" },
+    { id: "8", name: "Admin Dashboard" }
   ];
   
   const mockMembers = [
     { id: "1", name: "John Doe", email: "john@example.com" },
     { id: "2", name: "Jane Smith", email: "jane@example.com" },
-    { id: "3", name: "Bob Johnson", email: "bob@example.com" }
+    { id: "3", name: "Bob Johnson", email: "bob@example.com" },
+    { id: "4", name: "Alice Williams", email: "alice@example.com" },
+    { id: "5", name: "Charlie Brown", email: "charlie@example.com" },
+    { id: "6", name: "Diana Prince", email: "diana@example.com" },
+    { id: "7", name: "Eve Anderson", email: "eve@example.com" },
+    { id: "8", name: "Frank Miller", email: "frank@example.com" }
   ];
 
   const handleSave = () => {
@@ -235,76 +247,83 @@ const KnowledgeDetailView = () => {
         </div>
 
         <Dialog open={showShareDialog} onOpenChange={setShowShareDialog}>
-          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogContent className="max-w-2xl max-h-[80vh]">
             <DialogHeader>
               <DialogTitle>Share Knowledge Source</DialogTitle>
             </DialogHeader>
-            <div className="space-y-6 py-4">
-              <div>
-                <h3 className="text-sm font-medium mb-3">Share with Projects</h3>
-                <div className="space-y-2">
-                  {mockProjects.map((project) => (
-                    <div key={project.id} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={`project-${project.id}`}
-                        checked={selectedProjects.includes(project.id)}
-                        onCheckedChange={(checked) => {
-                          if (checked) {
-                            setSelectedProjects([...selectedProjects, project.id]);
-                          } else {
-                            setSelectedProjects(selectedProjects.filter((id) => id !== project.id));
-                          }
-                        }}
-                      />
-                      <label
-                        htmlFor={`project-${project.id}`}
-                        className="text-sm cursor-pointer"
-                      >
-                        {project.name}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div>
+            <Tabs defaultValue="projects" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="projects">Projects</TabsTrigger>
+                <TabsTrigger value="members">Members</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="projects" className="mt-4">
+                <ScrollArea className="h-[400px] pr-4">
+                  <div className="space-y-2">
+                    {mockProjects.map((project) => (
+                      <div key={project.id} className="flex items-center space-x-2 p-2 rounded-lg hover:bg-accent/50">
+                        <Checkbox
+                          id={`project-${project.id}`}
+                          checked={selectedProjects.includes(project.id)}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              setSelectedProjects([...selectedProjects, project.id]);
+                            } else {
+                              setSelectedProjects(selectedProjects.filter((id) => id !== project.id));
+                            }
+                          }}
+                        />
+                        <label
+                          htmlFor={`project-${project.id}`}
+                          className="text-sm cursor-pointer flex-1"
+                        >
+                          {project.name}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+              </TabsContent>
+              
+              <TabsContent value="members" className="mt-4">
+                <ScrollArea className="h-[400px] pr-4">
+                  <div className="space-y-2">
+                    {mockMembers.map((member) => (
+                      <div key={member.id} className="flex items-center space-x-2 p-2 rounded-lg hover:bg-accent/50">
+                        <Checkbox
+                          id={`member-${member.id}`}
+                          checked={selectedMembers.includes(member.id)}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              setSelectedMembers([...selectedMembers, member.id]);
+                            } else {
+                              setSelectedMembers(selectedMembers.filter((id) => id !== member.id));
+                            }
+                          }}
+                        />
+                        <label
+                          htmlFor={`member-${member.id}`}
+                          className="text-sm cursor-pointer flex-1"
+                        >
+                          <div>
+                            <p className="font-medium">{member.name}</p>
+                            <p className="text-xs text-muted-foreground">{member.email}</p>
+                          </div>
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+              </TabsContent>
+            </Tabs>
 
-              <div>
-                <h3 className="text-sm font-medium mb-3">Share with Members</h3>
-                <div className="space-y-2">
-                  {mockMembers.map((member) => (
-                    <div key={member.id} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={`member-${member.id}`}
-                        checked={selectedMembers.includes(member.id)}
-                        onCheckedChange={(checked) => {
-                          if (checked) {
-                            setSelectedMembers([...selectedMembers, member.id]);
-                          } else {
-                            setSelectedMembers(selectedMembers.filter((id) => id !== member.id));
-                          }
-                        }}
-                      />
-                      <label
-                        htmlFor={`member-${member.id}`}
-                        className="text-sm cursor-pointer"
-                      >
-                        <div>
-                          <p>{member.name}</p>
-                          <p className="text-xs text-muted-foreground">{member.email}</p>
-                        </div>
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex justify-end gap-2">
-                <Button variant="outline" onClick={() => setShowShareDialog(false)}>
-                  Cancel
-                </Button>
-                <Button onClick={handleShare}>
-                  Share
-                </Button>
-              </div>
+            <div className="flex justify-end gap-2 pt-4 border-t">
+              <Button variant="outline" onClick={() => setShowShareDialog(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleShare} disabled={selectedProjects.length === 0 && selectedMembers.length === 0}>
+                Share ({selectedProjects.length + selectedMembers.length})
+              </Button>
             </div>
           </DialogContent>
         </Dialog>

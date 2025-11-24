@@ -581,8 +581,19 @@ print(df)`,
                           {message.attachments.map((attachment, idx) => (
                           <div key={idx}>
                             {attachment.type === "chart" && (
-                              <div className="bg-card rounded-lg p-4 border shadow-sm">
-                                <ReactECharts option={chartOption} style={{ height: '300px' }} />
+                              <div className="bg-card rounded-lg border shadow-sm overflow-hidden">
+                                <div className="bg-secondary px-4 py-2 flex items-center justify-between border-b">
+                                  <div className="flex items-center gap-2">
+                                    <BarChart3 className="w-4 h-4" />
+                                    <span className="text-sm font-medium">Chart Visualization</span>
+                                  </div>
+                                  <Button variant="ghost" size="sm">
+                                    <Download className="w-4 h-4" />
+                                  </Button>
+                                </div>
+                                <div className="p-4">
+                                  <ReactECharts option={chartOption} style={{ height: '300px' }} />
+                                </div>
                               </div>
                             )}
 
@@ -781,6 +792,17 @@ print(df)`,
                 )}
 
                 <div className="absolute bottom-3 md:bottom-4 right-3 md:right-4 flex items-center gap-1 md:gap-2">
+                  <Button
+                    onClick={() => fileInputRef.current?.click()}
+                    size="icon"
+                    variant="ghost"
+                    className="rounded-full h-8 w-8 md:h-9 md:w-9 hidden sm:flex"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                    </svg>
+                  </Button>
+
                   <Popover open={isModulePopoverOpen} onOpenChange={setIsModulePopoverOpen}>
                     <PopoverTrigger asChild>
                       <Button
