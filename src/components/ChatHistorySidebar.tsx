@@ -293,8 +293,8 @@ export default function ChatHistorySidebar({ isMobileExpanded = false, onNewChat
     >
       <aside 
         className={cn(
-          "bg-card border-r flex flex-col h-screen py-4 gap-4 transition-all duration-300",
-          isMobileExpanded ? "w-64 px-4" : "w-16 items-center"
+          "bg-card border-r flex flex-col h-screen py-4 gap-3 transition-all duration-300",
+          isMobileExpanded ? "w-64 px-4" : "w-20 items-center px-1"
         )}
       >
         {/* New Chat */}
@@ -308,90 +308,159 @@ export default function ChatHistorySidebar({ isMobileExpanded = false, onNewChat
         </Button>
 
         {/* Settings */}
-        <Button 
-          variant="ghost" 
-          size={isMobileExpanded ? "default" : "icon"}
-          className={cn("shrink-0", isMobileExpanded && "w-full justify-start")}
-          onMouseEnter={() => !isMobileExpanded && setOpenPopup('settings')}
-          onClick={() => isMobileExpanded && console.log("Settings clicked")}
-        >
-          <Settings className="w-5 h-5" />
-          {isMobileExpanded && <span className="ml-2">Settings</span>}
-        </Button>
+        {isMobileExpanded ? (
+          <Button 
+            variant="ghost" 
+            size="default"
+            className="shrink-0 w-full justify-start"
+            onClick={() => console.log("Settings clicked")}
+          >
+            <Settings className="w-5 h-5" />
+            <span className="ml-2">Settings</span>
+          </Button>
+        ) : (
+          <button
+            className="flex flex-col items-center gap-1 p-2 hover:bg-accent rounded-md transition-colors w-full"
+            onMouseEnter={() => setOpenPopup('settings')}
+          >
+            <Settings className="w-5 h-5" />
+            <span className="text-[10px] text-muted-foreground">Settings</span>
+          </button>
+        )}
 
         {/* Instruction */}
-        <Button 
-          variant="ghost" 
-          size={isMobileExpanded ? "default" : "icon"}
-          className={cn("shrink-0", isMobileExpanded && "w-full justify-start")}
-          onMouseEnter={() => !isMobileExpanded && setOpenPopup('instruction')}
-          onClick={() => navigate('/instructions')}
-        >
-          <FileText className="w-5 h-5" />
-          {isMobileExpanded && <span className="ml-2">Instructions</span>}
-        </Button>
+        {isMobileExpanded ? (
+          <Button 
+            variant="ghost" 
+            size="default"
+            className="shrink-0 w-full justify-start"
+            onClick={() => navigate('/instructions')}
+          >
+            <FileText className="w-5 h-5" />
+            <span className="ml-2">Instructions</span>
+          </Button>
+        ) : (
+          <button
+            className="flex flex-col items-center gap-1 p-2 hover:bg-accent rounded-md transition-colors w-full"
+            onMouseEnter={() => setOpenPopup('instruction')}
+            onClick={() => navigate('/instructions')}
+          >
+            <FileText className="w-5 h-5" />
+            <span className="text-[10px] text-muted-foreground">Instructions</span>
+          </button>
+        )}
 
         {/* Project */}
-        <Button 
-          variant="ghost" 
-          size={isMobileExpanded ? "default" : "icon"}
-          className={cn("shrink-0", isMobileExpanded && "w-full justify-start")}
-          onMouseEnter={() => !isMobileExpanded && setOpenPopup('project')}
-          onClick={() => navigate('/projects')}
-        >
-          <FolderKanban className="w-5 h-5" />
-          {isMobileExpanded && <span className="ml-2">Projects</span>}
-        </Button>
+        {isMobileExpanded ? (
+          <Button 
+            variant="ghost" 
+            size="default"
+            className="shrink-0 w-full justify-start"
+            onClick={() => navigate('/projects')}
+          >
+            <FolderKanban className="w-5 h-5" />
+            <span className="ml-2">Projects</span>
+          </Button>
+        ) : (
+          <button
+            className="flex flex-col items-center gap-1 p-2 hover:bg-accent rounded-md transition-colors w-full"
+            onMouseEnter={() => setOpenPopup('project')}
+            onClick={() => navigate('/projects')}
+          >
+            <FolderKanban className="w-5 h-5" />
+            <span className="text-[10px] text-muted-foreground">Projects</span>
+          </button>
+        )}
 
         {/* Knowledge */}
-        <Button 
-          variant="ghost" 
-          size={isMobileExpanded ? "default" : "icon"}
-          className={cn("shrink-0", isMobileExpanded && "w-full justify-start")}
-          onMouseEnter={() => !isMobileExpanded && setOpenPopup('knowledge')}
-          onClick={() => navigate('/knowledge')}
-        >
-          <BookOpen className="w-5 h-5" />
-          {isMobileExpanded && <span className="ml-2">Knowledge</span>}
-        </Button>
+        {isMobileExpanded ? (
+          <Button 
+            variant="ghost" 
+            size="default"
+            className="shrink-0 w-full justify-start"
+            onClick={() => navigate('/knowledge')}
+          >
+            <BookOpen className="w-5 h-5" />
+            <span className="ml-2">Knowledge</span>
+          </Button>
+        ) : (
+          <button
+            className="flex flex-col items-center gap-1 p-2 hover:bg-accent rounded-md transition-colors w-full"
+            onMouseEnter={() => setOpenPopup('knowledge')}
+            onClick={() => navigate('/knowledge')}
+          >
+            <BookOpen className="w-5 h-5" />
+            <span className="text-[10px] text-muted-foreground">Knowledge</span>
+          </button>
+        )}
 
         {/* Rules */}
-        <Button 
-          variant="ghost" 
-          size={isMobileExpanded ? "default" : "icon"}
-          className={cn("shrink-0", isMobileExpanded && "w-full justify-start")}
-          onMouseEnter={() => !isMobileExpanded && setOpenPopup('rules')}
-          onClick={() => navigate('/rules')}
-        >
-          <Shield className="w-5 h-5" />
-          {isMobileExpanded && <span className="ml-2">Rules</span>}
-        </Button>
+        {isMobileExpanded ? (
+          <Button 
+            variant="ghost" 
+            size="default"
+            className="shrink-0 w-full justify-start"
+            onClick={() => navigate('/rules')}
+          >
+            <Shield className="w-5 h-5" />
+            <span className="ml-2">Rules</span>
+          </Button>
+        ) : (
+          <button
+            className="flex flex-col items-center gap-1 p-2 hover:bg-accent rounded-md transition-colors w-full"
+            onMouseEnter={() => setOpenPopup('rules')}
+            onClick={() => navigate('/rules')}
+          >
+            <Shield className="w-5 h-5" />
+            <span className="text-[10px] text-muted-foreground">Rules</span>
+          </button>
+        )}
 
         {/* MCP */}
-        <Button 
-          variant="ghost" 
-          size={isMobileExpanded ? "default" : "icon"}
-          className={cn("shrink-0", isMobileExpanded && "w-full justify-start")}
-          onMouseEnter={() => !isMobileExpanded && setOpenPopup('mcp')}
-          onClick={() => navigate('/mcp')}
-        >
-          <Network className="w-5 h-5" />
-          {isMobileExpanded && <span className="ml-2">MCP</span>}
-        </Button>
+        {isMobileExpanded ? (
+          <Button 
+            variant="ghost" 
+            size="default"
+            className="shrink-0 w-full justify-start"
+            onClick={() => navigate('/mcp')}
+          >
+            <Network className="w-5 h-5" />
+            <span className="ml-2">MCP</span>
+          </Button>
+        ) : (
+          <button
+            className="flex flex-col items-center gap-1 p-2 hover:bg-accent rounded-md transition-colors w-full"
+            onMouseEnter={() => setOpenPopup('mcp')}
+            onClick={() => navigate('/mcp')}
+          >
+            <Network className="w-5 h-5" />
+            <span className="text-[10px] text-muted-foreground">MCP</span>
+          </button>
+        )}
 
         {/* Memories */}
-        <Button 
-          variant="ghost" 
-          size={isMobileExpanded ? "default" : "icon"}
-          className={cn("shrink-0", isMobileExpanded && "w-full justify-start")}
-          onMouseEnter={() => !isMobileExpanded && setOpenPopup('memories')}
-          onClick={() => navigate('/memories')}
-        >
-          <Brain className="w-5 h-5" />
-          {isMobileExpanded && <span className="ml-2">Memories</span>}
-        </Button>
+        {isMobileExpanded ? (
+          <Button 
+            variant="ghost" 
+            size="default"
+            className="shrink-0 w-full justify-start"
+            onClick={() => navigate('/memories')}
+          >
+            <Brain className="w-5 h-5" />
+            <span className="ml-2">Memories</span>
+          </Button>
+        ) : (
+          <button
+            className="flex flex-col items-center gap-1 p-2 hover:bg-accent rounded-md transition-colors w-full"
+            onMouseEnter={() => setOpenPopup('memories')}
+            onClick={() => navigate('/memories')}
+          >
+            <Brain className="w-5 h-5" />
+            <span className="text-[10px] text-muted-foreground">Memories</span>
+          </button>
+        )}
 
-        <div className={cn("bg-border my-2", isMobileExpanded ? "w-full h-px" : "w-8 h-px")} />
+        <div className={cn("bg-border my-2", isMobileExpanded ? "w-full h-px" : "w-12 h-px")} />
 
         {/* Chats - show button on desktop, list on mobile */}
         {isMobileExpanded ? (
@@ -445,14 +514,13 @@ export default function ChatHistorySidebar({ isMobileExpanded = false, onNewChat
             </div>
           </div>
         ) : (
-          <Button 
-            variant="ghost" 
-            size="icon"
-            className="shrink-0"
+          <button
+            className="flex flex-col items-center gap-1 p-2 hover:bg-accent rounded-md transition-colors w-full shrink-0"
             onMouseEnter={() => setOpenPopup('chats')}
           >
             <MessageSquare className="w-5 h-5" />
-          </Button>
+            <span className="text-[10px] text-muted-foreground">Chats</span>
+          </button>
         )}
 
         {/* Spacer */}

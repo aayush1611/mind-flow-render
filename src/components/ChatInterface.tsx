@@ -451,17 +451,17 @@ print(df)`,
             <div key={message.id} className="space-y-4">
               {message.role === "user" ? (
                 <div className="flex justify-end">
-                  <div className="bg-primary text-primary-foreground rounded-2xl px-3 md:px-4 py-2 md:py-3 max-w-[85%] md:max-w-[80%]">
+                  <div className="bg-primary text-primary-foreground rounded-2xl px-4 md:px-6 py-3 md:py-4 max-w-[85%] md:max-w-[75%] shadow-sm">
                     {message.selectedApp && (
-                      <div className="text-xs mb-2 pb-2 border-b border-primary-foreground/20 flex items-center gap-1.5">
-                        <span className="font-medium">
+                      <div className="text-xs mb-2.5 pb-2.5 border-b border-primary-foreground/20 flex items-center gap-1.5">
+                        <span className="font-semibold">
                           {message.selectedApp === "powerpoint" && "🎨 PowerPoint"}
                           {message.selectedApp === "word" && "📄 Word"}
                           {message.selectedApp === "excel" && "📊 Excel"}
                         </span>
                       </div>
                     )}
-                    <div className="text-sm leading-relaxed">
+                    <div className="text-[15px] leading-relaxed font-medium">
                       {message.content}
                     </div>
                   </div>
