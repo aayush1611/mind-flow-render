@@ -221,7 +221,7 @@ const ProjectDetailView = () => {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="start">
-                          <DropdownMenuItem onClick={() => navigate("/starterPrompts")}>
+                          <DropdownMenuItem onClick={() => navigate(`/starterPrompts/${id}`)}>
                             <Sparkles className="h-4 w-4 mr-2" />
                             Manage Starter Prompts
                           </DropdownMenuItem>

@@ -29,7 +29,7 @@ const App = () => (
             <Route path="/rules" element={<Index />} />
             <Route path="/mcp" element={<Index />} />
             <Route path="/memories" element={<Memories />} />
-            <Route path="/starterPrompts" element={<StarterPrompts />} />
+            <Route path="/starterPrompts/:projectId" element={<StarterPrompts />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
