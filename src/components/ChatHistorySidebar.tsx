@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,13 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Plus,
   Search,
@@ -78,7 +85,32 @@ export default function ChatHistorySidebar({ isMobileExpanded = false, onNewChat
     chat.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const organizations = ["Acme Corp", "Tech Industries", "Global Solutions"];
+  const allOrganizations = [
+    "Acme Corp", "Tech Industries", "Global Solutions", "Innovation Labs",
+    "Digital Ventures", "Future Systems", "Smart Solutions", "Tech Pioneers",
+    "Cloud Dynamics", "Data Insights", "Quantum Corp", "Cyber Security Inc",
+    "AI Innovations", "Blockchain Co", "Green Energy Tech"
+  ];
+
+  const [visibleOrgsCount, setVisibleOrgsCount] = useState(5);
+  const orgScrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const scrollElement = orgScrollRef.current;
+    if (!scrollElement) return;
+
+    const handleScroll = () => {
+      const { scrollTop, scrollHeight, clientHeight } = scrollElement;
+      if (scrollTop + clientHeight >= scrollHeight - 10 && visibleOrgsCount < allOrganizations.length) {
+        setVisibleOrgsCount(prev => Math.min(prev + 5, allOrganizations.length));
+      }
+    };
+
+    scrollElement.addEventListener('scroll', handleScroll);
+    return () => scrollElement.removeEventListener('scroll', handleScroll);
+  }, [visibleOrgsCount, allOrganizations.length]);
+
+  const organizations = allOrganizations.slice(0, visibleOrgsCount);
 
   const handleDeleteProject = (projectId: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -241,8 +273,25 @@ export default function ChatHistorySidebar({ isMobileExpanded = false, onNewChat
       case 'chats':
         return (
           <div className="h-full flex flex-col">
-            <div className="p-3 border-b">
+            <div className="p-3 border-b space-y-2">
               <h3 className="font-semibold text-sm">Recent Chats</h3>
+              <div className="relative">
+                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search chats..."
+                  className="pl-8 h-9"
+                />
+              </div>
+              <Select defaultValue="recent">
+                <SelectTrigger className="h-9">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="recent">Most Recent</SelectItem>
+                  <SelectItem value="oldest">Oldest First</SelectItem>
+                  <SelectItem value="name">Name (A-Z)</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div className="flex-1 overflow-y-auto p-2">
               <div className="flex flex-col">
@@ -562,7 +611,7 @@ export default function ChatHistorySidebar({ isMobileExpanded = false, onNewChat
           <PopoverContent side={isMobileExpanded ? "bottom" : "right"} className="w-64 p-2" sideOffset={8}>
             <div className="space-y-2">
               <p className="text-xs text-muted-foreground px-2 py-1">Switch Organization</p>
-              <div className="flex flex-col gap-1">
+              <div ref={orgScrollRef} className="flex flex-col gap-1 max-h-64 overflow-y-auto">
                 {organizations.map((org) => (
                   <Button
                     key={org}
@@ -573,6 +622,11 @@ export default function ChatHistorySidebar({ isMobileExpanded = false, onNewChat
                     {org}
                   </Button>
                 ))}
+                {visibleOrgsCount < allOrganizations.length && (
+                  <div className="py-2 text-center">
+                    <Loader2 className="w-4 h-4 animate-spin mx-auto text-muted-foreground" />
+                  </div>
+                )}
               </div>
               <div className="border-t pt-2 mt-2">
                 <div className="px-2 py-1">

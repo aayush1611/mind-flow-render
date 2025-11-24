@@ -245,141 +245,149 @@ export const InstructionForm = ({
   // Add mode - multi-stepper form
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={onCancel}>
-          <ArrowLeft className="h-4 w-4" />
-        </Button>
-        <div className="flex-1">
-          <h2 className="text-2xl font-bold">
-            {initialData ? "Edit Instruction" : "Add New Instruction"}
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            Step {step} of 2 - {step === 1 ? "Basic Information" : "Workflow Steps"}
-          </p>
+    <div className="h-full flex flex-col">
+      {/* Fixed Header */}
+      <div className="shrink-0 space-y-4 pb-4 border-b">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" onClick={onCancel}>
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <div className="flex-1">
+            <h2 className="text-2xl font-bold">
+              {initialData ? "Edit Instruction" : "Add New Instruction"}
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              Step {step} of 2 - {step === 1 ? "Basic Information" : "Workflow Steps"}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex gap-2">
+          <div
+            className={`h-2 flex-1 rounded-full ${
+              step >= 1 ? "bg-primary" : "bg-muted"
+            }`}
+          />
+          <div
+            className={`h-2 flex-1 rounded-full ${
+              step >= 2 ? "bg-primary" : "bg-muted"
+            }`}
+          />
         </div>
       </div>
 
-      <div className="flex gap-2 mb-6">
-        <div
-          className={`h-2 flex-1 rounded-full ${
-            step >= 1 ? "bg-primary" : "bg-muted"
-          }`}
-        />
-        <div
-          className={`h-2 flex-1 rounded-full ${
-            step >= 2 ? "bg-primary" : "bg-muted"
-          }`}
-        />
-      </div>
-
-      {step === 1 && (
-        <Card className="p-6 space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="heading">Instruction Heading *</Label>
-            <Input
-              id="heading"
-              placeholder="Enter instruction heading"
-              value={formData.heading}
-              onChange={(e) =>
-                setFormData({ ...formData, heading: e.target.value })
-              }
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto py-6">
+        {step === 1 && (
+          <Card className="p-6 space-y-6">
             <div className="space-y-2">
-              <Label>Status</Label>
-              <Select
-                value={formData.status}
-                onValueChange={(value: "active" | "inactive") =>
-                  setFormData({ ...formData, status: value })
+              <Label htmlFor="heading">Instruction Heading *</Label>
+              <Input
+                id="heading"
+                placeholder="Enter instruction heading"
+                value={formData.heading}
+                onChange={(e) =>
+                  setFormData({ ...formData, heading: e.target.value })
                 }
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="inactive">Inactive</SelectItem>
-                </SelectContent>
-              </Select>
+              />
             </div>
 
-            <div className="space-y-2">
-              <Label>Priority</Label>
-              <Select
-                value={formData.priority}
-                onValueChange={(value: "high" | "medium" | "low") =>
-                  setFormData({ ...formData, priority: value })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="high">High</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="low">Low</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Status</Label>
+                <Select
+                  value={formData.status}
+                  onValueChange={(value: "active" | "inactive") =>
+                    setFormData({ ...formData, status: value })
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="inactive">Inactive</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Priority</Label>
+                <Select
+                  value={formData.priority}
+                  onValueChange={(value: "high" | "medium" | "low") =>
+                    setFormData({ ...formData, priority: value })
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="high">High</SelectItem>
+                    <SelectItem value="medium">Medium</SelectItem>
+                    <SelectItem value="low">Low</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-          </div>
-        </Card>
-      )}
+          </Card>
+        )}
 
-      {step === 2 && (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <Label>Workflow Steps</Label>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={addWorkflowStep}
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Add Step
-            </Button>
-          </div>
+        {step === 2 && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <Label>Workflow Steps</Label>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addWorkflowStep}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Step
+              </Button>
+            </div>
 
-          <div className="space-y-3">
-            {formData.workflowSteps.map((workflowStep, index) => (
-              <Card key={workflowStep.id} className="p-4">
-                <div className="flex gap-3 items-start">
-                  <GripVertical className="h-5 w-5 text-muted-foreground mt-2 flex-shrink-0" />
-                  <div className="flex-1 space-y-2">
-                    <Label className="text-sm text-muted-foreground">
-                      Step {index + 1}
-                    </Label>
-                    <Textarea
-                      placeholder="Describe this workflow step..."
-                      value={workflowStep.content}
-                      onChange={(e) =>
-                        updateWorkflowStep(workflowStep.id, e.target.value)
-                      }
-                      rows={3}
-                    />
+            <div className="space-y-3">
+              {formData.workflowSteps.map((workflowStep, index) => (
+                <Card key={workflowStep.id} className="p-3">
+                  <div className="flex gap-3 items-start">
+                    <GripVertical className="h-4 w-4 text-muted-foreground mt-2 flex-shrink-0" />
+                    <div className="flex-1 space-y-1">
+                      <Label className="text-xs text-muted-foreground">
+                        Step {index + 1}
+                      </Label>
+                      <Textarea
+                        placeholder="Describe this workflow step..."
+                        value={workflowStep.content}
+                        onChange={(e) =>
+                          updateWorkflowStep(workflowStep.id, e.target.value)
+                        }
+                        rows={2}
+                        className="min-h-[60px]"
+                      />
+                    </div>
+                    {formData.workflowSteps.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeWorkflowStep(workflowStep.id)}
+                        className="text-destructive hover:text-destructive h-8 w-8"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
                   </div>
-                  {formData.workflowSteps.length > 1 && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeWorkflowStep(workflowStep.id)}
-                      className="text-destructive hover:text-destructive"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-              </Card>
-            ))}
+                </Card>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
-      <div className="flex justify-between pt-4">
+      {/* Fixed Bottom */}
+      <div className="shrink-0 flex justify-between pt-4 border-t">
         <Button variant="outline" onClick={step === 1 ? onCancel : () => setStep(1)}>
           {step === 1 ? "Cancel" : "Back"}
         </Button>
