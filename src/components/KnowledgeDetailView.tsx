@@ -334,12 +334,12 @@ const KnowledgeDetailView = () => {
               <div className="flex-1">
                 <label
                   htmlFor="share-org"
-                  className="text-sm font-medium cursor-pointer"
+                  className="text-base font-semibold cursor-pointer block"
                 >
-                  Share with entire organization
+                  Share across Organisation
                 </label>
-                <p className="text-xs text-muted-foreground mt-1">
-                  All organization members will have view-only access. They won't be able to reload, share, or delete this knowledge source.
+                <p className="text-sm text-muted-foreground mt-1.5">
+                  Make this knowledge source available to all members in your organization with view-only access. Members will not have permissions to reload, share, or delete this resource.
                 </p>
               </div>
             </div>
