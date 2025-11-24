@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -32,6 +32,7 @@ interface Prompt {
 
 const StarterPrompts = () => {
   const navigate = useNavigate();
+  const { projectId } = useParams();
   const [prompts, setPrompts] = useState<Prompt[]>([
     { id: "1", text: "Analyze the latest research papers on machine learning", createdAt: "2024-01-15" },
     { id: "2", text: "Summarize the key findings from the documentation", createdAt: "2024-01-18" },
@@ -107,7 +108,7 @@ const StarterPrompts = () => {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => navigate(-1)}
+              onClick={() => navigate(`/projects/${projectId}`)}
               className="mt-1"
             >
               <ArrowLeft className="h-5 w-5" />
