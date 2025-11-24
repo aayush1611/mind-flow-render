@@ -10,6 +10,7 @@ import { Send, Loader2, ChevronDown, ChevronUp, Download, FileCode, BarChart3, S
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import ReactECharts from "echarts-for-react";
+import FilePreviewPanel from "@/components/FilePreviewPanel";
 
 interface Message {
   id: string;
@@ -125,7 +126,12 @@ export default function ChatInterface() {
   const [selectedModule, setSelectedModule] = useState<string | null>(null);
   const [tempSelectedModule, setTempSelectedModule] = useState<string | null>(null);
   const [isModulePopoverOpen, setIsModulePopoverOpen] = useState(false);
-  const [openFilePreview, setOpenFilePreview] = useState<string | null>(null);
+  const [openFiles, setOpenFiles] = useState<Array<{
+    id: string;
+    fileName: string;
+    fileType: "pdf" | "excel";
+    content: string;
+  }>>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -270,8 +276,11 @@ print(df)`,
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full">
-        <div className="flex-1 overflow-y-auto px-2 md:px-4 py-4 md:py-6">
+    <div className="flex-1 flex flex-col h-full relative">
+        <div className={cn(
+          "flex-1 overflow-y-auto px-2 md:px-4 py-4 md:py-6 transition-all duration-300",
+          openFiles.length > 0 && "mr-[calc(40%+1rem)]"
+        )}>
           <div className="max-w-4xl mx-auto space-y-6">
           {messages.length === 0 && !isLoading && !showThinking && (
             <div className="flex flex-col items-center justify-center min-h-[calc(100vh-12rem)] text-center px-2">
@@ -576,8 +585,8 @@ print(df)`,
                       )}
 
                       {message.attachments && message.attachments.length > 0 && (
-                      <div className={cn("mt-4", openFilePreview ? "flex gap-4" : "space-y-3")}>
-                        <div className={cn(openFilePreview ? "flex-1" : "w-full", "space-y-3")}>
+                      <div className="mt-4 space-y-3">
+                        <div className="w-full space-y-3">
                           {message.attachments.map((attachment, idx) => (
                           <div key={idx}>
                             {attachment.type === "chart" && (
@@ -632,18 +641,26 @@ print(df)`,
                             )}
 
                             {attachment.type === "file" && (
-                              <div 
-                                className={cn(
-                                  "bg-card border rounded-lg p-4 flex items-center justify-between transition-all cursor-pointer",
-                                  openFilePreview === attachment.fileName 
-                                    ? "shadow-lg ring-2 ring-primary" 
-                                    : "hover:shadow-hover"
-                                )}
-                                onClick={() => {
-                                  if (attachment.fileType === "pdf" || attachment.fileType === "excel") {
-                                    setOpenFilePreview(openFilePreview === attachment.fileName ? null : attachment.fileName);
-                                  }
-                                }}
+                               <div 
+                                 className={cn(
+                                   "bg-card border rounded-lg p-4 flex items-center justify-between transition-all cursor-pointer",
+                                   openFiles.some(f => f.fileName === attachment.fileName)
+                                     ? "shadow-lg ring-2 ring-primary" 
+                                     : "hover:shadow-hover"
+                                 )}
+                                 onClick={() => {
+                                   if (attachment.fileType === "pdf" || attachment.fileType === "excel") {
+                                     const fileExists = openFiles.some(f => f.fileName === attachment.fileName);
+                                     if (!fileExists) {
+                                       setOpenFiles(prev => [...prev, {
+                                         id: `${attachment.fileName}-${Date.now()}`,
+                                         fileName: attachment.fileName!,
+                                         fileType: attachment.fileType!,
+                                         content: ""
+                                       }]);
+                                     }
+                                   }
+                                 }}
                               >
                                 <div className="flex items-center gap-3">
                                   {attachment.fileType === "pdf" ? (
@@ -670,28 +687,6 @@ print(df)`,
                           </div>
                         ))}
                         </div>
-
-                        {openFilePreview && (
-                          <div className="w-[40%] border rounded-lg bg-card overflow-hidden flex flex-col">
-                            <div className="bg-secondary px-4 py-3 border-b flex items-center justify-between">
-                              <span className="text-sm font-medium">{openFilePreview}</span>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-7 w-7"
-                                onClick={() => setOpenFilePreview(null)}
-                              >
-                                <X className="w-4 h-4" />
-                              </Button>
-                            </div>
-                            <div className="flex-1 p-4 overflow-auto">
-                              <div className="text-sm text-muted-foreground text-center py-8">
-                                {openFilePreview.endsWith('.pdf') ? 'PDF Preview' : 'Excel Preview'}
-                                <div className="mt-2 text-xs">Content preview would appear here</div>
-                              </div>
-                            </div>
-                          </div>
-                        )}
                       </div>
                     )}
 
@@ -892,6 +887,14 @@ print(df)`,
             </div>
           </div>
         )}
+
+      {/* File Preview Panel */}
+      {openFiles.length > 0 && (
+        <FilePreviewPanel
+          files={openFiles}
+          onClose={() => setOpenFiles([])}
+        />
+      )}
     </div>
   );
 }
