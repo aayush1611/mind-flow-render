@@ -48,58 +48,64 @@ export default function FilePreviewPanel({ files, onClose, className }: FilePrev
   return (
     <div 
       className={cn(
-        "fixed right-0 top-0 h-screen w-[40%] bg-background border-l shadow-2xl z-40 flex flex-col animate-slide-in-right",
+        "fixed right-0 top-0 h-full w-[40%] bg-background border-l shadow-2xl z-40 flex flex-col animate-slide-in-right",
         className
       )}
     >
-      {/* Tab Bar - Chrome-like */}
-      <div className="bg-muted/30 border-b flex items-center px-2 py-1.5 shrink-0 gap-2">
-        <div className="flex items-center gap-0.5 overflow-x-auto flex-1 min-w-0">
-          {localFiles.map((file, index) => (
-            <button
-              key={file.id}
-              onClick={() => setActiveTabId(file.id)}
-              className={cn(
-                "group relative flex items-center gap-2 px-3 py-2 min-w-0 max-w-[180px] transition-all",
-                "border-t-2",
-                activeTabId === file.id 
-                  ? "bg-background border-t-primary text-foreground" 
-                  : "bg-transparent border-t-transparent text-muted-foreground hover:bg-muted/50",
-                index === 0 && "rounded-tl-md",
-                index === localFiles.length - 1 && activeTabId !== file.id && "rounded-tr-md"
-              )}
-              style={{
-                clipPath: activeTabId === file.id 
-                  ? "polygon(8px 0%, calc(100% - 8px) 0%, 100% 100%, 0% 100%)" 
-                  : "none"
-              }}
+      {/* Header with actions */}
+      <div className="bg-muted/30 border-b flex items-center justify-between px-4 py-3 shrink-0">
+        <h3 className="font-semibold text-sm">File Preview</h3>
+        <div className="flex items-center gap-2">
+          {activeFile && (
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-7 w-7 rounded-md"
+              onClick={() => handleDownload(activeFile)}
+              title="Download file"
             >
-              <span className="shrink-0">
-                {getFileIcon(file.fileType)}
-              </span>
-              <span className="text-xs font-medium truncate flex-1">
-                {file.fileName}
-              </span>
-              <button
-                onClick={(e) => handleCloseTab(file.id, e)}
-                className="shrink-0 rounded-full p-0.5 hover:bg-muted-foreground/20 transition-colors"
-              >
-                <X className="h-3 w-3" />
-              </button>
-            </button>
-          ))}
+              <Download className="h-4 w-4" />
+            </Button>
+          )}
+          <Button
+            size="icon"
+            variant="ghost"
+            className="h-7 w-7 rounded-md"
+            onClick={onClose}
+            title="Close all"
+          >
+            <X className="h-4 w-4" />
+          </Button>
         </div>
+      </div>
 
-        {/* Close All Button */}
-        <Button
-          size="icon"
-          variant="ghost"
-          className="h-7 w-7 rounded-md shrink-0"
-          onClick={onClose}
-          title="Close all"
-        >
-          <X className="h-4 w-4" />
-        </Button>
+      {/* Tab Bar - Chrome-like */}
+      <div className="bg-muted/50 border-b flex items-center px-1 py-1 shrink-0 gap-1 overflow-x-auto">
+        {localFiles.map((file) => (
+          <button
+            key={file.id}
+            onClick={() => setActiveTabId(file.id)}
+            className={cn(
+              "group relative flex items-center gap-2 px-3 py-2 rounded-md min-w-0 max-w-[200px] transition-all",
+              activeTabId === file.id 
+                ? "bg-background text-foreground shadow-sm" 
+                : "bg-transparent text-muted-foreground hover:bg-background/50"
+            )}
+          >
+            <span className="shrink-0">
+              {getFileIcon(file.fileType)}
+            </span>
+            <span className="text-xs font-medium truncate flex-1">
+              {file.fileName}
+            </span>
+            <button
+              onClick={(e) => handleCloseTab(file.id, e)}
+              className="shrink-0 rounded-full p-0.5 hover:bg-muted-foreground/20 transition-colors"
+            >
+              <X className="h-3 w-3" />
+            </button>
+          </button>
+        ))}
       </div>
 
       {/* Content Area */}
@@ -117,16 +123,6 @@ export default function FilePreviewPanel({ files, onClose, className }: FilePrev
                 <p className="text-sm text-muted-foreground">
                   {activeFile.fileType === "pdf" ? "PDF Document" : "Excel Spreadsheet"}
                 </p>
-              </div>
-              <div className="pt-2">
-                <Button 
-                  onClick={() => handleDownload(activeFile)}
-                  className="gap-2"
-                  size="lg"
-                >
-                  <Download className="h-4 w-4" />
-                  Download File
-                </Button>
               </div>
               <div className="bg-muted/30 rounded-lg p-6 text-sm text-muted-foreground">
                 <p className="font-medium mb-1">Preview Coming Soon</p>

@@ -276,11 +276,12 @@ print(df)`,
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full relative">
+    <div className="flex-1 flex h-full relative">
         <div className={cn(
-          "flex-1 overflow-y-auto px-2 md:px-4 py-4 md:py-6 transition-all duration-300",
-          openFiles.length > 0 && "mr-[calc(40%+1rem)]"
+          "flex-1 flex flex-col overflow-hidden transition-all duration-300",
+          openFiles.length > 0 && "mr-[calc(40%+2rem)]"
         )}>
+        <div className="flex-1 overflow-y-auto px-2 md:px-4 py-4 md:py-6">
           <div className="max-w-4xl mx-auto space-y-6">
           {messages.length === 0 && !isLoading && !showThinking && (
             <div className="flex flex-col items-center justify-center min-h-[calc(100vh-12rem)] text-center px-2">
@@ -887,6 +888,7 @@ print(df)`,
             </div>
           </div>
         )}
+      </div>
 
       {/* File Preview Panel */}
       {openFiles.length > 0 && (
