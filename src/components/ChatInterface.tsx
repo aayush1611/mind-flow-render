@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import ReactECharts from "echarts-for-react";
 import FilePreviewPanel from "@/components/FilePreviewPanel";
+import ProcessingViewPanel from "@/components/ProcessingViewPanel";
 
 interface Message {
   id: string;
@@ -132,6 +133,7 @@ export default function ChatInterface() {
     fileType: "pdf" | "excel";
     content: string;
   }>>([]);
+  const [selectedProcessingStep, setSelectedProcessingStep] = useState<ThinkingStep & { details?: string; logs?: string[] } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -500,7 +502,21 @@ print(df)`,
                       {expandedThinking === message.id && (
                         <div className="mt-4 space-y-2">
                           {message.thinking.map((step) => (
-                            <div key={step.id} className="flex items-start gap-3">
+                            <button
+                              key={step.id}
+                              onClick={() => setSelectedProcessingStep({
+                                ...step,
+                                details: `Processing ${step.label.toLowerCase()}. This step involves analyzing the request and preparing necessary resources.`,
+                                logs: [
+                                  `[${new Date().toISOString()}] Step initiated: ${step.label}`,
+                                  `[${new Date().toISOString()}] Allocating resources...`,
+                                  `[${new Date().toISOString()}] Connecting to database...`,
+                                  `[${new Date().toISOString()}] Executing query...`,
+                                  step.status === "complete" ? `[${new Date().toISOString()}] Step completed successfully` : `[${new Date().toISOString()}] Step in progress...`,
+                                ]
+                              })}
+                              className="flex items-start gap-3 w-full text-left hover:bg-accent/50 rounded-lg p-2 transition-colors"
+                            >
                               {step.status === "complete" && (
                                 <div className="w-5 h-5 rounded-full bg-success flex items-center justify-center flex-shrink-0 mt-0.5">
                                   <svg
@@ -530,7 +546,7 @@ print(df)`,
                               >
                                 {step.label}
                               </span>
-                            </div>
+                            </button>
                           ))}
                         </div>
                       )}
@@ -557,7 +573,21 @@ print(df)`,
                       {expandedThinking === message.id && (
                         <div className="mt-4 space-y-2">
                           {message.thinking.map((step) => (
-                            <div key={step.id} className="flex items-start gap-3">
+                            <button
+                              key={step.id}
+                              onClick={() => setSelectedProcessingStep({
+                                ...step,
+                                details: `Processing ${step.label.toLowerCase()}. This step involves analyzing the request and preparing necessary resources.`,
+                                logs: [
+                                  `[${new Date().toISOString()}] Step initiated: ${step.label}`,
+                                  `[${new Date().toISOString()}] Allocating resources...`,
+                                  `[${new Date().toISOString()}] Connecting to database...`,
+                                  `[${new Date().toISOString()}] Executing query...`,
+                                  `[${new Date().toISOString()}] Step completed successfully`,
+                                ]
+                              })}
+                              className="flex items-start gap-3 w-full text-left hover:bg-accent/50 rounded-lg p-2 transition-colors"
+                            >
                               <div className="w-5 h-5 rounded-full bg-success flex items-center justify-center flex-shrink-0 mt-0.5">
                                 <svg
                                   className="w-3 h-3 text-white"
@@ -572,7 +602,7 @@ print(df)`,
                                 </svg>
                               </div>
                               <span className="text-sm">{step.label}</span>
-                            </div>
+                            </button>
                           ))}
                         </div>
                       )}
@@ -896,6 +926,14 @@ print(df)`,
             const updatedFiles = openFiles.filter(f => f.id !== fileId);
             setOpenFiles(updatedFiles);
           }}
+        />
+      )}
+      
+      {/* Processing View Panel */}
+      {selectedProcessingStep && (
+        <ProcessingViewPanel
+          step={selectedProcessingStep}
+          onClose={() => setSelectedProcessingStep(null)}
         />
       )}
     </div>
