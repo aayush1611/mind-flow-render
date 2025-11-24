@@ -7,11 +7,13 @@ import { X, FileText } from "lucide-react";
 interface CreateProjectFormProps {
   onClose: () => void;
   onComplete: (projectData: { name: string; description: string }) => void;
+  initialData?: { name: string; description: string };
+  isEditMode?: boolean;
 }
 
-export default function CreateProjectForm({ onClose, onComplete }: CreateProjectFormProps) {
-  const [projectName, setProjectName] = useState("");
-  const [projectDescription, setProjectDescription] = useState("");
+export default function CreateProjectForm({ onClose, onComplete, initialData, isEditMode = false }: CreateProjectFormProps) {
+  const [projectName, setProjectName] = useState(initialData?.name || "");
+  const [projectDescription, setProjectDescription] = useState(initialData?.description || "");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,9 +27,14 @@ export default function CreateProjectForm({ onClose, onComplete }: CreateProject
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Header */}
         <div className="space-y-2">
-          <h1 className="text-4xl font-bold text-primary">Create New Project</h1>
+          <h1 className="text-4xl font-bold text-primary">
+            {isEditMode ? "Edit Project" : "Create New Project"}
+          </h1>
           <p className="text-muted-foreground">
-            Set up a new project to organize your knowledge sources and conversations
+            {isEditMode 
+              ? "Update your project details below"
+              : "Set up a new project to organize your knowledge sources and conversations"
+            }
           </p>
         </div>
 
@@ -92,7 +99,7 @@ export default function CreateProjectForm({ onClose, onComplete }: CreateProject
             disabled={!projectName.trim()}
             className="gap-2"
           >
-            Create Project
+            {isEditMode ? "Save Changes" : "Create Project"}
           </Button>
         </div>
 

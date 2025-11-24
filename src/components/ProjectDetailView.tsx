@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import CreateKnowledgeForm from "@/components/CreateKnowledgeForm";
+import CreateProjectForm from "@/components/CreateProjectForm";
 import { toast } from "sonner";
 
 interface KnowledgeSource {
@@ -47,6 +48,7 @@ const ProjectDetailView = () => {
   const [projectName, setProjectName] = useState("AI Research Project");
   const [projectDescription, setProjectDescription] = useState("Advanced machine learning research and development project focusing on natural language processing.");
   const [showAddSourceForm, setShowAddSourceForm] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false);
   
   // Mock projects data to determine user role for each project
   const projectRoles: Record<string, "admin" | "member"> = {
@@ -105,9 +107,11 @@ const ProjectDetailView = () => {
     },
   ]);
 
-  const handleSaveProject = () => {
-    // Save project changes
-    setIsEditingProject(false);
+  const handleSaveProject = (projectData: { name: string; description: string }) => {
+    setProjectName(projectData.name);
+    setProjectDescription(projectData.description);
+    setShowEditForm(false);
+    toast.success("Project updated successfully!");
   };
 
   const handleDeleteKnowledgeSource = (sourceId: string) => {
@@ -158,6 +162,21 @@ const ProjectDetailView = () => {
     );
   }
 
+  if (showEditForm) {
+    return (
+      <div className="h-full bg-background overflow-auto">
+        <div className="container mx-auto px-6 py-8">
+          <CreateProjectForm
+            onClose={() => setShowEditForm(false)}
+            onComplete={handleSaveProject}
+            initialData={{ name: projectName, description: projectDescription }}
+            isEditMode={true}
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -174,50 +193,22 @@ const ProjectDetailView = () => {
             </Button>
             
             <div className="flex-1">
-              {isEditingProject ? (
-                <div className="space-y-3">
-                  <Input
-                    value={projectName}
-                    onChange={(e) => setProjectName(e.target.value)}
-                    className="text-2xl font-bold h-auto py-2"
-                  />
-                  <Textarea
-                    value={projectDescription}
-                    onChange={(e) => setProjectDescription(e.target.value)}
-                    className="resize-none"
-                    rows={2}
-                  />
-                  <div className="flex gap-2">
-                    <Button onClick={handleSaveProject} size="sm">
-                      Save Changes
-                    </Button>
+              <div>
+                <div className="flex items-center gap-3">
+                  <h1 className="text-3xl font-bold">{projectName}</h1>
+                  {isAdmin && (
                     <Button
-                      onClick={() => setIsEditingProject(false)}
-                      variant="outline"
-                      size="sm"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setShowEditForm(true)}
+                      className="h-8 w-8"
                     >
-                      Cancel
+                      <Edit2 className="h-4 w-4" />
                     </Button>
-                  </div>
+                  )}
                 </div>
-              ) : (
-                <div>
-                  <div className="flex items-center gap-3">
-                    <h1 className="text-3xl font-bold">{projectName}</h1>
-                    {isAdmin && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => setIsEditingProject(true)}
-                        className="h-8 w-8"
-                      >
-                        <Edit2 className="h-4 w-4" />
-                      </Button>
-                    )}
-                  </div>
-                  <p className="text-muted-foreground mt-2">{projectDescription}</p>
-                </div>
-              )}
+                <p className="text-muted-foreground mt-2">{projectDescription}</p>
+              </div>
             </div>
           </div>
 
