@@ -16,6 +16,16 @@ interface CreateKnowledgeFormProps {
     repoBranch: string;
     patToken?: string;
   }) => void;
+  initialData?: {
+    name: string;
+    description: string;
+    provider: Provider;
+    repoUrl: string;
+    repoBranch: string;
+    isPrivate?: boolean;
+    patToken?: string;
+  };
+  isEditMode?: boolean;
 }
 
 type Provider = "azure-devops" | "github" | "gitlab";
@@ -26,15 +36,15 @@ const providers = [
   { id: "gitlab" as Provider, name: "GitLab", icon: "🦊" },
 ];
 
-export default function CreateKnowledgeForm({ onClose, onComplete }: CreateKnowledgeFormProps) {
+export default function CreateKnowledgeForm({ onClose, onComplete, initialData, isEditMode = false }: CreateKnowledgeFormProps) {
   const [step, setStep] = useState(1);
-  const [provider, setProvider] = useState<Provider | null>(null);
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [repoUrl, setRepoUrl] = useState("");
-  const [repoBranch, setRepoBranch] = useState("main");
-  const [isPrivate, setIsPrivate] = useState(false);
-  const [patToken, setPatToken] = useState("");
+  const [provider, setProvider] = useState<Provider | null>(initialData?.provider || null);
+  const [name, setName] = useState(initialData?.name || "");
+  const [description, setDescription] = useState(initialData?.description || "");
+  const [repoUrl, setRepoUrl] = useState(initialData?.repoUrl || "");
+  const [repoBranch, setRepoBranch] = useState(initialData?.repoBranch || "main");
+  const [isPrivate, setIsPrivate] = useState(initialData?.isPrivate || false);
+  const [patToken, setPatToken] = useState(initialData?.patToken || "");
 
   const handleNext = () => {
     if (step === 1 && provider) {
@@ -98,9 +108,14 @@ export default function CreateKnowledgeForm({ onClose, onComplete }: CreateKnowl
           >
             <X className="h-4 w-4" />
           </Button>
-          <h1 className="text-3xl font-bold text-primary">Add Knowledge Source</h1>
+          <h1 className="text-3xl font-bold text-primary">
+            {isEditMode ? "Edit Knowledge Source" : "Add Knowledge Source"}
+          </h1>
           <p className="text-sm text-muted-foreground">
-            Connect your repository as a knowledge source
+            {isEditMode 
+              ? "Update your knowledge source configuration" 
+              : "Connect your repository as a knowledge source"
+            }
           </p>
         </div>
 
@@ -272,7 +287,7 @@ export default function CreateKnowledgeForm({ onClose, onComplete }: CreateKnowl
               disabled={!canProceed()}
               className="gap-2"
             >
-              Add Source
+              {isEditMode ? "Save Changes" : "Add Source"}
             </Button>
           )}
         </div>
