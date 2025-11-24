@@ -10,10 +10,16 @@ import {
   ArrowLeft, 
   Edit2, 
   Trash2, 
-  Plus,
+  RefreshCw,
+  Share2,
   FileText,
-  Upload
+  Upload,
+  Github,
+  GitBranch
 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
+import { toast } from "@/hooks/use-toast";
 
 interface Document {
   id: string;
@@ -30,6 +36,33 @@ const KnowledgeDetailView = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState("Product Documentation");
   const [description, setDescription] = useState("Complete product documentation and user guides for all our software products.");
+  const [showShareDialog, setShowShareDialog] = useState(false);
+  
+  // Mock data - replace with actual data
+  const isAdmin = true;
+  const knowledgeSource = {
+    id: id || "kb-12345",
+    status: "indexed",
+    createdAt: "2024-01-10",
+    lastIndexedAt: "2024-01-20",
+    integrationType: "github",
+    indexingProgress: 85
+  };
+
+  const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
+  const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
+  
+  const mockProjects = [
+    { id: "1", name: "AI Assistant Project" },
+    { id: "2", name: "Dashboard Analytics" },
+    { id: "3", name: "Mobile App" }
+  ];
+  
+  const mockMembers = [
+    { id: "1", name: "John Doe", email: "john@example.com" },
+    { id: "2", name: "Jane Smith", email: "jane@example.com" },
+    { id: "3", name: "Bob Johnson", email: "bob@example.com" }
+  ];
   
   const [documents] = useState<Document[]>([
     {
@@ -63,7 +96,39 @@ const KnowledgeDetailView = () => {
   };
 
   const handleDelete = () => {
+    toast({
+      title: "Knowledge source deleted",
+      description: "The knowledge source has been successfully deleted."
+    });
     navigate("/knowledge");
+  };
+
+  const handleReload = () => {
+    toast({
+      title: "Reloading knowledge source",
+      description: "The knowledge source details are being reloaded."
+    });
+  };
+
+  const handleShare = () => {
+    toast({
+      title: "Knowledge source shared",
+      description: `Shared with ${selectedProjects.length} projects and ${selectedMembers.length} members.`
+    });
+    setShowShareDialog(false);
+    setSelectedProjects([]);
+    setSelectedMembers([]);
+  };
+
+  const getIntegrationIcon = (type: string) => {
+    switch (type) {
+      case "github":
+        return <Github className="h-5 w-5" />;
+      case "gitlab":
+        return <GitBranch className="h-5 w-5" />;
+      default:
+        return <FileText className="h-5 w-5" />;
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -82,18 +147,18 @@ const KnowledgeDetailView = () => {
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto space-y-6">
-        <div className="flex items-start justify-between">
-          <div className="flex items-start gap-4 flex-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate("/knowledge")}
-              className="mt-1"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            
-            <div className="flex-1">
+        <div className="flex items-start gap-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate("/knowledge")}
+            className="mt-1"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          
+          <div className="flex-1 space-y-6">
+            <div>
               {isEditing ? (
                 <div className="space-y-3">
                   <Input
@@ -137,16 +202,66 @@ const KnowledgeDetailView = () => {
                 </div>
               )}
             </div>
-          </div>
 
-          <Button
-            variant="destructive"
-            onClick={handleDelete}
-            className="ml-4"
-          >
-            <Trash2 className="h-4 w-4 mr-2" />
-            Delete Source
-          </Button>
+            <Card>
+              <CardContent className="pt-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">ID</p>
+                    <p className="font-mono text-sm">{knowledgeSource.id}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Status</p>
+                    <Badge
+                      variant="outline"
+                      className={getStatusColor(knowledgeSource.status)}
+                    >
+                      {knowledgeSource.status}
+                    </Badge>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Integration Type</p>
+                    <div className="flex items-center gap-2">
+                      {getIntegrationIcon(knowledgeSource.integrationType)}
+                      <span className="capitalize">{knowledgeSource.integrationType}</span>
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Created At</p>
+                    <p>{new Date(knowledgeSource.createdAt).toLocaleDateString()}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground mb-1">Last Indexed</p>
+                    <p>{new Date(knowledgeSource.lastIndexedAt).toLocaleDateString()}</p>
+                  </div>
+                  <div className="lg:col-span-3">
+                    <p className="text-sm text-muted-foreground mb-2">Indexing Progress</p>
+                    <div className="flex items-center gap-3">
+                      <Progress value={knowledgeSource.indexingProgress} className="flex-1" />
+                      <span className="text-sm font-medium">{knowledgeSource.indexingProgress}%</span>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {isAdmin && (
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={handleReload}>
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Reload Details
+                </Button>
+                <Button variant="outline" onClick={() => setShowShareDialog(true)}>
+                  <Share2 className="h-4 w-4 mr-2" />
+                  Share
+                </Button>
+                <Button variant="destructive" onClick={handleDelete}>
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
 
         <Card>
@@ -197,6 +312,81 @@ const KnowledgeDetailView = () => {
             ))}
           </CardContent>
         </Card>
+
+        <Dialog open={showShareDialog} onOpenChange={setShowShareDialog}>
+          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Share Knowledge Source</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-6 py-4">
+              <div>
+                <h3 className="text-sm font-medium mb-3">Share with Projects</h3>
+                <div className="space-y-2">
+                  {mockProjects.map((project) => (
+                    <div key={project.id} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`project-${project.id}`}
+                        checked={selectedProjects.includes(project.id)}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setSelectedProjects([...selectedProjects, project.id]);
+                          } else {
+                            setSelectedProjects(selectedProjects.filter((id) => id !== project.id));
+                          }
+                        }}
+                      />
+                      <label
+                        htmlFor={`project-${project.id}`}
+                        className="text-sm cursor-pointer"
+                      >
+                        {project.name}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-sm font-medium mb-3">Share with Members</h3>
+                <div className="space-y-2">
+                  {mockMembers.map((member) => (
+                    <div key={member.id} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`member-${member.id}`}
+                        checked={selectedMembers.includes(member.id)}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setSelectedMembers([...selectedMembers, member.id]);
+                          } else {
+                            setSelectedMembers(selectedMembers.filter((id) => id !== member.id));
+                          }
+                        }}
+                      />
+                      <label
+                        htmlFor={`member-${member.id}`}
+                        className="text-sm cursor-pointer"
+                      >
+                        <div>
+                          <p>{member.name}</p>
+                          <p className="text-xs text-muted-foreground">{member.email}</p>
+                        </div>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setShowShareDialog(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleShare}>
+                  Share
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
