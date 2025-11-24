@@ -15,7 +15,8 @@ import {
   FileText,
   Users,
   MoreVertical,
-  Sparkles
+  Sparkles,
+  Check
 } from "lucide-react";
 import {
   Select,
@@ -341,11 +342,20 @@ const ProjectDetailView = () => {
                     </div>
                     
                     <div className="space-y-1.5">
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-muted-foreground">Indexing Progress</span>
-                        <span className="font-medium">{source.indexedPercentage}%</span>
-                      </div>
-                      <Progress value={source.indexedPercentage} className="h-1.5" />
+                      {source.indexedPercentage === 100 ? (
+                        <Badge className="bg-green-500/10 text-green-500 border-green-500/20 hover:bg-green-500/10">
+                          <Check className="h-3 w-3 mr-1" />
+                          Indexed
+                        </Badge>
+                      ) : (
+                        <>
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-muted-foreground">Indexing Progress</span>
+                            <span className="font-medium">{source.indexedPercentage}%</span>
+                          </div>
+                          <Progress value={source.indexedPercentage} className="h-1.5" />
+                        </>
+                      )}
                     </div>
                   </div>
                 ))}

@@ -11,6 +11,7 @@ import {
   ChevronDown,
   FileText,
   type LucideIcon,
+  Check,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import CreateKnowledgeForm from "./CreateKnowledgeForm";
@@ -168,7 +169,8 @@ export default function KnowledgeDashboard() {
                                 <source.icon className="w-5 h-5 text-white" />
                               </div>
                               <Badge variant="outline" className={getStatusColor(source.status)}>
-                                {source.status}
+                                {source.status === "active" && <Check className="h-3 w-3 mr-1" />}
+                                {source.status === "active" ? "Indexed" : source.status}
                               </Badge>
                             </div>
                             <CardTitle className="text-lg">{source.name}</CardTitle>

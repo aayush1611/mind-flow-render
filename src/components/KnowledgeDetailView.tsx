@@ -16,7 +16,8 @@ import {
   Share2,
   FileText,
   Github,
-  GitBranch
+  GitBranch,
+  Check
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -280,11 +281,23 @@ const KnowledgeDetailView = () => {
                     <p>{new Date(knowledgeSource.lastIndexedAt).toLocaleDateString()}</p>
                   </div>
                   <div className="md:col-span-2">
-                    <p className="text-sm font-medium mb-3">Indexing Progress</p>
-                    <div className="flex items-center gap-4">
-                      <Progress value={knowledgeSource.indexingProgress} className="flex-1 h-2" />
-                      <span className="text-lg font-semibold min-w-[3rem]">{knowledgeSource.indexingProgress}%</span>
-                    </div>
+                    {knowledgeSource.indexingProgress === 100 ? (
+                      <div>
+                        <p className="text-sm font-medium mb-2">Indexing Status</p>
+                        <Badge className="bg-green-500/10 text-green-500 border-green-500/20 hover:bg-green-500/10">
+                          <Check className="h-3 w-3 mr-1" />
+                          Indexed
+                        </Badge>
+                      </div>
+                    ) : (
+                      <>
+                        <p className="text-sm font-medium mb-3">Indexing Progress</p>
+                        <div className="flex items-center gap-4">
+                          <Progress value={knowledgeSource.indexingProgress} className="flex-1 h-2" />
+                          <span className="text-lg font-semibold min-w-[3rem]">{knowledgeSource.indexingProgress}%</span>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
               </CardContent>
