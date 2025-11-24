@@ -41,7 +41,9 @@ const StarterPrompts = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteAllDialogOpen, setIsDeleteAllDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [currentPrompt, setCurrentPrompt] = useState<Prompt | null>(null);
+  const [promptToDelete, setPromptToDelete] = useState<string | null>(null);
   const [promptText, setPromptText] = useState("");
 
   const handleAddPrompt = () => {
@@ -70,9 +72,18 @@ const StarterPrompts = () => {
     }
   };
 
-  const handleDeletePrompt = (id: string) => {
-    setPrompts(prompts.filter(p => p.id !== id));
-    toast.success("Starter prompt deleted successfully!");
+  const handleDeletePrompt = () => {
+    if (promptToDelete) {
+      setPrompts(prompts.filter(p => p.id !== promptToDelete));
+      toast.success("Starter prompt deleted successfully!");
+      setPromptToDelete(null);
+      setIsDeleteDialogOpen(false);
+    }
+  };
+
+  const openDeleteDialog = (id: string) => {
+    setPromptToDelete(id);
+    setIsDeleteDialogOpen(true);
   };
 
   const handleDeleteAll = () => {
@@ -166,7 +177,7 @@ const StarterPrompts = () => {
                         variant="ghost"
                         size="icon"
                         className="h-7 w-7 text-destructive hover:text-destructive"
-                        onClick={() => handleDeletePrompt(prompt.id)}
+                        onClick={() => openDeleteDialog(prompt.id)}
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </Button>
@@ -255,6 +266,24 @@ const StarterPrompts = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Delete Single Prompt Confirmation Dialog */}
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Starter Prompt?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete this starter prompt.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setPromptToDelete(null)}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeletePrompt} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Delete All Confirmation Dialog */}
       <AlertDialog open={isDeleteAllDialogOpen} onOpenChange={setIsDeleteAllDialogOpen}>
