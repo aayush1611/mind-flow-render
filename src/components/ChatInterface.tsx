@@ -649,17 +649,14 @@ print(df)`,
                                      ? "shadow-lg ring-2 ring-primary" 
                                      : "hover:shadow-hover"
                                  )}
-                                 onClick={() => {
+                               onClick={() => {
                                    if (attachment.fileType === "pdf" || attachment.fileType === "excel") {
-                                     const fileExists = openFiles.some(f => f.fileName === attachment.fileName);
-                                     if (!fileExists) {
-                                       setOpenFiles(prev => [...prev, {
-                                         id: `${attachment.fileName}-${Date.now()}`,
-                                         fileName: attachment.fileName!,
-                                         fileType: attachment.fileType!,
-                                         content: ""
-                                       }]);
-                                     }
+                                     setOpenFiles(prev => [...prev, {
+                                       id: `${attachment.fileName}-${Date.now()}`,
+                                       fileName: attachment.fileName!,
+                                       fileType: attachment.fileType!,
+                                       content: ""
+                                     }]);
                                    }
                                  }}
                               >
@@ -895,6 +892,10 @@ print(df)`,
         <FilePreviewPanel
           files={openFiles}
           onClose={() => setOpenFiles([])}
+          onCloseTab={(fileId) => {
+            const updatedFiles = openFiles.filter(f => f.id !== fileId);
+            setOpenFiles(updatedFiles);
+          }}
         />
       )}
     </div>

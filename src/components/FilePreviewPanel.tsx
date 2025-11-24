@@ -1,7 +1,13 @@
-import { useState } from "react";
-import { X, Download, FileText, File } from "lucide-react";
+import { useState, useEffect } from "react";
+import { X, Download, FileText, File, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Document, Page, pdfjs } from 'react-pdf';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
+
+// Set up the worker
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 interface FileTab {
   id: string;
@@ -13,14 +19,32 @@ interface FileTab {
 interface FilePreviewPanelProps {
   files: FileTab[];
   onClose: () => void;
+  onCloseTab: (fileId: string) => void;
   className?: string;
 }
 
-export default function FilePreviewPanel({ files, onClose, className }: FilePreviewPanelProps) {
+export default function FilePreviewPanel({ files, onClose, onCloseTab, className }: FilePreviewPanelProps) {
   const [activeTabId, setActiveTabId] = useState(files[0]?.id);
   const [localFiles, setLocalFiles] = useState(files);
+  const [numPages, setNumPages] = useState<number>(0);
+  const [pageNumber, setPageNumber] = useState<number>(1);
+
+  // Sync local files with parent's files
+  useEffect(() => {
+    setLocalFiles(files);
+    // If a new file is added, make it active
+    if (files.length > localFiles.length) {
+      const newFile = files[files.length - 1];
+      setActiveTabId(newFile.id);
+    }
+  }, [files]);
 
   const activeFile = localFiles.find(f => f.id === activeTabId);
+
+  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
+    setNumPages(numPages);
+    setPageNumber(1);
+  };
 
   const handleDownload = (file: FileTab) => {
     console.log("Downloading:", file.fileName);
@@ -29,16 +53,7 @@ export default function FilePreviewPanel({ files, onClose, className }: FilePrev
 
   const handleCloseTab = (fileId: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    const updatedFiles = localFiles.filter(f => f.id !== fileId);
-    setLocalFiles(updatedFiles);
-    
-    if (activeTabId === fileId) {
-      setActiveTabId(updatedFiles[0]?.id || "");
-    }
-    
-    if (updatedFiles.length === 0) {
-      onClose();
-    }
+    onCloseTab(fileId);
   };
 
   const getFileIcon = (fileType: string) => {
@@ -109,27 +124,70 @@ export default function FilePreviewPanel({ files, onClose, className }: FilePrev
       </div>
 
       {/* Content Area */}
-      <div className="flex-1 overflow-auto bg-background p-6">
+      <div className="flex-1 overflow-auto bg-muted/20">
         {activeFile ? (
-          <div className="h-full flex flex-col items-center justify-center animate-fade-in">
-            <div className="text-center space-y-6 max-w-md">
-              <div className="w-24 h-24 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto">
-                <div className="scale-150">
-                  {getFileIcon(activeFile.fileType)}
+          activeFile.fileType === "pdf" ? (
+            <div className="h-full flex flex-col animate-fade-in">
+              {/* PDF Controls */}
+              <div className="bg-background border-b px-4 py-3 flex items-center justify-between shrink-0">
+                <div className="flex items-center gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setPageNumber(prev => Math.max(1, prev - 1))}
+                    disabled={pageNumber <= 1}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  <span className="text-sm text-muted-foreground">
+                    Page {pageNumber} of {numPages}
+                  </span>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setPageNumber(prev => Math.min(numPages, prev + 1))}
+                    disabled={pageNumber >= numPages}
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
                 </div>
               </div>
-              <div>
-                <h3 className="font-semibold text-xl mb-2">{activeFile.fileName}</h3>
-                <p className="text-sm text-muted-foreground">
-                  {activeFile.fileType === "pdf" ? "PDF Document" : "Excel Spreadsheet"}
-                </p>
-              </div>
-              <div className="bg-muted/30 rounded-lg p-6 text-sm text-muted-foreground">
-                <p className="font-medium mb-1">Preview Coming Soon</p>
-                <p className="text-xs">Full document preview will be available in the next update.</p>
+              
+              {/* PDF Viewer */}
+              <div className="flex-1 overflow-auto flex items-start justify-center p-6">
+                <Document
+                  file="/placeholder.pdf"
+                  onLoadSuccess={onDocumentLoadSuccess}
+                  className="shadow-lg"
+                >
+                  <Page 
+                    pageNumber={pageNumber}
+                    renderTextLayer={true}
+                    renderAnnotationLayer={true}
+                    className="border"
+                  />
+                </Document>
               </div>
             </div>
-          </div>
+          ) : (
+            <div className="h-full flex flex-col items-center justify-center animate-fade-in p-6">
+              <div className="text-center space-y-6 max-w-md">
+                <div className="w-24 h-24 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto">
+                  <div className="scale-150">
+                    {getFileIcon(activeFile.fileType)}
+                  </div>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-xl mb-2">{activeFile.fileName}</h3>
+                  <p className="text-sm text-muted-foreground">Excel Spreadsheet</p>
+                </div>
+                <div className="bg-muted/30 rounded-lg p-6 text-sm text-muted-foreground">
+                  <p className="font-medium mb-1">Excel Preview Coming Soon</p>
+                  <p className="text-xs">Excel spreadsheet preview will be available in the next update.</p>
+                </div>
+              </div>
+            </div>
+          )
         ) : (
           <div className="h-full flex items-center justify-center text-muted-foreground">
             No file selected
