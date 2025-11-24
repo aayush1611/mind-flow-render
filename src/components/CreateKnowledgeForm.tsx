@@ -88,7 +88,16 @@ export default function CreateKnowledgeForm({ onClose, onComplete }: CreateKnowl
     <div className="max-w-2xl mx-auto py-6 space-y-4">
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Header */}
-        <div className="space-y-1">
+        <div className="space-y-1 relative">
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={onClose}
+            className="absolute -top-2 right-0 h-8 w-8"
+          >
+            <X className="h-4 w-4" />
+          </Button>
           <h1 className="text-3xl font-bold text-primary">Add Knowledge Source</h1>
           <p className="text-sm text-muted-foreground">
             Connect your repository as a knowledge source
@@ -233,24 +242,19 @@ export default function CreateKnowledgeForm({ onClose, onComplete }: CreateKnowl
 
         {/* Action Buttons */}
         <div className="flex items-center justify-between pt-3 border-t">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={step === 1 ? onClose : handleBack}
-            className="gap-2"
-          >
-            {step === 1 ? (
-              <>
-                <X className="w-4 h-4" />
-                Cancel
-              </>
-            ) : (
-              <>
-                <ArrowLeft className="w-4 h-4" />
-                Back
-              </>
-            )}
-          </Button>
+          {step > 1 ? (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleBack}
+              className="gap-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back
+            </Button>
+          ) : (
+            <div />
+          )}
 
           {step < 3 ? (
             <Button
