@@ -372,6 +372,27 @@ print(df)`,
                   className="min-h-[60px] md:min-h-[80px] pr-24 md:pr-44 resize-none border-0 focus-visible:ring-0 shadow-none text-sm md:text-base"
                 />
 
+                  {/* Image previews at top */}
+                  {uploadedImages.length > 0 && (
+                    <div className="mb-3 flex flex-wrap gap-2">
+                      {uploadedImages.map((image) => (
+                        <div key={image.id} className="relative group">
+                          <img
+                            src={image.url}
+                            alt="Upload preview"
+                            className="w-20 h-20 object-cover rounded-lg border border-border"
+                          />
+                          <button
+                            onClick={() => setUploadedImages(prev => prev.filter(img => img.id !== image.id))}
+                            className="absolute -top-2 -right-2 w-5 h-5 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md hover:bg-destructive/90"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
                   {/* Hidden file input */}
                   <input
                     ref={fileInputRef}
@@ -396,31 +417,6 @@ print(df)`,
                       if (e.target) e.target.value = '';
                     }}
                   />
-
-                  {/* Image previews */}
-                  {uploadedImages.length > 0 && (
-                    <div className="mb-3 flex flex-wrap gap-2.5">
-                      {uploadedImages.map((image) => (
-                        <div 
-                          key={image.id} 
-                          className="relative group rounded-lg overflow-hidden border-2 border-border/60 hover:border-primary/40 transition-all shadow-sm hover:shadow-md"
-                        >
-                          <img
-                            src={image.url}
-                            alt="Upload preview"
-                            className="w-24 h-24 object-cover"
-                          />
-                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all" />
-                          <button
-                            onClick={() => setUploadedImages(prev => prev.filter(img => img.id !== image.id))}
-                            className="absolute top-1.5 right-1.5 w-6 h-6 bg-background/95 backdrop-blur-sm border border-border text-foreground rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-lg hover:bg-destructive hover:text-destructive-foreground hover:border-destructive"
-                          >
-                            <X className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
 
                   {/* Controls positioned at bottom right */}
                   <div className="absolute bottom-3 md:bottom-4 right-3 md:right-4 flex items-center gap-1 md:gap-2">
@@ -924,25 +920,21 @@ print(df)`,
               </div>
 
               <div className="relative bg-background rounded-2xl border p-3 md:p-4">
-                {/* Image previews */}
+                {/* Image previews at top */}
                 {uploadedImages.length > 0 && (
-                  <div className="mb-3 flex flex-wrap gap-2.5">
+                  <div className="mb-3 flex flex-wrap gap-2">
                     {uploadedImages.map((image) => (
-                      <div 
-                        key={image.id} 
-                        className="relative group rounded-lg overflow-hidden border-2 border-border/60 hover:border-primary/40 transition-all shadow-sm hover:shadow-md"
-                      >
+                      <div key={image.id} className="relative group">
                         <img
                           src={image.url}
                           alt="Upload preview"
-                          className="w-24 h-24 object-cover"
+                          className="w-20 h-20 object-cover rounded-lg border border-border"
                         />
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all" />
                         <button
                           onClick={() => setUploadedImages(prev => prev.filter(img => img.id !== image.id))}
-                          className="absolute top-1.5 right-1.5 w-6 h-6 bg-background/95 backdrop-blur-sm border border-border text-foreground rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-lg hover:bg-destructive hover:text-destructive-foreground hover:border-destructive"
+                          className="absolute -top-2 -right-2 w-5 h-5 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md hover:bg-destructive/90"
                         >
-                          <X className="w-3.5 h-3.5" />
+                          <X className="w-3 h-3" />
                         </button>
                       </div>
                     ))}

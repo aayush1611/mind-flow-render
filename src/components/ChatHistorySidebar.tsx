@@ -362,7 +362,10 @@ export default function ChatHistorySidebar({ isMobileExpanded = false, onNewChat
           <Button 
             variant="ghost" 
             size="default"
-            className="shrink-0 w-full justify-start"
+            className={cn(
+              "shrink-0 w-full justify-start",
+              location.pathname === "/settings" && "bg-primary/10 text-primary"
+            )}
             onClick={() => console.log("Settings clicked")}
           >
             <Settings className="w-5 h-5" />
@@ -370,11 +373,16 @@ export default function ChatHistorySidebar({ isMobileExpanded = false, onNewChat
           </Button>
         ) : (
           <button
-            className="flex flex-col items-center gap-1 p-2 hover:bg-accent rounded-md transition-colors w-full"
+            className={cn(
+              "flex flex-col items-center gap-1 p-2 rounded-md transition-colors w-full",
+              location.pathname === "/settings" 
+                ? "bg-primary/10 text-primary" 
+                : "hover:bg-accent"
+            )}
             onMouseEnter={() => setOpenPopup('settings')}
           >
             <Settings className="w-5 h-5" />
-            <span className="text-[10px] text-muted-foreground">Settings</span>
+            <span className="text-[10px]">Settings</span>
           </button>
         )}
 
@@ -383,7 +391,10 @@ export default function ChatHistorySidebar({ isMobileExpanded = false, onNewChat
           <Button 
             variant="ghost" 
             size="default"
-            className="shrink-0 w-full justify-start"
+            className={cn(
+              "shrink-0 w-full justify-start",
+              location.pathname === "/instructions" && "bg-primary/10 text-primary"
+            )}
             onClick={() => navigate('/instructions')}
           >
             <FileText className="w-5 h-5" />
@@ -391,12 +402,17 @@ export default function ChatHistorySidebar({ isMobileExpanded = false, onNewChat
           </Button>
         ) : (
           <button
-            className="flex flex-col items-center gap-1 p-2 hover:bg-accent rounded-md transition-colors w-full"
+            className={cn(
+              "flex flex-col items-center gap-1 p-2 rounded-md transition-colors w-full",
+              location.pathname === "/instructions"
+                ? "bg-primary/10 text-primary"
+                : "hover:bg-accent"
+            )}
             onMouseEnter={() => setOpenPopup('instruction')}
             onClick={() => navigate('/instructions')}
           >
             <FileText className="w-5 h-5" />
-            <span className="text-[10px] text-muted-foreground">Instructions</span>
+            <span className="text-[10px]">Instructions</span>
           </button>
         )}
 
@@ -405,7 +421,10 @@ export default function ChatHistorySidebar({ isMobileExpanded = false, onNewChat
           <Button 
             variant="ghost" 
             size="default"
-            className="shrink-0 w-full justify-start"
+            className={cn(
+              "shrink-0 w-full justify-start",
+              location.pathname.startsWith("/projects") && "bg-primary/10 text-primary"
+            )}
             onClick={() => navigate('/projects')}
           >
             <FolderKanban className="w-5 h-5" />
@@ -413,12 +432,17 @@ export default function ChatHistorySidebar({ isMobileExpanded = false, onNewChat
           </Button>
         ) : (
           <button
-            className="flex flex-col items-center gap-1 p-2 hover:bg-accent rounded-md transition-colors w-full"
+            className={cn(
+              "flex flex-col items-center gap-1 p-2 rounded-md transition-colors w-full",
+              location.pathname.startsWith("/projects")
+                ? "bg-primary/10 text-primary"
+                : "hover:bg-accent"
+            )}
             onMouseEnter={() => setOpenPopup('project')}
             onClick={() => navigate('/projects')}
           >
             <FolderKanban className="w-5 h-5" />
-            <span className="text-[10px] text-muted-foreground">Projects</span>
+            <span className="text-[10px]">Projects</span>
           </button>
         )}
 
@@ -427,7 +451,10 @@ export default function ChatHistorySidebar({ isMobileExpanded = false, onNewChat
           <Button 
             variant="ghost" 
             size="default"
-            className="shrink-0 w-full justify-start"
+            className={cn(
+              "shrink-0 w-full justify-start",
+              location.pathname.startsWith("/knowledge") && "bg-primary/10 text-primary"
+            )}
             onClick={() => navigate('/knowledge')}
           >
             <BookOpen className="w-5 h-5" />
@@ -435,12 +462,17 @@ export default function ChatHistorySidebar({ isMobileExpanded = false, onNewChat
           </Button>
         ) : (
           <button
-            className="flex flex-col items-center gap-1 p-2 hover:bg-accent rounded-md transition-colors w-full"
+            className={cn(
+              "flex flex-col items-center gap-1 p-2 rounded-md transition-colors w-full",
+              location.pathname.startsWith("/knowledge")
+                ? "bg-primary/10 text-primary"
+                : "hover:bg-accent"
+            )}
             onMouseEnter={() => setOpenPopup('knowledge')}
             onClick={() => navigate('/knowledge')}
           >
             <BookOpen className="w-5 h-5" />
-            <span className="text-[10px] text-muted-foreground">Knowledge</span>
+            <span className="text-[10px]">Knowledge</span>
           </button>
         )}
 
@@ -449,7 +481,10 @@ export default function ChatHistorySidebar({ isMobileExpanded = false, onNewChat
           <Button 
             variant="ghost" 
             size="default"
-            className="shrink-0 w-full justify-start"
+            className={cn(
+              "shrink-0 w-full justify-start",
+              location.pathname === "/rules" && "bg-primary/10 text-primary"
+            )}
             onClick={() => navigate('/rules')}
           >
             <Shield className="w-5 h-5" />
@@ -457,12 +492,17 @@ export default function ChatHistorySidebar({ isMobileExpanded = false, onNewChat
           </Button>
         ) : (
           <button
-            className="flex flex-col items-center gap-1 p-2 hover:bg-accent rounded-md transition-colors w-full"
+            className={cn(
+              "flex flex-col items-center gap-1 p-2 rounded-md transition-colors w-full",
+              location.pathname === "/rules"
+                ? "bg-primary/10 text-primary"
+                : "hover:bg-accent"
+            )}
             onMouseEnter={() => setOpenPopup('rules')}
             onClick={() => navigate('/rules')}
           >
             <Shield className="w-5 h-5" />
-            <span className="text-[10px] text-muted-foreground">Rules</span>
+            <span className="text-[10px]">Rules</span>
           </button>
         )}
 
@@ -471,7 +511,10 @@ export default function ChatHistorySidebar({ isMobileExpanded = false, onNewChat
           <Button 
             variant="ghost" 
             size="default"
-            className="shrink-0 w-full justify-start"
+            className={cn(
+              "shrink-0 w-full justify-start",
+              location.pathname === "/mcp" && "bg-primary/10 text-primary"
+            )}
             onClick={() => navigate('/mcp')}
           >
             <Network className="w-5 h-5" />
@@ -479,12 +522,17 @@ export default function ChatHistorySidebar({ isMobileExpanded = false, onNewChat
           </Button>
         ) : (
           <button
-            className="flex flex-col items-center gap-1 p-2 hover:bg-accent rounded-md transition-colors w-full"
+            className={cn(
+              "flex flex-col items-center gap-1 p-2 rounded-md transition-colors w-full",
+              location.pathname === "/mcp"
+                ? "bg-primary/10 text-primary"
+                : "hover:bg-accent"
+            )}
             onMouseEnter={() => setOpenPopup('mcp')}
             onClick={() => navigate('/mcp')}
           >
             <Network className="w-5 h-5" />
-            <span className="text-[10px] text-muted-foreground">MCP</span>
+            <span className="text-[10px]">MCP</span>
           </button>
         )}
 
@@ -493,7 +541,10 @@ export default function ChatHistorySidebar({ isMobileExpanded = false, onNewChat
           <Button 
             variant="ghost" 
             size="default"
-            className="shrink-0 w-full justify-start"
+            className={cn(
+              "shrink-0 w-full justify-start",
+              location.pathname === "/memories" && "bg-primary/10 text-primary"
+            )}
             onClick={() => navigate('/memories')}
           >
             <Brain className="w-5 h-5" />
@@ -501,12 +552,17 @@ export default function ChatHistorySidebar({ isMobileExpanded = false, onNewChat
           </Button>
         ) : (
           <button
-            className="flex flex-col items-center gap-1 p-2 hover:bg-accent rounded-md transition-colors w-full"
+            className={cn(
+              "flex flex-col items-center gap-1 p-2 rounded-md transition-colors w-full",
+              location.pathname === "/memories"
+                ? "bg-primary/10 text-primary"
+                : "hover:bg-accent"
+            )}
             onMouseEnter={() => setOpenPopup('memories')}
             onClick={() => navigate('/memories')}
           >
             <Brain className="w-5 h-5" />
-            <span className="text-[10px] text-muted-foreground">Memories</span>
+            <span className="text-[10px]">Memories</span>
           </button>
         )}
 
@@ -565,11 +621,16 @@ export default function ChatHistorySidebar({ isMobileExpanded = false, onNewChat
           </div>
         ) : (
           <button
-            className="flex flex-col items-center gap-1 p-2 hover:bg-accent rounded-md transition-colors w-full shrink-0"
+            className={cn(
+              "flex flex-col items-center gap-1 p-2 rounded-md transition-colors w-full shrink-0",
+              location.pathname === "/chatThreads"
+                ? "bg-primary/10 text-primary"
+                : "hover:bg-accent"
+            )}
             onMouseEnter={() => setOpenPopup('chats')}
           >
             <MessageSquare className="w-5 h-5" />
-            <span className="text-[10px] text-muted-foreground">Chats</span>
+            <span className="text-[10px]">Chats</span>
           </button>
         )}
 
