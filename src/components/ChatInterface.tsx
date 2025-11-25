@@ -49,10 +49,10 @@ const mockThinkingSteps: ThinkingStep[] = [
   { id: "6", label: "Preparing PDF documentation", status: "pending" },
 ];
 
-const appPills = [
-  { id: "powerpoint", label: "PowerPoint", icon: "🎨" },
-  { id: "word", label: "Word", icon: "📄" },
-  { id: "excel", label: "Excel", icon: "📊" },
+const outputOptions = [
+  { id: "visualizations", label: "Include Charts", icon: "📊" },
+  { id: "code", label: "Generate Code", icon: "💻" },
+  { id: "analysis", label: "Deep Analysis", icon: "🔍" },
 ];
 
 const suggestionsByApp = {
@@ -123,7 +123,7 @@ export default function ChatInterface() {
   const [expandedThinking, setExpandedThinking] = useState<string | null>(null);
   const [showThinking, setShowThinking] = useState(false);
   const [selectedPill, setSelectedPill] = useState<string | null>(null);
-  const [selectedApp, setSelectedApp] = useState<string | null>(null);
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [selectedModule, setSelectedModule] = useState<string | null>(null);
   const [tempSelectedModule, setTempSelectedModule] = useState<string | null>(null);
   const [isModulePopoverOpen, setIsModulePopoverOpen] = useState(false);
@@ -141,8 +141,6 @@ export default function ChatInterface() {
 
   const currentSuggestions = selectedModule
     ? suggestionsByModule[selectedModule as keyof typeof suggestionsByModule] || suggestionsByApp.default
-    : selectedApp
-    ? suggestionsByApp[selectedApp as keyof typeof suggestionsByApp]
     : suggestionsByApp.default;
 
   const scrollToBottom = () => {
@@ -161,7 +159,7 @@ export default function ChatInterface() {
       id: Date.now().toString(),
       role: "user",
       content: messageText,
-      selectedApp: selectedApp,
+      selectedApp: null,
     };
 
     const assistantMessageId = (Date.now() + 1).toString();
@@ -176,7 +174,6 @@ export default function ChatInterface() {
     setMessages((prev) => [...prev, userMessage, assistantMessage]);
     setInput("");
     setSelectedPill(null);
-    setSelectedApp(null);
     setIsLoading(true);
     setShowThinking(true);
     setExpandedThinking(assistantMessageId);
@@ -369,8 +366,6 @@ print(df)`,
                   placeholder={
                     selectedModule
                       ? `Ask about ${mockModules.find(m => m.id === selectedModule)?.name}...`
-                      : selectedApp
-                      ? `Ask Office Agent anything about ${selectedApp}...`
                       : "Ask Office Agent anything..."
                   }
                   className="min-h-[60px] md:min-h-[80px] pr-24 md:pr-44 resize-none border-0 focus-visible:ring-0 shadow-none text-sm md:text-base"
@@ -399,17 +394,58 @@ print(df)`,
                       </svg>
                     </Button>
 
-                    <Select value={selectedApp || "all"} onValueChange={(value) => setSelectedApp(value === "all" ? null : value)}>
-                      <SelectTrigger className="w-[100px] md:w-[140px] h-8 md:h-9 text-xs md:text-sm hidden sm:flex">
-                        <SelectValue placeholder="All Apps" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-popover z-50">
-                        <SelectItem value="all">All Apps</SelectItem>
-                        <SelectItem value="powerpoint">🎨 PowerPoint</SelectItem>
-                        <SelectItem value="word">📄 Word</SelectItem>
-                        <SelectItem value="excel">📊 Excel</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-8 md:h-9 text-xs md:text-sm gap-1.5 hidden sm:flex"
+                        >
+                          <span>Options</span>
+                          {selectedOptions.length > 0 && (
+                            <Badge variant="secondary" className="h-5 px-1.5 text-[10px] font-medium">
+                              {selectedOptions.length}
+                            </Badge>
+                          )}
+                          <ChevronDown className="w-3 h-3" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-64 bg-popover z-50" align="end">
+                        <div className="space-y-3">
+                          <div>
+                            <h4 className="font-semibold text-sm mb-1">Response Options</h4>
+                            <p className="text-xs text-muted-foreground">
+                              Customize what to include in the response
+                            </p>
+                          </div>
+                          <div className="space-y-2">
+                            {outputOptions.map((option) => (
+                              <label
+                                key={option.id}
+                                className="flex items-center gap-3 p-2 rounded-md hover:bg-accent cursor-pointer transition-colors"
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={selectedOptions.includes(option.id)}
+                                  onChange={(e) => {
+                                    if (e.target.checked) {
+                                      setSelectedOptions([...selectedOptions, option.id]);
+                                    } else {
+                                      setSelectedOptions(selectedOptions.filter(id => id !== option.id));
+                                    }
+                                  }}
+                                  className="w-4 h-4 rounded border-input text-primary focus:ring-2 focus:ring-primary"
+                                />
+                                <div className="flex items-center gap-2 flex-1">
+                                  <span className="text-base">{option.icon}</span>
+                                  <span className="text-sm">{option.label}</span>
+                                </div>
+                              </label>
+                            ))}
+                          </div>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
 
                     <Button
                       onClick={() => handleSend()}
@@ -451,15 +487,6 @@ print(df)`,
               {message.role === "user" ? (
                 <div className="flex justify-end">
                   <div className="bg-primary text-primary-foreground rounded-2xl px-4 md:px-6 py-3 md:py-4 max-w-[85%] md:max-w-[75%] shadow-sm">
-                    {message.selectedApp && (
-                      <div className="text-xs mb-2.5 pb-2.5 border-b border-primary-foreground/20 flex items-center gap-1.5">
-                        <span className="font-semibold">
-                          {message.selectedApp === "powerpoint" && "🎨 PowerPoint"}
-                          {message.selectedApp === "word" && "📄 Word"}
-                          {message.selectedApp === "excel" && "📊 Excel"}
-                        </span>
-                      </div>
-                    )}
                     <div className="text-[15px] leading-relaxed font-medium">
                       {message.content}
                     </div>
@@ -873,17 +900,59 @@ print(df)`,
                     </svg>
                   </Button>
 
-                  <Select value={selectedApp || "all"} onValueChange={(value) => setSelectedApp(value === "all" ? null : value)}>
-                    <SelectTrigger className="w-[90px] md:w-[120px] h-8 md:h-9 text-xs md:text-sm hidden sm:flex">
-                      <SelectValue placeholder="All Apps" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-popover z-50">
-                      <SelectItem value="all">All Apps</SelectItem>
-                      <SelectItem value="powerpoint">🎨 PPT</SelectItem>
-                      <SelectItem value="word">📄 Word</SelectItem>
-                      <SelectItem value="excel">📊 Excel</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-8 md:h-9 text-xs md:text-sm gap-1.5 hidden sm:flex"
+                      >
+                        <span>Options</span>
+                        {selectedOptions.length > 0 && (
+                          <Badge variant="secondary" className="h-5 px-1.5 text-[10px] font-medium">
+                            {selectedOptions.length}
+                          </Badge>
+                        )}
+                        <ChevronDown className="w-3 h-3" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-64 bg-popover z-50" align="end">
+                      <div className="space-y-3">
+                        <div>
+                          <h4 className="font-semibold text-sm mb-1">Response Options</h4>
+                          <p className="text-xs text-muted-foreground">
+                            Customize what to include in the response
+                          </p>
+                        </div>
+                        <div className="space-y-2">
+                          {outputOptions.map((option) => (
+                            <label
+                              key={option.id}
+                              className="flex items-center gap-3 p-2 rounded-md hover:bg-accent cursor-pointer transition-colors"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={selectedOptions.includes(option.id)}
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedOptions([...selectedOptions, option.id]);
+                                  } else {
+                                    setSelectedOptions(selectedOptions.filter(id => id !== option.id));
+                                  }
+                                }}
+                                className="w-4 h-4 rounded border-input text-primary focus:ring-2 focus:ring-primary"
+                              />
+                              <div className="flex items-center gap-2 flex-1">
+                                <span className="text-base">{option.icon}</span>
+                                <span className="text-sm">{option.label}</span>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+
                   <Button
                     onClick={() => handleSend()}
                     disabled={!input.trim() || isLoading}
