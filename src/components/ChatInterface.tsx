@@ -50,9 +50,9 @@ const mockThinkingSteps: ThinkingStep[] = [
 ];
 
 const outputOptions = [
-  { id: "visualizations", label: "Include Charts", icon: "📊" },
-  { id: "code", label: "Generate Code", icon: "💻" },
-  { id: "analysis", label: "Deep Analysis", icon: "🔍" },
+  { id: "powerpoint", label: "PowerPoint", icon: "🎨", description: "Generate presentation slides" },
+  { id: "pdf", label: "PDF Document", icon: "📄", description: "Export as formatted document" },
+  { id: "excel", label: "Excel Spreadsheet", icon: "📊", description: "Create data tables and sheets" },
 ];
 
 const suggestionsByApp = {
@@ -399,31 +399,33 @@ print(df)`,
                         <Button
                           variant="outline"
                           size="sm"
-                          className="h-8 md:h-9 text-xs md:text-sm gap-1.5 hidden sm:flex"
+                          className="h-8 md:h-9 px-3 text-xs md:text-sm gap-2 hidden sm:flex border-border/50 hover:border-primary/50"
                         >
-                          <span>Options</span>
-                          {selectedOptions.length > 0 && (
-                            <Badge variant="secondary" className="h-5 px-1.5 text-[10px] font-medium">
-                              {selectedOptions.length}
-                            </Badge>
-                          )}
-                          <ChevronDown className="w-3 h-3" />
+                          <span className="text-muted-foreground">Output:</span>
+                          <span className="font-medium">
+                            {selectedOptions.length === 0 ? "None" : selectedOptions.length === 1 ? outputOptions.find(o => o.id === selectedOptions[0])?.label.split(' ')[0] : `${selectedOptions.length} selected`}
+                          </span>
+                          <ChevronDown className="w-3.5 h-3.5 opacity-50" />
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-64 bg-popover z-50" align="end">
-                        <div className="space-y-3">
-                          <div>
-                            <h4 className="font-semibold text-sm mb-1">Response Options</h4>
-                            <p className="text-xs text-muted-foreground">
-                              Customize what to include in the response
-                            </p>
-                          </div>
-                          <div className="space-y-2">
-                            {outputOptions.map((option) => (
-                              <label
-                                key={option.id}
-                                className="flex items-center gap-3 p-2 rounded-md hover:bg-accent cursor-pointer transition-colors"
-                              >
+                      <PopoverContent className="w-72 bg-popover border shadow-lg z-50 p-0" align="end">
+                        <div className="p-4 border-b bg-muted/30">
+                          <h4 className="font-semibold text-sm">Output Formats</h4>
+                          <p className="text-xs text-muted-foreground mt-0.5">
+                            Select formats to include in response
+                          </p>
+                        </div>
+                        <div className="p-2">
+                          {outputOptions.map((option) => (
+                            <label
+                              key={option.id}
+                              className={cn(
+                                "flex items-start gap-3 p-3 rounded-lg cursor-pointer transition-all",
+                                "hover:bg-accent/50 border border-transparent",
+                                selectedOptions.includes(option.id) && "bg-primary/5 border-primary/20"
+                              )}
+                            >
+                              <div className="flex items-center h-5">
                                 <input
                                   type="checkbox"
                                   checked={selectedOptions.includes(option.id)}
@@ -434,15 +436,20 @@ print(df)`,
                                       setSelectedOptions(selectedOptions.filter(id => id !== option.id));
                                     }
                                   }}
-                                  className="w-4 h-4 rounded border-input text-primary focus:ring-2 focus:ring-primary"
+                                  className="w-4 h-4 rounded border-input text-primary focus:ring-2 focus:ring-primary/20 cursor-pointer"
                                 />
-                                <div className="flex items-center gap-2 flex-1">
-                                  <span className="text-base">{option.icon}</span>
-                                  <span className="text-sm">{option.label}</span>
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-0.5">
+                                  <span className="text-lg leading-none">{option.icon}</span>
+                                  <span className="text-sm font-medium">{option.label}</span>
                                 </div>
-                              </label>
-                            ))}
-                          </div>
+                                <p className="text-xs text-muted-foreground leading-snug">
+                                  {option.description}
+                                </p>
+                              </div>
+                            </label>
+                          ))}
                         </div>
                       </PopoverContent>
                     </Popover>
@@ -905,31 +912,33 @@ print(df)`,
                       <Button
                         variant="outline"
                         size="sm"
-                        className="h-8 md:h-9 text-xs md:text-sm gap-1.5 hidden sm:flex"
+                        className="h-8 md:h-9 px-3 text-xs md:text-sm gap-2 hidden sm:flex border-border/50 hover:border-primary/50"
                       >
-                        <span>Options</span>
-                        {selectedOptions.length > 0 && (
-                          <Badge variant="secondary" className="h-5 px-1.5 text-[10px] font-medium">
-                            {selectedOptions.length}
-                          </Badge>
-                        )}
-                        <ChevronDown className="w-3 h-3" />
+                        <span className="text-muted-foreground">Output:</span>
+                        <span className="font-medium">
+                          {selectedOptions.length === 0 ? "None" : selectedOptions.length === 1 ? outputOptions.find(o => o.id === selectedOptions[0])?.label.split(' ')[0] : `${selectedOptions.length} selected`}
+                        </span>
+                        <ChevronDown className="w-3.5 h-3.5 opacity-50" />
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-64 bg-popover z-50" align="end">
-                      <div className="space-y-3">
-                        <div>
-                          <h4 className="font-semibold text-sm mb-1">Response Options</h4>
-                          <p className="text-xs text-muted-foreground">
-                            Customize what to include in the response
-                          </p>
-                        </div>
-                        <div className="space-y-2">
-                          {outputOptions.map((option) => (
-                            <label
-                              key={option.id}
-                              className="flex items-center gap-3 p-2 rounded-md hover:bg-accent cursor-pointer transition-colors"
-                            >
+                    <PopoverContent className="w-72 bg-popover border shadow-lg z-50 p-0" align="end">
+                      <div className="p-4 border-b bg-muted/30">
+                        <h4 className="font-semibold text-sm">Output Formats</h4>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          Select formats to include in response
+                        </p>
+                      </div>
+                      <div className="p-2">
+                        {outputOptions.map((option) => (
+                          <label
+                            key={option.id}
+                            className={cn(
+                              "flex items-start gap-3 p-3 rounded-lg cursor-pointer transition-all",
+                              "hover:bg-accent/50 border border-transparent",
+                              selectedOptions.includes(option.id) && "bg-primary/5 border-primary/20"
+                            )}
+                          >
+                            <div className="flex items-center h-5">
                               <input
                                 type="checkbox"
                                 checked={selectedOptions.includes(option.id)}
@@ -940,15 +949,20 @@ print(df)`,
                                     setSelectedOptions(selectedOptions.filter(id => id !== option.id));
                                   }
                                 }}
-                                className="w-4 h-4 rounded border-input text-primary focus:ring-2 focus:ring-primary"
+                                className="w-4 h-4 rounded border-input text-primary focus:ring-2 focus:ring-primary/20 cursor-pointer"
                               />
-                              <div className="flex items-center gap-2 flex-1">
-                                <span className="text-base">{option.icon}</span>
-                                <span className="text-sm">{option.label}</span>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 mb-0.5">
+                                <span className="text-lg leading-none">{option.icon}</span>
+                                <span className="text-sm font-medium">{option.label}</span>
                               </div>
-                            </label>
-                          ))}
-                        </div>
+                              <p className="text-xs text-muted-foreground leading-snug">
+                                {option.description}
+                              </p>
+                            </div>
+                          </label>
+                        ))}
                       </div>
                     </PopoverContent>
                   </Popover>
