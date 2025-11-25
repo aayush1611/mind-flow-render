@@ -135,6 +135,7 @@ export default function ChatInterface() {
   }>>([]);
   const [selectedProcessingStep, setSelectedProcessingStep] = useState<ThinkingStep & { details?: string; logs?: string[] } | null>(null);
   const [hiddenSteps, setHiddenSteps] = useState<Record<string, boolean>>({});
+  const [uploadedImages, setUploadedImages] = useState<Array<{ id: string; url: string; file: File }>>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -375,11 +376,47 @@ print(df)`,
                   <input
                     ref={fileInputRef}
                     type="file"
+                    accept="image/*"
+                    multiple
                     className="hidden"
                     onChange={(e) => {
-                      console.log("File selected:", e.target.files?.[0]);
+                      const files = Array.from(e.target.files || []);
+                      files.forEach(file => {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                          setUploadedImages(prev => [...prev, {
+                            id: `${Date.now()}-${Math.random()}`,
+                            url: event.target?.result as string,
+                            file
+                          }]);
+                        };
+                        reader.readAsDataURL(file);
+                      });
+                      // Reset input
+                      if (e.target) e.target.value = '';
                     }}
                   />
+
+                  {/* Image previews */}
+                  {uploadedImages.length > 0 && (
+                    <div className="mb-3 flex flex-wrap gap-2">
+                      {uploadedImages.map((image) => (
+                        <div key={image.id} className="relative group">
+                          <img
+                            src={image.url}
+                            alt="Upload preview"
+                            className="w-20 h-20 object-cover rounded-lg border border-border"
+                          />
+                          <button
+                            onClick={() => setUploadedImages(prev => prev.filter(img => img.id !== image.id))}
+                            className="absolute -top-2 -right-2 w-5 h-5 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md hover:bg-destructive/90"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
                   {/* Controls positioned at bottom right */}
                   <div className="absolute bottom-3 md:bottom-4 right-3 md:right-4 flex items-center gap-1 md:gap-2">
@@ -493,8 +530,8 @@ print(df)`,
             <div key={message.id} className="space-y-4">
               {message.role === "user" ? (
                 <div className="flex justify-end">
-                  <div className="bg-primary text-primary-foreground rounded-2xl px-4 md:px-6 py-3 md:py-4 max-w-[85%] md:max-w-[75%] shadow-sm">
-                    <div className="text-[15px] leading-relaxed font-medium">
+                  <div className="bg-primary text-primary-foreground rounded-xl px-3 md:px-4 py-2 md:py-2.5 max-w-[85%] md:max-w-[75%] shadow-sm">
+                    <div className="text-sm md:text-[15px] leading-relaxed">
                       {message.content}
                     </div>
                   </div>
@@ -883,6 +920,27 @@ print(df)`,
               </div>
 
               <div className="relative bg-background rounded-2xl border p-3 md:p-4">
+                {/* Image previews */}
+                {uploadedImages.length > 0 && (
+                  <div className="mb-3 flex flex-wrap gap-2">
+                    {uploadedImages.map((image) => (
+                      <div key={image.id} className="relative group">
+                        <img
+                          src={image.url}
+                          alt="Upload preview"
+                          className="w-20 h-20 object-cover rounded-lg border border-border"
+                        />
+                        <button
+                          onClick={() => setUploadedImages(prev => prev.filter(img => img.id !== image.id))}
+                          className="absolute -top-2 -right-2 w-5 h-5 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md hover:bg-destructive/90"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
                 <Textarea
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
