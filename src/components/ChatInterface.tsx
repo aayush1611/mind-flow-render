@@ -134,6 +134,7 @@ export default function ChatInterface() {
     content: string;
   }>>([]);
   const [selectedProcessingStep, setSelectedProcessingStep] = useState<ThinkingStep & { details?: string; logs?: string[] } | null>(null);
+  const [hiddenSteps, setHiddenSteps] = useState<Record<string, boolean>>({});
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -474,49 +475,69 @@ print(df)`,
                         <span className="text-xs text-muted-foreground ml-auto">
                           {message.thinking.filter(s => s.status === "complete").length}/{message.thinking.length}
                         </span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setHiddenSteps(prev => ({ ...prev, [message.id]: !prev[message.id] }))}
+                          className="h-7 px-2 text-xs"
+                        >
+                          {hiddenSteps[message.id] ? (
+                            <>
+                              <ChevronDown className="w-3 h-3 mr-1" />
+                              Show details
+                            </>
+                          ) : (
+                            <>
+                              <ChevronUp className="w-3 h-3 mr-1" />
+                              Hide details
+                            </>
+                          )}
+                        </Button>
                       </div>
-                      <div className="space-y-2">
-                        {message.thinking.map((step, index) => (
-                          <button
-                            key={step.id}
-                            onClick={() => {
-                              setSelectedProcessingStep(null);
-                              setTimeout(() => {
-                                setSelectedProcessingStep({
-                                  ...step,
-                                  details: `Processing ${step.label.toLowerCase()}. This step involves analyzing the request and preparing necessary resources.`,
-                                  logs: [
-                                    `[${new Date().toISOString()}] Step initiated: ${step.label}`,
-                                    `[${new Date().toISOString()}] Allocating resources...`,
-                                    `[${new Date().toISOString()}] Connecting to database...`,
-                                    `[${new Date().toISOString()}] Executing query...`,
-                                    step.status === "complete" ? `[${new Date().toISOString()}] Step completed successfully` : `[${new Date().toISOString()}] Step in progress...`,
-                                  ]
-                                });
-                              }, 50);
-                            }}
-                            className="flex items-center gap-2 w-full text-left hover:bg-accent rounded p-2 transition-colors"
-                          >
-                            {step.status === "pending" && (
-                              <div className="w-4 h-4 rounded-full border-2 border-muted-foreground/30 flex-shrink-0" />
-                            )}
-                            {step.status === "processing" && (
-                              <Loader2 className="w-4 h-4 animate-spin text-primary flex-shrink-0" />
-                            )}
-                            {step.status === "complete" && (
-                              <div className="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
-                                <Check className="w-3 h-3 text-white" strokeWidth={2.5} />
-                              </div>
-                            )}
-                            <span className={cn(
-                              "text-xs",
-                              step.status === "pending" && "text-muted-foreground",
-                              step.status === "processing" && "text-foreground",
-                              step.status === "complete" && "text-foreground"
-                            )}>{step.label}</span>
-                          </button>
-                        ))}
-                      </div>
+                      {!hiddenSteps[message.id] && (
+                        <div className="space-y-2">
+                          {message.thinking.map((step, index) => (
+                            <button
+                              key={step.id}
+                              onClick={() => {
+                                setSelectedProcessingStep(null);
+                                setTimeout(() => {
+                                  setSelectedProcessingStep({
+                                    ...step,
+                                    details: `Processing ${step.label.toLowerCase()}. This step involves analyzing the request and preparing necessary resources.`,
+                                    logs: [
+                                      `[${new Date().toISOString()}] Step initiated: ${step.label}`,
+                                      `[${new Date().toISOString()}] Allocating resources...`,
+                                      `[${new Date().toISOString()}] Connecting to database...`,
+                                      `[${new Date().toISOString()}] Executing query...`,
+                                      step.status === "complete" ? `[${new Date().toISOString()}] Step completed successfully` : `[${new Date().toISOString()}] Step in progress...`,
+                                    ]
+                                  });
+                                }, 50);
+                              }}
+                              className="flex items-center gap-2 w-full text-left hover:bg-accent rounded p-2 transition-colors"
+                            >
+                              {step.status === "pending" && (
+                                <div className="w-4 h-4 rounded-full border-2 border-muted-foreground/30 flex-shrink-0" />
+                              )}
+                              {step.status === "processing" && (
+                                <Loader2 className="w-4 h-4 animate-spin text-primary flex-shrink-0" />
+                              )}
+                              {step.status === "complete" && (
+                                <div className="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
+                                  <Check className="w-3 h-3 text-white" strokeWidth={2.5} />
+                                </div>
+                              )}
+                              <span className={cn(
+                                "text-xs",
+                                step.status === "pending" && "text-muted-foreground",
+                                step.status === "processing" && "text-foreground",
+                                step.status === "complete" && "text-foreground"
+                              )}>{step.label}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   )}
 
@@ -530,36 +551,56 @@ print(df)`,
                         <span className="text-xs text-muted-foreground ml-auto">
                           {message.thinking.length}/{message.thinking.length}
                         </span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setHiddenSteps(prev => ({ ...prev, [message.id]: !prev[message.id] }))}
+                          className="h-7 px-2 text-xs"
+                        >
+                          {hiddenSteps[message.id] ? (
+                            <>
+                              <ChevronDown className="w-3 h-3 mr-1" />
+                              Show details
+                            </>
+                          ) : (
+                            <>
+                              <ChevronUp className="w-3 h-3 mr-1" />
+                              Hide details
+                            </>
+                          )}
+                        </Button>
                       </div>
-                      <div className="space-y-2">
-                        {message.thinking.map((step, index) => (
-                          <button
-                            key={step.id}
-                            onClick={() => {
-                              setSelectedProcessingStep(null);
-                              setTimeout(() => {
-                                setSelectedProcessingStep({
-                                  ...step,
-                                  details: `Processing ${step.label.toLowerCase()}. This step involves analyzing the request and preparing necessary resources.`,
-                                  logs: [
-                                    `[${new Date().toISOString()}] Step initiated: ${step.label}`,
-                                    `[${new Date().toISOString()}] Allocating resources...`,
-                                    `[${new Date().toISOString()}] Connecting to database...`,
-                                    `[${new Date().toISOString()}] Executing query...`,
-                                    `[${new Date().toISOString()}] Step completed successfully`,
-                                  ]
-                                });
-                              }, 50);
-                            }}
-                            className="flex items-center gap-2 w-full text-left hover:bg-accent rounded p-2 transition-colors"
-                          >
-                            <div className="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
-                              <Check className="w-3 h-3 text-white" strokeWidth={2.5} />
-                            </div>
-                            <span className="text-xs text-foreground">{step.label}</span>
-                          </button>
-                        ))}
-                      </div>
+                      {!hiddenSteps[message.id] && (
+                        <div className="space-y-2">
+                          {message.thinking.map((step, index) => (
+                            <button
+                              key={step.id}
+                              onClick={() => {
+                                setSelectedProcessingStep(null);
+                                setTimeout(() => {
+                                  setSelectedProcessingStep({
+                                    ...step,
+                                    details: `Processing ${step.label.toLowerCase()}. This step involves analyzing the request and preparing necessary resources.`,
+                                    logs: [
+                                      `[${new Date().toISOString()}] Step initiated: ${step.label}`,
+                                      `[${new Date().toISOString()}] Allocating resources...`,
+                                      `[${new Date().toISOString()}] Connecting to database...`,
+                                      `[${new Date().toISOString()}] Executing query...`,
+                                      `[${new Date().toISOString()}] Step completed successfully`,
+                                    ]
+                                  });
+                                }, 50);
+                              }}
+                              className="flex items-center gap-2 w-full text-left hover:bg-accent rounded p-2 transition-colors"
+                            >
+                              <div className="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
+                                <Check className="w-3 h-3 text-white" strokeWidth={2.5} />
+                              </div>
+                              <span className="text-xs text-foreground">{step.label}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   )}
 
