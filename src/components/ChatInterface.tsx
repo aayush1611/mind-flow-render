@@ -402,19 +402,19 @@ print(df)`,
                           className="h-8 md:h-9 px-3 text-xs md:text-sm gap-2 hidden sm:flex border-border/50 hover:border-primary/50"
                         >
                           <span className="text-muted-foreground">Output:</span>
-                          <span className="font-medium">
-                            {selectedOptions.length === 0 ? "None" : selectedOptions.length === 1 ? outputOptions.find(o => o.id === selectedOptions[0])?.label.split(' ')[0] : `${selectedOptions.length} selected`}
-                          </span>
+                        <span className="font-medium">
+                          {selectedOptions.length === 0 ? "Auto" : selectedOptions.length === 1 ? outputOptions.find(o => o.id === selectedOptions[0])?.label.split(' ')[0] : `${selectedOptions.length} selected`}
+                        </span>
                           <ChevronDown className="w-3.5 h-3.5 opacity-50" />
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-72 bg-popover border shadow-lg z-50 p-0" align="end">
-                        <div className="p-4 border-b bg-muted/30">
-                          <h4 className="font-semibold text-sm">Output Formats</h4>
-                          <p className="text-xs text-muted-foreground mt-0.5">
-                            Select formats to include in response
-                          </p>
-                        </div>
+                      <div className="p-4 border-b bg-muted/30">
+                        <h4 className="font-semibold text-sm">Output Formats</h4>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          Select specific formats or leave unselected for auto-detection
+                        </p>
+                      </div>
                         <div className="p-2">
                           {outputOptions.map((option) => (
                             <label
@@ -916,7 +916,7 @@ print(df)`,
                       >
                         <span className="text-muted-foreground">Output:</span>
                         <span className="font-medium">
-                          {selectedOptions.length === 0 ? "None" : selectedOptions.length === 1 ? outputOptions.find(o => o.id === selectedOptions[0])?.label.split(' ')[0] : `${selectedOptions.length} selected`}
+                          {selectedOptions.length === 0 ? "Auto" : selectedOptions.length === 1 ? outputOptions.find(o => o.id === selectedOptions[0])?.label.split(' ')[0] : `${selectedOptions.length} selected`}
                         </span>
                         <ChevronDown className="w-3.5 h-3.5 opacity-50" />
                       </Button>
@@ -925,7 +925,7 @@ print(df)`,
                       <div className="p-4 border-b bg-muted/30">
                         <h4 className="font-semibold text-sm">Output Formats</h4>
                         <p className="text-xs text-muted-foreground mt-0.5">
-                          Select formats to include in response
+                          Select specific formats or leave unselected for auto-detection
                         </p>
                       </div>
                       <div className="p-2">
