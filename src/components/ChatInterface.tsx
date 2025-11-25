@@ -467,175 +467,98 @@ print(df)`,
               ) : (
                 <div className="space-y-4">
                   {message.thinking && !message.isComplete && (
-                    <div className="relative bg-gradient-to-br from-primary/10 via-purple-500/5 to-blue-500/10 rounded-2xl p-6 border border-primary/30 shadow-lg overflow-hidden">
-                      {/* Animated gradient background */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5 animate-pulse" />
-                      
-                      <div className="relative space-y-4">
-                        <div className="flex items-center justify-between mb-6">
-                          <div className="flex items-center gap-3">
-                            <div className="relative">
-                              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-purple-500 flex items-center justify-center shadow-lg">
-                                <Loader2 className="w-5 h-5 animate-spin text-white" />
+                    <div className="bg-card rounded-lg p-4 border shadow-sm">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                        <span className="text-sm font-medium">Processing</span>
+                        <span className="text-xs text-muted-foreground ml-auto">
+                          {message.thinking.filter(s => s.status === "complete").length}/{message.thinking.length}
+                        </span>
+                      </div>
+                      <div className="space-y-2">
+                        {message.thinking.map((step, index) => (
+                          <button
+                            key={step.id}
+                            onClick={() => {
+                              setSelectedProcessingStep(null);
+                              setTimeout(() => {
+                                setSelectedProcessingStep({
+                                  ...step,
+                                  details: `Processing ${step.label.toLowerCase()}. This step involves analyzing the request and preparing necessary resources.`,
+                                  logs: [
+                                    `[${new Date().toISOString()}] Step initiated: ${step.label}`,
+                                    `[${new Date().toISOString()}] Allocating resources...`,
+                                    `[${new Date().toISOString()}] Connecting to database...`,
+                                    `[${new Date().toISOString()}] Executing query...`,
+                                    step.status === "complete" ? `[${new Date().toISOString()}] Step completed successfully` : `[${new Date().toISOString()}] Step in progress...`,
+                                  ]
+                                });
+                              }, 50);
+                            }}
+                            className="flex items-center gap-2 w-full text-left hover:bg-accent rounded p-2 transition-colors"
+                          >
+                            {step.status === "pending" && (
+                              <div className="w-4 h-4 rounded-full border-2 border-muted-foreground/30 flex-shrink-0" />
+                            )}
+                            {step.status === "processing" && (
+                              <Loader2 className="w-4 h-4 animate-spin text-primary flex-shrink-0" />
+                            )}
+                            {step.status === "complete" && (
+                              <div className="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
+                                <Check className="w-3 h-3 text-white" strokeWidth={2.5} />
                               </div>
-                              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary to-purple-500 animate-ping opacity-20" />
-                            </div>
-                            <div>
-                              <h4 className="font-bold text-base text-foreground">Processing Request</h4>
-                              <p className="text-xs text-muted-foreground">
-                                {message.thinking.filter(s => s.status === "complete").length} of {message.thinking.length} steps completed
-                              </p>
-                            </div>
-                          </div>
-                          <div className="px-3 py-1 rounded-full bg-primary/20 border border-primary/40">
-                            <span className="text-xs font-medium text-primary">In Progress</span>
-                          </div>
-                        </div>
-
-                        <div className="space-y-3">
-                          {message.thinking.map((step, index) => (
-                            <button
-                              key={step.id}
-                              onClick={() => {
-                                setSelectedProcessingStep(null);
-                                setTimeout(() => {
-                                  setSelectedProcessingStep({
-                                    ...step,
-                                    details: `Processing ${step.label.toLowerCase()}. This step involves analyzing the request and preparing necessary resources.`,
-                                    logs: [
-                                      `[${new Date().toISOString()}] Step initiated: ${step.label}`,
-                                      `[${new Date().toISOString()}] Allocating resources...`,
-                                      `[${new Date().toISOString()}] Connecting to database...`,
-                                      `[${new Date().toISOString()}] Executing query...`,
-                                      step.status === "complete" ? `[${new Date().toISOString()}] Step completed successfully` : `[${new Date().toISOString()}] Step in progress...`,
-                                    ]
-                                  });
-                                }, 50);
-                              }}
-                              className={cn(
-                                "relative w-full flex items-center gap-4 p-4 rounded-xl transition-all duration-300",
-                                step.status === "complete" && "bg-green-500/10 border border-green-500/30 hover:bg-green-500/20",
-                                step.status === "processing" && "bg-primary/10 border border-primary/30 hover:bg-primary/20 shadow-md",
-                                step.status === "pending" && "bg-muted/30 border border-border hover:bg-muted/50"
-                              )}
-                            >
-                              {/* Step number badge */}
-                              <div className={cn(
-                                "flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs transition-all",
-                                step.status === "complete" && "bg-green-500 text-white shadow-lg shadow-green-500/50",
-                                step.status === "processing" && "bg-gradient-to-br from-primary to-purple-500 text-white shadow-lg shadow-primary/50 animate-pulse",
-                                step.status === "pending" && "bg-muted text-muted-foreground"
-                              )}>
-                                {step.status === "complete" ? (
-                                  <Check className="w-4 h-4" strokeWidth={3} />
-                                ) : step.status === "processing" ? (
-                                  <Loader2 className="w-4 h-4 animate-spin" />
-                                ) : (
-                                  index + 1
-                                )}
-                              </div>
-
-                              {/* Step content */}
-                              <div className="flex-1 text-left">
-                                <p className={cn(
-                                  "text-sm font-medium transition-colors",
-                                  step.status === "complete" && "text-green-600 dark:text-green-400",
-                                  step.status === "processing" && "text-foreground",
-                                  step.status === "pending" && "text-muted-foreground"
-                                )}>
-                                  {step.label}
-                                </p>
-                              </div>
-
-                              {/* Status indicator */}
-                              {step.status === "complete" && (
-                                <div className="flex-shrink-0">
-                                  <CheckCircle2 className="w-5 h-5 text-green-500" />
-                                </div>
-                              )}
-                              {step.status === "processing" && (
-                                <div className="flex-shrink-0">
-                                  <div className="flex gap-1">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0ms' }} />
-                                    <div className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: '150ms' }} />
-                                    <div className="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: '300ms' }} />
-                                  </div>
-                                </div>
-                              )}
-                            </button>
-                          ))}
-                        </div>
+                            )}
+                            <span className={cn(
+                              "text-xs",
+                              step.status === "pending" && "text-muted-foreground",
+                              step.status === "processing" && "text-foreground",
+                              step.status === "complete" && "text-foreground"
+                            )}>{step.label}</span>
+                          </button>
+                        ))}
                       </div>
                     </div>
                   )}
 
                   {message.thinking && message.isComplete && (
-                    <div className="relative bg-gradient-to-br from-green-500/15 via-emerald-500/10 to-teal-500/15 rounded-2xl p-6 border border-green-500/40 shadow-lg overflow-hidden">
-                      {/* Success glow effect */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-transparent to-emerald-500/10" />
-                      
-                      <div className="relative space-y-4">
-                        <div className="flex items-center justify-between mb-6">
-                          <div className="flex items-center gap-3">
-                            <div className="relative">
-                              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center shadow-lg shadow-green-500/50">
-                                <Check className="w-6 h-6 text-white" strokeWidth={3} />
-                              </div>
-                              <div className="absolute -inset-1 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 blur opacity-30 animate-pulse" />
-                            </div>
-                            <div>
-                              <h4 className="font-bold text-base text-green-600 dark:text-green-400">All Steps Completed</h4>
-                              <p className="text-xs text-muted-foreground">
-                                Successfully processed {message.thinking.length} steps
-                              </p>
-                            </div>
-                          </div>
-                          <div className="px-3 py-1 rounded-full bg-green-500/20 border border-green-500/40">
-                            <span className="text-xs font-medium text-green-600 dark:text-green-400">Success</span>
-                          </div>
+                    <div className="bg-card rounded-lg p-4 border shadow-sm">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+                          <Check className="w-3 h-3 text-white" strokeWidth={2.5} />
                         </div>
-
-                        <div className="space-y-3">
-                          {message.thinking.map((step, index) => (
-                            <button
-                              key={step.id}
-                              onClick={() => {
-                                setSelectedProcessingStep(null);
-                                setTimeout(() => {
-                                  setSelectedProcessingStep({
-                                    ...step,
-                                    details: `Processing ${step.label.toLowerCase()}. This step involves analyzing the request and preparing necessary resources.`,
-                                    logs: [
-                                      `[${new Date().toISOString()}] Step initiated: ${step.label}`,
-                                      `[${new Date().toISOString()}] Allocating resources...`,
-                                      `[${new Date().toISOString()}] Connecting to database...`,
-                                      `[${new Date().toISOString()}] Executing query...`,
-                                      `[${new Date().toISOString()}] Step completed successfully`,
-                                    ]
-                                  });
-                                }, 50);
-                              }}
-                              className="relative w-full flex items-center gap-4 p-4 rounded-xl bg-green-500/10 border border-green-500/30 hover:bg-green-500/20 transition-all duration-300"
-                            >
-                              {/* Step number badge */}
-                              <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-green-500 text-white shadow-lg shadow-green-500/50 flex items-center justify-center">
-                                <Check className="w-4 h-4" strokeWidth={3} />
-                              </div>
-
-                              {/* Step content */}
-                              <div className="flex-1 text-left">
-                                <p className="text-sm font-medium text-green-600 dark:text-green-400">
-                                  {step.label}
-                                </p>
-                              </div>
-
-                              {/* Checkmark indicator */}
-                              <div className="flex-shrink-0">
-                                <CheckCircle2 className="w-5 h-5 text-green-500" />
-                              </div>
-                            </button>
-                          ))}
-                        </div>
+                        <span className="text-sm font-medium text-green-600 dark:text-green-400">All Steps Completed</span>
+                        <span className="text-xs text-muted-foreground ml-auto">
+                          {message.thinking.length}/{message.thinking.length}
+                        </span>
+                      </div>
+                      <div className="space-y-2">
+                        {message.thinking.map((step, index) => (
+                          <button
+                            key={step.id}
+                            onClick={() => {
+                              setSelectedProcessingStep(null);
+                              setTimeout(() => {
+                                setSelectedProcessingStep({
+                                  ...step,
+                                  details: `Processing ${step.label.toLowerCase()}. This step involves analyzing the request and preparing necessary resources.`,
+                                  logs: [
+                                    `[${new Date().toISOString()}] Step initiated: ${step.label}`,
+                                    `[${new Date().toISOString()}] Allocating resources...`,
+                                    `[${new Date().toISOString()}] Connecting to database...`,
+                                    `[${new Date().toISOString()}] Executing query...`,
+                                    `[${new Date().toISOString()}] Step completed successfully`,
+                                  ]
+                                });
+                              }, 50);
+                            }}
+                            className="flex items-center gap-2 w-full text-left hover:bg-accent rounded p-2 transition-colors"
+                          >
+                            <div className="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
+                              <Check className="w-3 h-3 text-white" strokeWidth={2.5} />
+                            </div>
+                            <span className="text-xs text-foreground">{step.label}</span>
+                          </button>
+                        ))}
                       </div>
                     </div>
                   )}
