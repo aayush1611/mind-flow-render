@@ -6,7 +6,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Send, Loader2, ChevronDown, ChevronUp, Download, FileCode, BarChart3, Star, Sparkles, Puzzle, X, Copy, CheckCircle2, XCircle } from "lucide-react";
+import { Send, Loader2, ChevronDown, ChevronUp, Download, FileCode, BarChart3, Star, Sparkles, Puzzle, X, Copy, CheckCircle2, XCircle, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import ReactECharts from "echarts-for-react";
@@ -522,6 +522,19 @@ print(df)`,
                             )}>{step.label}</span>
                           </button>
                         ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {message.thinking && message.isComplete && (
+                    <div className="bg-gradient-to-br from-green-500/10 to-green-600/10 rounded-xl p-4 border border-green-500/30">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
+                          <Check className="w-5 h-5 text-white" strokeWidth={3} />
+                        </div>
+                        <span className="font-semibold text-base text-green-600 dark:text-green-400">
+                          Step completed
+                        </span>
                       </div>
                     </div>
                   )}
