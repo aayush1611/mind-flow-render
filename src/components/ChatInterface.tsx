@@ -399,19 +399,23 @@ print(df)`,
 
                   {/* Image previews */}
                   {uploadedImages.length > 0 && (
-                    <div className="mb-3 flex flex-wrap gap-2">
+                    <div className="mb-3 flex flex-wrap gap-2.5">
                       {uploadedImages.map((image) => (
-                        <div key={image.id} className="relative group">
+                        <div 
+                          key={image.id} 
+                          className="relative group rounded-lg overflow-hidden border-2 border-border/60 hover:border-primary/40 transition-all shadow-sm hover:shadow-md"
+                        >
                           <img
                             src={image.url}
                             alt="Upload preview"
-                            className="w-20 h-20 object-cover rounded-lg border border-border"
+                            className="w-24 h-24 object-cover"
                           />
+                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all" />
                           <button
                             onClick={() => setUploadedImages(prev => prev.filter(img => img.id !== image.id))}
-                            className="absolute -top-2 -right-2 w-5 h-5 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md hover:bg-destructive/90"
+                            className="absolute top-1.5 right-1.5 w-6 h-6 bg-background/95 backdrop-blur-sm border border-border text-foreground rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-lg hover:bg-destructive hover:text-destructive-foreground hover:border-destructive"
                           >
-                            <X className="w-3 h-3" />
+                            <X className="w-3.5 h-3.5" />
                           </button>
                         </div>
                       ))}
@@ -922,19 +926,23 @@ print(df)`,
               <div className="relative bg-background rounded-2xl border p-3 md:p-4">
                 {/* Image previews */}
                 {uploadedImages.length > 0 && (
-                  <div className="mb-3 flex flex-wrap gap-2">
+                  <div className="mb-3 flex flex-wrap gap-2.5">
                     {uploadedImages.map((image) => (
-                      <div key={image.id} className="relative group">
+                      <div 
+                        key={image.id} 
+                        className="relative group rounded-lg overflow-hidden border-2 border-border/60 hover:border-primary/40 transition-all shadow-sm hover:shadow-md"
+                      >
                         <img
                           src={image.url}
                           alt="Upload preview"
-                          className="w-20 h-20 object-cover rounded-lg border border-border"
+                          className="w-24 h-24 object-cover"
                         />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all" />
                         <button
                           onClick={() => setUploadedImages(prev => prev.filter(img => img.id !== image.id))}
-                          className="absolute -top-2 -right-2 w-5 h-5 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md hover:bg-destructive/90"
+                          className="absolute top-1.5 right-1.5 w-6 h-6 bg-background/95 backdrop-blur-sm border border-border text-foreground rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-lg hover:bg-destructive hover:text-destructive-foreground hover:border-destructive"
                         >
-                          <X className="w-3 h-3" />
+                          <X className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     ))}
